@@ -2,6 +2,92 @@
 
 > 角色：根据关键词、标签或游戏名检索游戏视觉特征，并输出 `style_brief`。本文件只负责风格理解，不负责物料生成、资源预算、尺寸边界或 Maker 实现。
 
+## 00. Style Discovery Fallback Rule
+
+当输入游戏不在现有风格知识库中，或 Excel 表中没有明确风格字段时，不要直接使用“通用游戏风格”。
+必须先执行 Style Discovery，再决定是匹配已有风格原型、创建新风格原型，还是使用 Generic Fallback。
+不要因为同系列、续作、IP 相近或名称相似，就直接继承已有游戏条目的风格。
+
+其中 `maker_safe_assets` 只作为风格可迁移素材线索，不定义资源预算、尺寸边界或 Maker 实现参数。
+
+### 1. Lookup Priority
+
+按照以下顺序查找：
+
+1. game_name 精确匹配现有知识库条目
+2. alias 精确匹配现有知识库条目中明确登记的别名
+3. 如果 game_name / alias 都没有精确命中，必须先查找 TapTap / 官网 / 商店页文字资料，不允许直接按同系列、续作或 IP 衍生关系套用已有条目
+4. 从文字资料中提取：
+   - game_type
+   - core_gameplay
+   - world_setting
+   - player_role
+   - emotional_experience
+   - key_visual_keywords
+5. 将提取结果映射到已有 style_archetype
+6. 如果没有合适 archetype，则创建新 archetype
+7. 如果资料不足，才使用 Generic Adaptive Game UI Fallback
+
+### 2. Style Discovery Method
+
+当没有明确风格时，按以下问题判断：
+
+#### A. 玩法类型先定结构
+
+- RPG / MMORPG：优先判断幻想、国风、二次元、暗黑、开放世界、回合制等视觉表现
+- SLG / 策略：优先判断军事、历史、文明、战争沙盘、地图指挥感
+- 射击 / 战术：优先判断现代军事、科幻 HUD、末日废土、竞技电竞
+- 生存 / 建造：优先判断荒野、废土、手作、资源管理、安全屋
+- 休闲 / 派对 / 消除：优先判断明亮、圆润、糖果、玩具、轻量卡通
+- 模拟经营：优先判断生活、店铺、农场、城市、市井、手作
+- 卡牌 / 放置：优先判断幻想阵营、角色收集、舞台化展示、符文/徽章系统
+
+#### B. 世界观决定语义
+
+从文字资料中提取最稳定的世界元素：
+
+- 国风：祥云、卷轴、玉佩、灯笼、窗棂、宣纸、古铜
+- 现代军事：战术编号、金属板、军用箱、警示条、雷达、坐标线
+- 科幻：玻璃 HUD、发光线框、芯片、能量环、舱体、网格
+- 废土/末日：旧金属、胶带、警示贴、裂痕、污染标识、临时营地
+- 魔幻：符文、宝石、法阵、羊皮纸、金边、石板、魔法光
+- 生活模拟：木牌、布料、贴纸、植物、手账、便签、柔和纸感
+- 怪物狩猎：皮革、骨片、地图纸、木箱、猎具、爪痕、营地装备
+- 像素/复古：像素边、低分辨率图标、街机灯、扫描线、网格块
+
+#### C. 情绪决定强度
+
+- 轻松 / 治愈：低对比、圆角、暖色、柔软阴影
+- 紧张 / 生存：低明度、磨损、硬边、警示色克制使用
+- 专业 / 战术：高秩序、网格、切角、编号、冷灰/军绿
+- 华丽 / 史诗：层级更厚、金属边、宝石点缀、内高光
+- 神秘 / 暗黑：深底、低饱和、冷光、符文但不满屏
+
+#### D. UI 材质由世界观转译，不从截图硬抄
+
+不要直接复制原游戏 UI。
+只提取可迁移的材质和组件语言：
+
+- panel material
+- border shape
+- state color
+- accent icon
+- background atmosphere
+- maker_safe_assets
+
+### 3. Decision Output
+
+每个未命中游戏必须输出：
+
+```yaml
+style_match_status: exact_match | alias_match | archetype_match | new_archetype_needed | generic_fallback
+matched_style_entry:
+reason:
+source_basis:
+confidence:
+next_action:
+```
+
 ## 使用边界
 
 本文件可以回答：
@@ -21,10 +107,13 @@
 
 ## 检索方式
 
-1. 优先匹配游戏名和别名。
-2. 其次匹配 `tags`、玩法品类、情绪词和世界观元素。
-3. 命中多个条目时，先选择游戏名精确命中；没有精确命中时，选择标签和情绪最接近的条目作为风格原型。
-4. 输出给生产链路时，只输出 `style_brief`，不要把生产参数混入其中。
+1. 先执行 `00. Style Discovery Fallback Rule` 中的 Lookup Priority。
+2. 只接受 game_name 精确匹配或已登记 alias 精确匹配作为已有条目命中。
+3. 未命中 game_name / alias 时，必须先查找 TapTap / 官网 / 商店页资料。
+4. 搜索并提取文字资料后，才允许用 `tags`、玩法品类、情绪词和世界观元素映射已有 style_archetype。
+5. 禁止在未搜索资料的情况下，按同系列、续作、IP 相近、名称相似或主观印象直接套用已有条目。
+6. 搜索后仍没有合适 archetype 时，输出 Decision Output，决定创建新 archetype 还是使用 Generic Adaptive Game UI Fallback。
+7. 输出给生产链路时，只输出 `style_brief` 或 Style Discovery 决策结果，不要把生产参数混入其中。
 
 ## style_brief 输出契约
 
