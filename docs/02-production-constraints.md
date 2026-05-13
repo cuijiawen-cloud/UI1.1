@@ -45,7 +45,7 @@
 
 ```yaml
 asset_budget_default:
-  background_image: 0-1
+  background_image: 1
   panel_9slice_base: 1
   panel_9slice_fallback: 0
   decoration_png: 0-6
@@ -58,9 +58,10 @@ asset_budget_default:
 优先级：
 
 1. 先使用 UI primitive。
-2. 再使用一张可复用 9-slice 面板图。
-3. 再使用少量语义装饰 PNG。
-4. 只有确认失败且说明原因后，才允许增加 fallback 资源。
+2. 背景图必须保留 1 张，用于承载页面氛围和世界观语义。
+3. 再使用一张可复用 9-slice 面板图。
+4. 再使用少量语义装饰 PNG。
+5. 只有确认失败且说明原因后，才允许增加 fallback 资源。
 
 ## 资源 fallback 条件
 
