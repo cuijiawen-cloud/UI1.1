@@ -28,7 +28,7 @@ inputs:
 ```yaml
 material_package:
   background:
-    required: optional
+    required: true
     asset: background_tool.png
     rule: background_rule
   panel:
@@ -62,12 +62,14 @@ material_package:
 ### 目标
 
 背景图负责建立环境气质和页面深度，但必须弱于工具 UI。它不是海报、插画、角色主视觉或游戏截图。
+每套风格化物料必须包含 1 张背景图，不能用纯 UI primitive 代替背景图。
 
 ### 生成要求
 
 ```yaml
 background_rule:
   asset_name: background_tool.png
+  required: true
   role: low_density_ui_support_background
   format: png_or_jpg
   center_safe_area: 45%-60%
