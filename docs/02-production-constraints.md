@@ -23,7 +23,7 @@
 
 - 在不改业务逻辑的前提下替换视觉皮肤。
 - 使用 `backgroundColor`、`borderWidth`、`borderColor`、`borderRadius`、`opacity`、`shadow`、`tint` 等 UI primitive。
-- 使用透明 PNG 作为背景、面板、角标或少量装饰。
+- 使用透明 PNG 作为背景和面板；当前不允许新增 `decoration_*.png`。
 - 使用 `UI.Panel` 的真实 9-slice / scale9 渲染。
 - 使用独立 overlay 表达 selected、disabled、locked、warning 等状态。
 - 使用简单 tween：透明度、位移、缩放、轻微呼吸、短时高亮。
@@ -48,19 +48,21 @@ asset_budget_default:
   background_image: 1
   panel_9slice_base: 1
   panel_9slice_fallback: 0
-  decoration_png: 0-6
+  decoration_png: 0
   state_image: 0
   icon_new: 0-4
   particle_or_animation_asset: 0
   font_new: 0
 ```
 
+`decoration_png: 0` 表示当前不允许新增任何 `decoration_*.png`。
+
 优先级：
 
 1. 先使用 UI primitive。
 2. 背景图必须保留 1 张，用于承载页面氛围和世界观语义。
 3. 再使用一张可复用 9-slice 面板图。
-4. 再使用少量语义装饰 PNG。
+4. 不生成独立装饰 PNG；装饰语义优先由背景图、9-slice 面板、UI primitive 或已有图标承载。
 5. 只有确认失败且说明原因后，才允许增加 fallback 资源。
 
 ## 资源 fallback 条件
