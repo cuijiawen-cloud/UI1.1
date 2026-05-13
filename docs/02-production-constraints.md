@@ -43,6 +43,35 @@
 
 默认预算用于“已有工具 UI 的风格替换”，不是完整游戏界面重做。
 
+## 明确生成资产白名单
+
+默认只允许生成以下 2 个图片资产：
+
+```yaml
+generated_asset_whitelist:
+  - asset_name: background_tool.png
+    count: 1
+    purpose: 页面氛围与世界观语义背景
+  - asset_name: panel_base_9slice.png
+    count: 1
+    purpose: 可复用 9-slice 面板素材
+```
+
+除上述白名单外，不允许生成其他独立图片资产。
+
+```yaml
+generated_asset_blacklist:
+  - deco_*
+  - decoration_*
+  - ornament_*
+  - badge_*
+  - accent_*
+  - icon_*
+  - state_*
+```
+
+`bar_panel_9slice.png` 不是默认资产，只能在长条组件确认失败后按 fallback 条件申请。
+
 ```yaml
 asset_budget_default:
   background_image: 1
@@ -50,19 +79,32 @@ asset_budget_default:
   panel_9slice_fallback: 0
   decoration_png: 0
   state_image: 0
-  icon_new: 0-4
+  icon_new: 0
   particle_or_animation_asset: 0
   font_new: 0
 ```
 
 `decoration_png: 0` 表示当前不允许新增任何 `decoration_*.png`。
+`icon_new: 0` 表示当前不允许新增任何独立图标资源；风格语义只能由背景图、9-slice 面板、UI primitive 或已有图标库承载。
+
+当前禁止新增以下独立装饰 / 图标资产命名：
+
+```yaml
+forbidden_standalone_asset_patterns:
+  - deco_*
+  - decoration_*
+  - ornament_*
+  - badge_*
+  - accent_*
+  - icon_*
+```
 
 优先级：
 
 1. 先使用 UI primitive。
 2. 背景图必须保留 1 张，用于承载页面氛围和世界观语义。
 3. 再使用一张可复用 9-slice 面板图。
-4. 不生成独立装饰 PNG；装饰语义优先由背景图、9-slice 面板、UI primitive 或已有图标承载。
+4. 不生成独立装饰 PNG 或新图标；装饰语义优先由背景图、9-slice 面板、UI primitive 或已有图标库承载。
 5. 只有确认失败且说明原因后，才允许增加 fallback 资源。
 
 ## 资源 fallback 条件
