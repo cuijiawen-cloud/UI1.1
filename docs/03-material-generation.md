@@ -36,9 +36,10 @@ material_package:
     asset: panel_base_9slice.png
     rule: nine_slice_panel_rule
   decorations:
-    required: optional
-    assets: []
-    rule: decoration_semantic_rule
+    required: false
+    assets:
+      "decoration_*.png": 0
+    rule: decoration_semantic_policy
   states:
     required: true
     assets: []
@@ -52,7 +53,7 @@ material_package:
 1. 用关键词或游戏名从 `01-style-knowledge.md` 取 `style_brief`。
 2. 用 `02-production-constraints.md` 检查 Maker 能力、预算、尺寸和替换范围。
 3. 盘点目标组件，标记 card、panel、button、status_bar、list_item、popup 等类型。
-4. 先规划 UI primitive，再规划 9-slice，再规划装饰 PNG，最后规划状态 overlay。
+4. 先规划 UI primitive，再规划 9-slice，再规划状态 overlay；默认不生成独立装饰 PNG。
 5. 生成或复用物料。
 6. 输出 Maker 配置和物料元数据。
 7. QA 失败时按 `02-production-constraints.md` 归因回修。
@@ -305,9 +306,23 @@ symptoms:
 
 ### 目标
 
-装饰图用于表达世界观语义、层级或状态提示，不用于填满空间。装饰必须来自 `style_brief.ui_translation.accent` 或 `style_brief.world_elements`，但物料元数据只记录引用关系。
+当前固定不生成任何 `decoration_*.png`，数量必须为 0。装饰语义用于指导背景图、9-slice 面板边角、UI primitive、已有图标和状态 overlay 的视觉选择，不作为新增图片资产输出。
 
-### 类型
+```yaml
+decoration_asset_policy:
+  asset_pattern: decoration_*.png
+  decoration_png: 0
+  max_count: 0
+  new_decoration_assets_allowed: false
+  allowed_carriers:
+    - background_tool.png
+    - panel_base_9slice.png
+    - UI_primitives
+    - existing_icon_library
+    - state_overlay
+```
+
+### 语义类型（不新增 PNG）
 
 ```yaml
 decoration_types:
@@ -327,6 +342,7 @@ decoration_types:
 
 ### 禁止
 
+- 新增独立 `decoration_*.png`。
 - 随机堆叠和无语义装饰。
 - 把装饰放在正文、数值、按钮文案或输入区域下方。
 - 每张卡都使用大角花。
@@ -438,18 +454,18 @@ last_updated:
 ### 装饰
 
 ```yaml
-asset_name: decoration_*.png
-asset_type: semantic_decoration
+asset_type: semantic_decoration_policy
 style_brief_ref: docs/01-style-knowledge.md#entry-id
-semantic_role: corner_accent | divider | badge | edge_texture_chip
-allowed_positions: []
-forbidden_positions:
-  - text_area
-  - input_area
-  - primary_button_text_area
-  - dense_list_center
-max_instances:
+decoration_png: 0
+new_decoration_assets_allowed: false
+semantic_carriers:
+  - background_tool.png
+  - panel_base_9slice.png
+  - UI_primitives
+  - existing_icon_library
+  - state_overlay
 qa_status:
+  no_new_decoration_png:
   semantic_match:
   readability_safe:
   density_safe:
