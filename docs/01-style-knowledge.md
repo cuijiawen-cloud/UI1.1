@@ -75,6 +75,19 @@
 - background atmosphere
 - maker_safe_assets
 
+#### E. 原型 vs 差异锚点
+
+Style Discovery 不能停在大风格原型，必须继续提取差异化锚点：
+
+1. 这个游戏属于哪个大风格原型。
+2. 它和同原型游戏相比，最容易被混淆成谁。
+3. 它不能只靠哪些通用元素表达。
+4. 哪些元素是低密度工具背景中仍可安全保留的识别点。
+5. 哪些元素会破坏 UI 安全区，必须只放边缘、角落或远景。
+6. 如果背景图只保留大风格原型，会变成什么错误结果。
+
+只有完成以上判断，才允许写入 `style_brief` 并进入物料生成。
+
 ### 3. Decision Output
 
 每个未命中游戏必须输出：
@@ -115,6 +128,39 @@ next_action:
 6. 搜索后仍没有合适 archetype 时，输出 Decision Output，决定创建新 archetype 还是使用 Generic Adaptive Game UI Fallback。
 7. 输出给生产链路时，只输出 `style_brief` 或 Style Discovery 决策结果，不要把生产参数混入其中。
 
+## Style Specificity Contract
+
+`style_brief` 不是“风格大类标签”，而是具名游戏的可识别风格描述。传递给 `03-material-generation.md` 时，不允许把完整风格理解压缩成通用 archetype。
+
+### 需要显式拆分
+
+每个 `style_brief` 必须区分：
+
+- `style_archetype`：这个游戏属于哪类大风格。
+- `archetype_shared_traits`：同原型游戏都可能拥有的共性。
+- `specific_differentiators`：它和同原型游戏相比，最关键的差异。
+- `signature_semantics`：低密度背景里仍应保留、减少或避免的识别语义。
+- `background_identity_anchors`：哪些语义可放边缘、远景或中央安全区。
+- `anti_generic_guardrails`：防止生成“漂亮但谁都能用”的通用图。
+- `visual_identity_test`：判断结果是否仍能区别于同原型游戏。
+
+### 禁止压缩成
+
+- 通用题材：例如“二次元科幻”“国风仙侠”“现代军事”“温馨治愈”。
+- 通用氛围：例如“低对比、柔和、边缘装饰、中心留白”。
+- 通用颜色：例如“蓝紫科幻”“奶油白木纹”“军绿灰黑”。
+- 通用 UI 词：例如“圆角卡片、半透明面板、柔和阴影”。
+
+这些信息可以作为 `archetype_shared_traits` 使用，但不能替代差异锚点。
+
+### 旧条目补全规则
+
+如果现有条目尚未显式填写 Style Specificity Contract，使用该条目前必须先从 `visual_identity`、`genre_presentation`、`game_features.core_gameplay`、`world_elements`、`materials`、`shape_language`、`background_visual_language` 和 `forbidden_mistakes` 中补全这些字段，再进入 03 生成物料。
+
+### 传递失败判定
+
+如果 03 生成的 prompt 只剩下大类题材、通用颜色、通用材质和中心留白规则，即使产物满足 UI 可读性，也判定为 `style_specificity_loss`。
+
 ## style_brief 输出契约
 
 ```yaml
@@ -142,6 +188,34 @@ style_brief:
     text: string
     accent: string
   forbidden_mistakes: string
+  style_archetype: string
+  archetype_shared_traits:
+    - string
+  specific_differentiators:
+    - string
+  signature_semantics:
+    must_include:
+      - string
+    should_include:
+      - string
+    should_reduce:
+      - string
+    must_avoid:
+      - string
+  background_identity_anchors:
+    foreground_forbidden:
+      - string
+    edge_or_corner_allowed:
+      - string
+    far_background_allowed:
+      - string
+    center_safe_area_allowed:
+      - string
+  anti_generic_guardrails:
+    - string
+  visual_identity_test:
+    question: "如果去掉游戏名，这张背景是否仍能区别于同原型下的其他游戏？"
+    pass_condition: string
 ```
 
 ## 条目
