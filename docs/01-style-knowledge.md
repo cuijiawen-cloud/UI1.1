@@ -164,6 +164,7 @@ panel_style_decomposition:
 ```yaml
 programmatic_panel_context_only_fields:
   - ui_translation.panel
+  - ui_translation.accent
   - world_elements
   - signature_semantics.must_include
   - signature_semantics.must_avoid
@@ -172,6 +173,8 @@ programmatic_panel_context_only_fields:
 ```
 
 `programmatic_panel_context_only_fields` 只能辅助理解风格语义、避免通用化和过滤误读，不能把其中的角色、世界观物件、徽章、状态、标签、布局组合、文字、图标、logo 或 IP 符号直接转成面板主体或局部装饰。
+
+`ui_translation.accent` 只能作为局部装饰语义筛选或误读过滤上下文，不能直接把其中的角色、图标、徽章、IP 物件、状态标记画进面板主体或固定局部装饰。
 
 `ui_translation.panel` 描述完整面板系统，可以包含大卡、小卡、头像、标签、状态、徽章、角标和布局组合建议；它不是程序化面板主体规格，也不是固定局部装饰的直接绘制清单。
 
