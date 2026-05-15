@@ -31,6 +31,7 @@ inputs:
     required_when: visual_hierarchy_scope == required && visual_hierarchy_brief.mode == iterative_style_refinement
     value: docs/04-visual-hierarchy-brief.md#audit_id
   target_page_or_screen:
+    rule: required_when 优先于 optional_when；例如 qa_gate / state_guidance 通常可选，但当 visual_hierarchy_scope == required 时仍必须提供页面或焦点上下文
     required_when:
       - visual_hierarchy_scope == required
       - route_to == background_generation

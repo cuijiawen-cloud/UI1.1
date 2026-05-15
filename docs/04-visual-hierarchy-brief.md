@@ -72,7 +72,7 @@ visual_hierarchy_inputs:
 
 ### 目标组件不完整时的处理
 
-当 `target_components` 缺失或不完整时，04 是否阻断取决于 00 的路由和可用上下文：
+当 `target_components` 缺失或不完整时，04 是否阻断取决于 01 的路由和可用上下文：
 
 ```yaml
 incomplete_target_components_policy:

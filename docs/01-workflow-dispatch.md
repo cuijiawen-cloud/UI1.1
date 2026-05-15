@@ -274,7 +274,7 @@ panel_candidate_inventory:
 
 ## 四、target_components 输出
 
-在进入 05 前，01 必须把安全候选转成 `target_components`。字段必须满足 05 的输入契约。
+当 `route_to` 为 `panel_programmatic_draw` / `full_ui_skin` / `panel_demo`，或当前请求需要实际替换组件时，01 必须把安全候选转成 `target_components`。`background_generation` / `state_guidance` / `qa_gate` 可按 05 输入契约省略或传空，并在 `open_questions` / `assumptions` 中记录原因。
 
 ```yaml
 target_components:
