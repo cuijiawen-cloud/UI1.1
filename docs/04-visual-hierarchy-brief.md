@@ -494,7 +494,9 @@ workflow_request:
   visual_hierarchy_scope: required | not_required
   visual_hierarchy_brief_ref: docs/04-visual-hierarchy-brief.md#brief_id | null
   visual_hierarchy_skip_reason:
-  visual_hierarchy_mode: greenfield_style_application | iterative_style_refinement
+  visual_hierarchy_mode:
+    required_when: visual_hierarchy_scope == required
+    value: greenfield_style_application | iterative_style_refinement | null
   current_visual_audit_required: true | false
 ```
 
@@ -504,7 +506,7 @@ workflow_request:
 - 用户基于已有结果提出“太抢、太重、不清楚、不突出、不好读、弱一点、只调整某层”等反馈时，设置 `visual_hierarchy_mode: iterative_style_refinement`。
 - `iterative_style_refinement` 下，`current_visual_audit_required` 必须为 `true`，并附上截图、已有实现、已生成资产或用户反馈中可取得的输入。
 - 当请求涉及页面级主次、背景强度、组件层级或当前视觉审计时，01 必须设置 `visual_hierarchy_scope: required`，并进入 04。
-- 当请求不涉及页面级主次、背景强度、组件层级或当前视觉审计时，01 必须设置 `visual_hierarchy_scope: not_required`，不进入 04，把 `visual_hierarchy_brief_ref` 设为 `null`，并填写 `visual_hierarchy_skip_reason`。
+- 当请求不涉及页面级主次、背景强度、组件层级或当前视觉审计时，01 必须设置 `visual_hierarchy_scope: not_required`，不进入 04，把 `visual_hierarchy_mode.value` 和 `visual_hierarchy_brief_ref` 设为 `null`，并填写 `visual_hierarchy_skip_reason`。
 - 01 仍负责意图路由、style_brief resolution 和 target_components 盘点，不在 01 中写页面视觉规则。
 - 01 可以把 `visual_hierarchy_brief_ref` 传给 05，但不应替代 04 输出 brief。
 

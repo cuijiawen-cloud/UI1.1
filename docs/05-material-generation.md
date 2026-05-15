@@ -31,13 +31,31 @@ inputs:
     required_when: visual_hierarchy_scope == required && visual_hierarchy_brief.mode == iterative_style_refinement
     value: docs/04-visual-hierarchy-brief.md#audit_id
   target_page_or_screen:
+    required_when:
+      - visual_hierarchy_scope == required
+      - route_to == background_generation
+      - route_to == full_ui_skin
+    optional_when:
+      - route_to == panel_programmatic_draw
+      - route_to == panel_demo
+      - route_to == state_guidance
+      - route_to == qa_gate
   target_components:
-    - component_name
-    - component_type
-    - role
-    - width
-    - height
-    - state_requirements
+    required_when:
+      - route_to == panel_programmatic_draw
+      - route_to == full_ui_skin
+      - route_to == panel_demo
+    optional_when:
+      - route_to == background_generation
+      - route_to == state_guidance
+      - route_to == qa_gate
+    items:
+      - component_name
+      - component_type
+      - role
+      - width
+      - height
+      - state_requirements
 ```
 
 物料文件必须记录 `style_brief_ref` 或 `style_brief_id`，不保存完整 `style_brief` 或完整 `visual_hierarchy_brief` 副本。当 `visual_hierarchy_scope: required` 时记录 `visual_hierarchy_brief_ref` 和 `visual_hierarchy_trace`；当 `visual_hierarchy_scope: not_required` 时记录 `visual_hierarchy_scope` 和 `visual_hierarchy_skip_reason`。允许在 `style_to_image_trace`、`panel_style_trace` 和 `visual_hierarchy_trace` 中记录本次实际使用到的颜色、材质、边框、发光、局部装饰语义和视觉层级执行结果，用于 QA 审计；需要完整风格或视觉层级信息时，运行时回查 `02-style-knowledge.md` 和 `04-visual-hierarchy-brief.md`。
@@ -222,7 +240,9 @@ material_package:
         rule: state_visual_rule
       qa:
         rules:
+          - background_rule
           - procedural_panel_qa_rule
+          - state_visual_rule
           - visual_hierarchy_qa_rule:
               enabled_when: visual_hierarchy_scope == required
     state_guidance:
@@ -258,11 +278,11 @@ material_package:
 01-workflow-dispatch -> 02-style-knowledge -> 03-production-constraints -> 04-visual-hierarchy-brief -> 05-material-generation
 ```
 
-1. 从 `01-workflow-dispatch.md` 取得 `workflow_request_ref`、目标页面和 `target_components`，其中每个组件必须带 `role` 或由 04 推断后传入。
+1. 从 `01-workflow-dispatch.md` 取得 `workflow_request_ref` 和 `workflow_request.route_to`；只有当前 route 需要页面或组件上下文时，才要求 `target_page_or_screen` 或 `target_components`。
 2. 用关键词或游戏名从 `02-style-knowledge.md` 取 `style_brief`。
 3. 用 `03-production-constraints.md` 检查 Maker 能力、预算、尺寸、资源白名单和 fallback 边界。
 4. 当 `visual_hierarchy_scope: required` 时，从 `04-visual-hierarchy-brief.md` 取得 `visual_hierarchy_brief_ref` 和 `visual_hierarchy_brief`；迭代模式必须同时取得 `current_visual_audit_ref`。当 `visual_hierarchy_scope: not_required` 时，只记录 `visual_hierarchy_skip_reason`，不阻塞等待 04 `brief_id`。
-5. 先读取 `workflow_request.route_to`，再按 `page_goal`、`primary_focus`、`secondary_focus`、`component_treatment` 和 `target_components.role` 规划本次需要输出的范围。
+5. 先读取 `workflow_request.route_to`，再按本次 route 的输入范围规划输出；当 `visual_hierarchy_scope: required` 时，还必须按 `page_goal`、`primary_focus`、`secondary_focus`、`component_treatment` 和 `target_components.role` 执行。
 6. `background_generation` 只输出 `background_tool.png` 和对应 trace / QA，不默认输出 panel。
 7. `panel_programmatic_draw` 只输出 `panel_render_recipe` 和 0-1 个可选角部贴片，不默认输出 background。
 8. `panel_demo` 只输出 demo 用 `panel_render_recipe`、0-1 个可选角部贴片和多尺寸 QA，不作为业务替换。
