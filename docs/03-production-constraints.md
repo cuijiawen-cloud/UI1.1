@@ -1,13 +1,13 @@
-# 02 Production Constraints
+# 03 Production Constraints
 
-> 角色：定义 Maker 生产链路的全局硬约束。本文件不绑定任何具体游戏风格，也不保存风格特征。
+> 角色：03 Production Constraints / 生产硬约束。定义 Maker 生产链路的全局硬约束。本文件不绑定任何具体游戏风格，也不保存风格特征。
 
 ## 输入与输出
 
 输入：
 
 - 已确认的工具页面、组件清单和替换范围。
-- `01-style-knowledge.md` 输出的 `style_brief` 引用。
+- `02-style-knowledge.md` 输出的 `style_brief` 引用。
 - 目标 Maker / UrhoX 工程环境。
 
 输出：
@@ -315,45 +315,49 @@ panel_base_9slice_fallback_forbidden_usage:
 
 QA 失败先归因，再回修。不要在没有归因时直接重生成物料。
 
+视觉层级类问题必须先检查 `04` 的 `visual_hierarchy_brief`。如果 brief 允许了过强背景、错误主次或错误组件处理，反馈 `04-visual-hierarchy-brief.md`；如果 brief 已经清楚约束，但 `05` 的 prompt、recipe、metadata 或 QA 没执行，反馈 `05-material-generation.md`。资产预算、fallback、白名单、尺寸和多尺寸 QA 硬约束仍反馈本文件。
+
 | 失败现象 | 优先归因层 | 回修文件 |
 |---|---|---|
-| 看起来不像目标游戏或关键词 | 风格理解错误 | `01-style-knowledge.md` |
-| 背景质量合格，但像通用风格原型，不像目标游戏 | Style Specificity Contract 缺失 | `01-style-knowledge.md` |
-| `style_brief` 有差异锚点，但生成 prompt 没有使用 | prompt 消费失败 | `03-material-generation.md` |
-| 差异锚点出现了，但破坏 UI 安全区 | identity anchor placement 错误 | `03-material-generation.md` |
-| 颜色、材质、形状语言和情绪冲突 | 风格理解错误 | `01-style-knowledge.md` |
-| 背景像完整插画，遮挡内容 | 物料生成错误 | `03-material-generation.md` |
-| 背景中心太花、对比太强 | 物料生成错误 | `03-material-generation.md` |
-| 面板有白底或截图底 | 图片导出错误 | `02-production-constraints.md` |
-| 默认面板主体使用整张 AI 面板图冒充通用底板 | 面板实现方案错误（blocker） | `02-production-constraints.md` |
-| 未确认程序化绘制能力 / 运行环境不适配就启用 `panel_base_9slice.png` | fallback 触发条件错误（blocker） | `02-production-constraints.md` |
-| 程序化面板没有验证 800x300、300x500、660x440、520x200 | 多尺寸 QA 缺失（blocker） | `02-production-constraints.md` |
-| 圆角随尺寸比例变形，或边框宽度被缩放 | 程序化面板参数错误（blocker） | `02-production-constraints.md` |
-| 发光或阴影作为整图被拉伸 | 程序化面板图层错误（blocker） | `02-production-constraints.md` |
-| 中心区域出现纹理、噪点或装饰干扰内容 | 程序化面板中心安全区失败（blocker） | `02-production-constraints.md` |
-| 角、装饰或固定节点被拉伸，直线段没有只做延长 | 程序化面板缩放策略错误（blocker） | `02-production-constraints.md` |
-| 固定角部装饰随面板比例缩放，或跨进可缩放区域后被拉伸 | 面板装饰贴片错误（blocker） | `02-production-constraints.md` |
-| 面板装饰超过一个角，或默认位置没有优先使用右下角且其他角不干净 | 面板装饰数量 / 位置错误（blocker） | `02-production-constraints.md` |
-| 面板装饰包含文字、logo、角色、徽章、状态图标或具体 IP 物件 | 面板装饰语义越界（blocker） | `02-production-constraints.md` |
-| 边中复杂装饰依赖图片拉伸 | 面板装饰拉伸依赖错误（blocker） | `02-production-constraints.md` |
-| 9-slice 被普通拉伸，边框模糊 | 工程实现错误 | `02-production-constraints.md` |
-| `panel_base_9slice.png` 多个角同时出现角花、折角、色片或重复符号 | 9-slice 角部硬约束失败（blocker） | `02-production-constraints.md` |
-| `panel_base_9slice.png` 左右或上下边中部出现缺口、凸起、阶梯、卡扣、重复结构或断裂 | 9-slice 边连续性失败（blocker） | `02-production-constraints.md` |
-| `panel_base_9slice.png` 外圈或切片边缘有柔光、阴影、光晕、半透明脏边或白边污染 | 9-slice alpha 边缘失败（blocker） | `02-production-constraints.md` |
-| `panel_base_9slice.png` 点缀像图标、徽章、状态标记或 IP 物件 | 9-slice 点缀语义越界（blocker） | `02-production-constraints.md` |
-| 长条组件像被压扁的卡片 | 尺寸边界错误 | `02-production-constraints.md` |
-| selected 和 warning 都像红色警告 | 状态语义错误 | `03-material-generation.md` |
-| 装饰随机堆叠，干扰阅读 | 装饰语义错误 | `03-material-generation.md` |
-| 资源数量暴涨、每个尺寸一张图 | 预算错误 | `02-production-constraints.md` |
-| 内容、布局、交互被改了 | 替换范围错误 | `02-production-constraints.md` |
+| 看起来不像目标游戏或关键词 | 风格理解错误 | `02-style-knowledge.md` |
+| 背景质量合格，但像通用风格原型，不像目标游戏 | Style Specificity Contract 缺失 | `02-style-knowledge.md` |
+| `style_brief` 有差异锚点，但生成 prompt 没有使用 | prompt 消费失败 | `05-material-generation.md` |
+| 差异锚点出现了，但破坏 UI 安全区 | identity anchor placement 错误 | `05-material-generation.md` |
+| 颜色、材质、形状语言和情绪冲突 | 风格理解错误 | `02-style-knowledge.md` |
+| `visual_hierarchy_brief` 允许背景抢内容、中心过花、对比过强或把背景设为错误主焦点 | 视觉层级 brief 错误 | `04-visual-hierarchy-brief.md` |
+| `visual_hierarchy_brief` 已限制背景强度、中心细节和中心对比，但背景仍抢内容或中心太花 | prompt / recipe / QA 执行失败 | `05-material-generation.md` |
+| `visual_hierarchy_brief` 允许错误主次、组件层级混乱，或把所有矩形都当成完整面板候选 | 视觉层级 brief 错误 | `04-visual-hierarchy-brief.md` |
+| `visual_hierarchy_brief` 已清楚约束组件处理、颜色角色和主次，但组件层级仍混乱或所有矩形都套面板 | visual hierarchy 执行失败 | `05-material-generation.md` |
+| 面板有白底或截图底 | 图片导出错误 | `03-production-constraints.md` |
+| 默认面板主体使用整张 AI 面板图冒充通用底板 | 面板实现方案错误（blocker） | `03-production-constraints.md` |
+| 未确认程序化绘制能力 / 运行环境不适配就启用 `panel_base_9slice.png` | fallback 触发条件错误（blocker） | `03-production-constraints.md` |
+| 程序化面板没有验证 800x300、300x500、660x440、520x200 | 多尺寸 QA 缺失（blocker） | `03-production-constraints.md` |
+| 圆角随尺寸比例变形，或边框宽度被缩放 | 程序化面板参数错误（blocker） | `03-production-constraints.md` |
+| 发光或阴影作为整图被拉伸 | 程序化面板图层错误（blocker） | `03-production-constraints.md` |
+| 中心区域出现纹理、噪点或装饰干扰内容 | 程序化面板中心安全区失败（blocker） | `03-production-constraints.md` |
+| 角、装饰或固定节点被拉伸，直线段没有只做延长 | 程序化面板缩放策略错误（blocker） | `03-production-constraints.md` |
+| 固定角部装饰随面板比例缩放，或跨进可缩放区域后被拉伸 | 面板装饰贴片错误（blocker） | `03-production-constraints.md` |
+| 面板装饰超过一个角，或默认位置没有优先使用右下角且其他角不干净 | 面板装饰数量 / 位置错误（blocker） | `03-production-constraints.md` |
+| 面板装饰包含文字、logo、角色、徽章、状态图标或具体 IP 物件 | 面板装饰语义越界（blocker） | `03-production-constraints.md` |
+| 边中复杂装饰依赖图片拉伸 | 面板装饰拉伸依赖错误（blocker） | `03-production-constraints.md` |
+| 9-slice 被普通拉伸，边框模糊 | 工程实现错误 | `03-production-constraints.md` |
+| `panel_base_9slice.png` 多个角同时出现角花、折角、色片或重复符号 | 9-slice 角部硬约束失败（blocker） | `03-production-constraints.md` |
+| `panel_base_9slice.png` 左右或上下边中部出现缺口、凸起、阶梯、卡扣、重复结构或断裂 | 9-slice 边连续性失败（blocker） | `03-production-constraints.md` |
+| `panel_base_9slice.png` 外圈或切片边缘有柔光、阴影、光晕、半透明脏边或白边污染 | 9-slice alpha 边缘失败（blocker） | `03-production-constraints.md` |
+| `panel_base_9slice.png` 点缀像图标、徽章、状态标记或 IP 物件 | 9-slice 点缀语义越界（blocker） | `03-production-constraints.md` |
+| 长条组件像被压扁的卡片 | 尺寸边界错误 | `03-production-constraints.md` |
+| selected 和 warning 都像红色警告 | 状态语义错误 | `05-material-generation.md` |
+| 装饰随机堆叠，干扰阅读 | 装饰语义错误 | `05-material-generation.md` |
+| 资源数量暴涨、每个尺寸一张图 | 预算错误 | `03-production-constraints.md` |
+| 内容、布局、交互被改了 | 替换范围错误 | `03-production-constraints.md` |
 
 ## 回修顺序
 
-1. 如果风格判断错，先回到 `01-style-knowledge.md` 修 style_brief。
-2. 如果风格判断正确但背景只剩通用 archetype，先补 `01-style-knowledge.md` 的 `specific_differentiators`、`signature_semantics` 和 `anti_generic_guardrails`。
-3. 如果 `style_brief` 有差异锚点但 prompt 没消费，回到 `03-material-generation.md` 修背景 prompt 模板。
-4. 如果差异锚点破坏 UI 安全区，回到 `03-material-generation.md` 调整 `background_identity_anchors` 的位置和强度。
+1. 如果风格判断错，先回到 `02-style-knowledge.md` 修 style_brief。
+2. 如果风格判断正确但背景只剩通用 archetype，先补 `02-style-knowledge.md` 的 `specific_differentiators`、`signature_semantics` 和 `anti_generic_guardrails`。
+3. 如果 `style_brief` 有差异锚点但 prompt 没消费，回到 `05-material-generation.md` 修背景 prompt 模板。
+4. 如果差异锚点破坏 UI 安全区，回到 `05-material-generation.md` 调整 `background_identity_anchors` 的位置和强度。
 5. 如果产物超出 Maker 或预算边界，回到本文件收紧约束。
-6. 如果风格正确且传递完整，但生成物料不合格，回到 `03-material-generation.md` 修生成规则。
+6. 如果风格正确且传递完整，但生成物料不合格，回到 `05-material-generation.md` 修生成规则。
 7. 如果实现参数错误，优先修 Maker 配置，不重新生成图片。
 8. 只有资源形态被确认不匹配时，才进入 fallback 资源申请。

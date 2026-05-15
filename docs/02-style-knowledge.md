@@ -1,6 +1,6 @@
-# 01 Style Knowledge
+# 02 Style Knowledge
 
-> 角色：根据关键词、标签或游戏名检索游戏视觉特征，并输出 `style_brief`。本文件只负责风格理解，不负责物料生成、资源预算、尺寸边界或 Maker 实现。
+> 角色：02 Style Knowledge / 风格理解。根据关键词、标签或游戏名检索游戏视觉特征，并输出 `style_brief`。本文件只负责风格理解，不负责物料生成、资源预算、尺寸边界或 Maker 实现。
 
 ## 00. Style Discovery Fallback Rule
 
@@ -122,8 +122,13 @@ next_action:
 - 要生成几张图片、图片尺寸是多少、9-slice 参数是多少。
 - 背景图、面板图、装饰图、状态图的具体产物规格。
 - Maker 支持什么能力、资源预算是多少、QA 失败归因到哪一层。
+- 页面视觉层级、背景强度、组件主次或色彩角色分配。
 
-这些问题分别由 `02-production-constraints.md` 和 `03-material-generation.md` 处理。`02-production-constraints.md` 负责生产约束、资源预算、实现边界和 QA 硬约束；`03-material-generation.md` 负责 prompt / recipe 转译、metadata 和 QA 执行。
+这些问题按职责分别处理：
+
+- `03-production-constraints.md` 负责生产约束。
+- `04-visual-hierarchy-brief.md` 负责页面视觉层级 brief。
+- `05-material-generation.md` 负责 prompt / recipe / metadata / QA 执行。
 
 ## Programmatic Panel 风格输入边界
 
@@ -182,7 +187,7 @@ programmatic_panel_context_only_fields:
 
 `scalable_body_style` 只能描述适合被程序化还原的连续面板主体语言，例如填充材质、中心面颜色、边框形状、描边气质、边缘光、内高光和阴影气质。
 
-`fixed_accent_style` 只能描述不参与拉伸的抽象局部装饰语义候选，例如折角、材质嵌片、缎带 / 蕾丝碎片、线描或轮廓母题。01 只提供可借用的风格联想，不决定最终是否使用装饰，也不规定装饰数量、装饰位置、像素尺寸、渲染 API、资源数量、文件名或 QA 多尺寸列表。
+`fixed_accent_style` 只能描述不参与拉伸的抽象局部装饰语义候选，例如折角、材质嵌片、缎带 / 蕾丝碎片、线描或轮廓母题。02 只提供可借用的风格联想，不决定最终是否使用装饰，也不规定装饰数量、装饰位置、像素尺寸、渲染 API、资源数量、文件名或 QA 多尺寸列表。
 
 示例：无限暖暖这类风格可以表达为“暖白 / 极淡粉白纸卡或低饱和柔光底，柔圆纸卡边，细珍珠或淡金边；可选局部装饰可联想缎带折角、小纽扣、蕾丝角片或单片花瓣边角；但大蝴蝶结、心形吊坠、花束、衣服、相机、角色和复杂蕾丝不作为基础主体或局部装饰来源”。
 
@@ -198,7 +203,7 @@ programmatic_panel_context_only_fields:
 
 ## Style Specificity Contract
 
-`style_brief` 不是“风格大类标签”，而是具名游戏的可识别风格描述。传递给 `03-material-generation.md` 时，不允许把完整风格理解压缩成通用 archetype。
+`style_brief` 不是“风格大类标签”，而是具名游戏的可识别风格描述。传递给 `05-material-generation.md` 时，不允许把完整风格理解压缩成通用 archetype。
 
 ### 需要显式拆分
 
@@ -223,13 +228,13 @@ programmatic_panel_context_only_fields:
 
 ### 旧条目补全规则
 
-如果现有条目尚未显式填写 Style Specificity Contract，使用该条目前必须先从 `visual_identity`、`genre_presentation`、`game_features.core_gameplay`、`world_elements`、`materials`、`shape_language`、`background_visual_language` 和 `forbidden_mistakes` 中补全这些字段，再进入 03 生成物料。
+如果现有条目尚未显式填写 Style Specificity Contract，使用该条目前必须先从 `visual_identity`、`genre_presentation`、`game_features.core_gameplay`、`world_elements`、`materials`、`shape_language`、`background_visual_language` 和 `forbidden_mistakes` 中补全这些字段，再进入 05 生成物料。
 
 如果旧条目没有 `ui_translation.panel_base_style_hint`，不能直接把 `ui_translation.panel` 当成程序化面板规格。必须先从 `materials`、`shape_language`、`colors` 和 `ui_translation.panel` 中抽取主体材质、中心底色倾向、边框轮廓、线条气质、发光/阴影气质和可选局部装饰候选，并过滤掉头像、状态、徽章、标签、文字、图标、logo、角色、具体世界观物件和布局组合。
 
 ### 传递失败判定
 
-如果 03 生成的 prompt 只剩下大类题材、通用颜色、通用材质和中心留白规则，即使产物满足 UI 可读性，也判定为 `style_specificity_loss`。
+如果 05 生成的 prompt 只剩下大类题材、通用颜色、通用材质和中心留白规则，即使产物满足 UI 可读性，也判定为 `style_specificity_loss`。
 
 ## style_brief 输出契约
 
