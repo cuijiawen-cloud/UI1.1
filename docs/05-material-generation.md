@@ -11,6 +11,8 @@ inputs:
   workflow_request_ref: docs/01-workflow-dispatch.md output
   workflow_request:
     route_to: background_generation | panel_programmatic_draw | full_ui_skin | panel_demo | state_guidance | qa_gate
+    target_assets:
+      - string
     relevant_rules:
       required_when: route_to == qa_gate
       value:
@@ -96,13 +98,17 @@ style_brief_consumption:
     - ui_translation.accent
     - forbidden_mistakes
   background_prompt_required:
-    - use style_archetype only as base direction
-    - include specific_differentiators
-    - include signature_semantics.must_include
-    - include signature_semantics.should_reduce
-    - include signature_semantics.must_avoid
-    - include anti_generic_guardrails
-    - place anchors according to background_identity_anchors
+    enabled_when:
+      - route_to == background_generation
+      - route_to == full_ui_skin
+    required_items:
+      - use style_archetype only as base direction
+      - include specific_differentiators
+      - include signature_semantics.must_include
+      - include signature_semantics.should_reduce
+      - include signature_semantics.must_avoid
+      - include anti_generic_guardrails
+      - place anchors according to background_identity_anchors
   procedural_panel_required:
     - consume colors / materials / shape_language / ui_translation.panel_base_style_hint as primary inputs
     - use ui_translation.panel only as panel-system context or legacy fallback, not as implementation spec
@@ -180,6 +186,8 @@ visual_hierarchy_brief_consumption:
 ## 输出包
 
 05 必须按 `workflow_request.route_to` 输出 `material_package`，不能在所有场景里默认生成背景、面板或状态规则。
+
+如果 `workflow_request.route_to == panel_programmatic_draw`，但 `workflow_request.target_assets` 中出现 `background_tool.png`，05 不应生成背景图。该请求必须判定为 01 分诊输出冲突，并反馈 `01-workflow-dispatch.md` 修正 route 或 target assets。
 
 ```yaml
 material_package:
@@ -1046,6 +1054,11 @@ procedural_panel_qa_rule:
 ### 失败归因
 
 ```yaml
+workflow_dispatch_failure_attribution:
+  panel_route_contains_background_asset:
+    condition: route_to == panel_programmatic_draw && workflow_request.target_assets contains background_tool.png
+    action: do_not_generate_background
+    responsible: docs/01-workflow-dispatch.md
 visual_hierarchy_failure_attribution:
   background_competes_with_content:
     responsible_when_brief_allowed_too_much_strength: docs/04-visual-hierarchy-brief.md

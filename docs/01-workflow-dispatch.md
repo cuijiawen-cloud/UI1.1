@@ -132,6 +132,9 @@ intent_routing:
 - 用户只说“换成 XX 风格”且未说明部位时，默认按 `full_ui_skin` 分诊，但必须在 `workflow_request.assumptions` 中记录该假设。
 - 用户明确只改背景时，不默认生成面板或状态方案。
 - 用户明确只改面板时，不默认生成背景图。
+- 用户明确说“面板 / panel / 卡片 / 弹窗面板 / 面板主体”时，必须按 `panel_programmatic_draw` 分诊，不得按 `full_ui_skin` 处理。
+- 当 `route_to == panel_programmatic_draw` 时，`target_assets` 不得包含 `background_tool.png`。
+- 只有用户说“整体 / 全套 / 页面 / 背景也一起 / UI 全部换成 XX 风格”时，才进入 `full_ui_skin`。
 - 用户只要求验收、检查、QA、看看合不合格时，进入 `qa_gate`，不默认生成新素材。
 - 用户要求状态、选中态、禁用态、warning 或 error 时，进入 `state_guidance`，并把状态需求写入 `target_components.state_requirements`。
 - 用户要求 demo 时，必须把 03 的程序化面板多尺寸 QA 列入请求，不把 demo 当成最终业务组件替换。
@@ -337,10 +340,23 @@ workflow_request:
   visual_hierarchy_brief_ref: null | generated_by_04_before_05
   visual_hierarchy_skip_reason:
   target_assets:
-    - background_tool.png
-    - programmatic_panel
-    - optional_panel_accent
-    - state_guidance
+    required_by_route:
+      background_generation:
+        - background_tool.png
+      panel_programmatic_draw:
+        - programmatic_panel
+        - optional_panel_accent
+      panel_demo:
+        - programmatic_panel
+        - optional_panel_accent
+      full_ui_skin:
+        - background_tool.png
+        - programmatic_panel
+        - optional_panel_accent
+        - state_guidance
+      state_guidance:
+        - state_guidance
+      qa_gate: []
   panel_candidate_inventory: []
   target_components: []
   qa_requirements:
