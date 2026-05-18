@@ -118,7 +118,7 @@ style_brief_consumption:
   procedural_panel_required:
     - consume colors / materials / shape_language / ui_translation.panel_base_style_hint as primary inputs
     - use ui_translation.panel only as panel-system context or legacy fallback, not as implementation spec
-    - translate style into fill, radius, border layers, glow layers, edge lights, fixed geometry, and optional accent semantics
+    - translate style into fill, radius, border layers, glow layers, edge lights, fixed geometry, and targeted panel accent semantics
     - output panel_render_recipe before implementation
     - do not generate a full panel PNG or require 9-slice metadata
 ```
@@ -142,7 +142,7 @@ fix:
 
 ## visual_hierarchy_brief 消费规则
 
-当 `visual_hierarchy_scope: required` 时，`05-material-generation.md` 必须先消费 `04-visual-hierarchy-brief.md` 输出的 `visual_hierarchy_brief`，再生成背景 prompt、`panel_render_recipe`、可选角部贴片和 QA 规则。
+当 `visual_hierarchy_scope: required` 时，`05-material-generation.md` 必须先消费 `04-visual-hierarchy-brief.md` 输出的 `visual_hierarchy_brief`，再生成背景 prompt、`panel_render_recipe`、条件必交付的角部贴片和 QA 规则。
 
 ### 必须读取的信息
 
@@ -199,7 +199,7 @@ visual_hierarchy_brief_consumption:
 - 必须先通过 03 的 `logical_output_mapping` 解释每个 `workflow_request.target_assets.values` 条目，再判断它是图片资产、非图片输出还是逻辑别名。
 - `programmatic_panel` 映射为 `panel_render_recipe`，只能输出结构化 recipe，不生成 PNG。
 - `state_guidance` 映射为 `state_visual_rule`，只能输出状态视觉规则，不生成 PNG。
-- `optional_panel_accent` 可选映射为 `panel_corner_accent.png` 或 `panel_accent.png`，最多 1 张，并且只允许用于 `panel_programmatic_draw`、`panel_demo`、`full_ui_skin`。
+- `optional_panel_accent` 是历史命名保留的面板角饰逻辑产物；当它出现在 `workflow_request.target_assets.values` 中时，必须映射为且仅映射为 1 张 `panel_corner_accent.png` 或 `panel_accent.png`，并且只允许用于 `panel_programmatic_draw`、`panel_demo`、`full_ui_skin`。
 - `background_tool.png` 只能用于 `background_generation` 或 `full_ui_skin`。
 - 只有经映射后属于 `image_assets_allowed` 的图片资产可以生成图片。
 - 经映射后属于 `non_image_outputs` 的项目只能输出结构化规则、recipe、配置或 QA 结果，不能生成 PNG。
@@ -228,11 +228,16 @@ generation_preflight_gate:
     - image_assets_after_mapping
     - non_image_outputs_after_mapping
     - blocked_assets
+    - background_responsive_master_when_background_tool_png_requested
   pass_condition:
     - route_to != style_discovery_only
     - every target_assets.values item resolved by logical_output_mapping
     - every image asset is allowed by image_assets_allowed
     - every image asset allowed_when includes route_to
+    - if image_assets_after_mapping contains background_tool.png then responsive master export and crop QA are specified
+    - if target_assets.values contains optional_panel_accent then image_assets_after_mapping contains exactly one of panel_corner_accent.png or panel_accent.png
+    - if route_to == full_ui_skin then image_assets_after_mapping contains exactly background_tool.png plus one panel accent asset
+    - if route_to == background_generation then image_assets_after_mapping contains background_tool.png and no panel accent asset
     - blocked_assets is empty
   fail_action:
     - do_not_generate
@@ -250,8 +255,26 @@ generation_preflight_gate:
         - panel_corner_accent.png
         - panel_accent.png
       max_image_asset_count: 1
+      required_when_target_assets_contains_optional_panel_accent:
+        exactly_one_of:
+          - panel_corner_accent.png
+          - panel_accent.png
       forbidden_image_assets_after_mapping:
         - background_tool.png
+    background_generation:
+      required_image_assets_after_mapping:
+        - background_tool.png
+      forbidden_image_assets_after_mapping:
+        - panel_corner_accent.png
+        - panel_accent.png
+      exact_image_asset_count: 1
+    full_ui_skin:
+      required_image_assets_after_mapping:
+        - background_tool.png
+        - one_of:
+            - panel_corner_accent.png
+            - panel_accent.png
+      exact_image_asset_count: 2
 ```
 
 ```yaml
@@ -291,7 +314,7 @@ material_package:
         renderer_recipe: panel_render_recipe
         optional_accent:
           asset: panel_corner_accent.png | panel_accent.png
-          required: false
+          required: true
           max_count: 1
       state_guidance: not_generated_by_default
       qa:
@@ -306,7 +329,7 @@ material_package:
         renderer_recipe: panel_render_recipe
         optional_accent:
           asset: panel_corner_accent.png | panel_accent.png
-          required: false
+          required: true
           max_count: 1
       qa:
         rules:
@@ -323,7 +346,7 @@ material_package:
         renderer_recipe: panel_render_recipe
         optional_accent:
           asset: panel_corner_accent.png | panel_accent.png
-          required: false
+          required: true
           max_count: 1
       state_guidance:
         rule: state_visual_rule
@@ -373,9 +396,9 @@ material_package:
 4. 当 `visual_hierarchy_scope: required` 时，从 `04-visual-hierarchy-brief.md` 取得 `visual_hierarchy_brief_ref` 和 `visual_hierarchy_brief`；迭代模式必须同时取得 `current_visual_audit_ref`。当 `visual_hierarchy_scope: not_required` 时，只记录 `visual_hierarchy_skip_reason`，不阻塞等待 04 `brief_id`。
 5. 先读取 `workflow_request.route_to`，再按本次 route 的输入范围规划输出；当 `visual_hierarchy_scope: required` 时，还必须按 `page_goal`、`primary_focus`、`secondary_focus`、`component_treatment` 和 `target_components.role` 执行。
 6. `background_generation` 只输出 `background_tool.png` 和对应 trace / QA，不默认输出 panel。
-7. `panel_programmatic_draw` 只输出 `panel_render_recipe` 和 0-1 个可选角部贴片，不默认输出 background。
-8. `panel_demo` 只输出 demo 用 `panel_render_recipe`、0-1 个可选角部贴片和多尺寸 QA，不作为业务替换。
-9. `full_ui_skin` 输出 background、panel、optional accent 和 state guidance。
+7. `panel_programmatic_draw` 输出 `panel_render_recipe`，且当 `target_assets.values` 包含 `optional_panel_accent` 时必须输出 1 个角部贴片；不默认输出 background。
+8. `panel_demo` 输出 demo 用 `panel_render_recipe`，且当 `target_assets.values` 包含 `optional_panel_accent` 时必须输出 1 个角部贴片和多尺寸 QA；不作为业务替换。
+9. `full_ui_skin` 输出 background、panel、1 个 panel accent 和 state guidance；图片资产数量必须恰好为 2：`background_tool.png` + `panel_corner_accent.png` / `panel_accent.png` 二选一。
 10. `state_guidance` 只输出状态视觉规则，不默认生成背景或面板资产。
 11. `qa_gate` 只执行 QA，不生成新素材。
 12. 输出 Maker 配置和物料元数据；当 `visual_hierarchy_scope: required` 时记录 `visual_hierarchy_trace`，当 `visual_hierarchy_scope: not_required` 时记录 `visual_hierarchy_scope` 和 `visual_hierarchy_skip_reason`。
@@ -409,6 +432,26 @@ background_rule:
     edge_decoration_level: from visual_hierarchy_brief.background.edge_decoration_level
     readability_policy: from visual_hierarchy_brief.readability_policy
   format: png_or_jpg
+  responsive_master:
+    required: true
+    asset_count: 1
+    export_size: 2048x1152
+    allowed_fallback_sizes:
+      - 2560x1440
+      - 1920x1080
+      - 1536x864
+      - 1280x720
+    use_mode: single_asset_cover_crop
+    crop_previews_required:
+      pc_landscape:
+        aspect_ratio: 16:9
+        preview_size: 1920x1080
+      mobile_landscape_wide:
+        aspect_ratio: 20:9
+        preview_size: 2400x1080
+      mobile_landscape_standard:
+        aspect_ratio: 16:9
+        preview_size: 1920x1080
   center_safe_area: 45%-60%
   information_density: low
   contrast: low_to_medium_low
@@ -423,12 +466,25 @@ background_rule:
     - screenshot
     - high_contrast_center
     - dense_center_pattern
+    - portrait_only_export
+    - phone_wallpaper_ratio_only
+    - square_default_export
+    - vertical_card_ratio
+    - full_four_side_frame_touching_edges
+    - critical_detail_on_extreme_edges
 ```
 
 ### Prompt 模板
 
 ```text
 Generate one low-density tool UI background based on the provided style_brief.
+
+Export as one landscape responsive background master for both PC and mobile landscape use.
+Target export: 2048x1152 PNG or JPG, or another approved landscape 16:9 size.
+The same image will be center-cropped with cover mode to PC 16:9 and mobile landscape wide ratios such as 19.5:9 or 20:9.
+Keep the center 45%-60% low-detail and low-contrast for UI readability.
+Do not place critical identity details, text, icons, symbols, characters, or must-keep decoration near the top/bottom extreme bands because mobile wide landscape may crop them.
+Use soft edge and corner atmosphere only; avoid a complete hard frame, phone-wallpaper composition, square composition, vertical card composition, or border that requires all four edges to remain visible.
 
 Use the style_archetype only as the base direction, but do not stop at the generic archetype.
 Preserve the specific_differentiators and signature_semantics so the result does not become a generic style background.
@@ -600,8 +656,11 @@ panel_render_recipe:
     stretch_safe: true
     clean_for_content: true
   optional_accent:
-    enabled: false
+    enabled:
+      value_when_targeted: true
+      required_when: target_assets.values contains optional_panel_accent
     asset: panel_corner_accent.png | panel_accent.png
+    required_when_targeted: true
     max_count: 1
     placement_type: corner
     preferred_anchor: bottom_right
@@ -679,9 +738,9 @@ panel_render_recipe:
 - 中心区域必须干净、无图案、无噪声、无场景、无图标、无文字。
 - 状态视觉必须由 overlay、描边、亮度、透明度或已有图标层表达，不能烘焙进面板主体。
 
-### 可选局部装饰 PNG
+### 面板局部装饰 PNG
 
-`panel_corner_accent.png` 或 `panel_accent.png` 是 0-1 个可选角部贴片，只能表达固定位置、不参与拉伸的局部风格点缀。默认优先使用右下角角饰；除非 03 或目标组件明确指定其他角，否则其他角保持干净。不得作为侧边挂件、边中装饰或边框式装饰。
+`panel_corner_accent.png` 或 `panel_accent.png` 是固定位置、不参与拉伸的局部风格点缀。只有纯 `background_generation` 不需要面板装饰；当 `target_assets.values` 包含 `optional_panel_accent` 时，05 必须生成且仅生成 1 张。默认优先使用右下角角饰；除非 03 或目标组件明确指定其他角，否则其他角保持干净。不得作为侧边挂件、边中装饰或边框式装饰。
 
 允许：
 
@@ -772,6 +831,14 @@ visual_hierarchy_brief_ref:
   value: docs/04-visual-hierarchy-brief.md#brief_id
 visual_hierarchy_skip_reason:
   required_when: visual_hierarchy_scope == not_required
+responsive_master:
+  export_size: 2048x1152
+  use_mode: single_asset_cover_crop
+  crop_previews:
+    pc_landscape_16_9: pass | fail
+    mobile_landscape_20_9: pass | fail
+    mobile_landscape_16_9: pass | fail
+  critical_detail_on_extreme_edges: false
 center_safe_area: 45%-60%
 forbidden_content_checked: true
 qa_status:
@@ -779,6 +846,7 @@ qa_status:
   no_fake_ui:
   no_clear_text:
   no_character_main_visual:
+  responsive_pc_mobile_crop_check:
   genericness_check:
   traceability_check:
 style_to_image_trace:
@@ -886,7 +954,9 @@ panel_render_recipe:
   optional_accent:
     enabled:
     asset: panel_corner_accent.png | panel_accent.png
-    required: false
+    required:
+      value_when_targeted: true
+      required_when: target_assets.values contains optional_panel_accent
     max_count: 1
     placement_type: corner
     fixed_pixel_size: true
@@ -933,12 +1003,14 @@ qa_status:
 last_updated:
 ```
 
-### 可选局部装饰
+### 面板局部装饰
 
 ```yaml
 asset_name: panel_corner_accent.png | panel_accent.png
 asset_type: fixed_corner_accent_patch
-required: false
+required:
+  value_when_targeted: true
+  required_when: target_assets.values contains optional_panel_accent
 max_count: 1
 style_brief_ref: docs/02-style-knowledge.md#entry-id
 visual_hierarchy_scope: required | not_required
@@ -1018,6 +1090,11 @@ visual_hierarchy_qa_rule:
 ### 背景
 
 - 是否服务 UI，而不是完整插画。
+- 是否导出为 1 张 PC / Mobile 横屏共用的 responsive landscape background master。
+- 是否为横屏母版，推荐 `2048x1152` / `1920x1080`，或使用允许降级尺寸 `2560x1440` / `1536x864` / `1280x720`。
+- 是否同时通过 PC 横屏 `16:9`、手机横屏宽比例 `20:9` 和手机横屏标准比例 `16:9` 的居中 cover 裁切预览。
+- 是否没有竖版手机壁纸、正方形默认图、长图卡片或只能在单一横屏比例下成立的构图。
+- 是否没有完整四边硬边框、贴边整圈装饰或必须保留在极端边缘的关键识别细节。
 - 中央安全区是否干净。
 - 是否无清晰文字、假 UI、logo、角色主视觉。
 - 是否保留足够对比给真实组件。
@@ -1025,6 +1102,27 @@ visual_hierarchy_qa_rule:
 - 是否没有只停留在 `style_archetype` 的通用表达。
 - 当 `visual_hierarchy_scope: required` 时，是否没有发生 `background_competes_with_content`。
 - 当 `visual_hierarchy_scope: required` 时，是否保护了 `visual_hierarchy_brief.primary_focus`。
+
+```yaml
+responsive_pc_mobile_crop_check:
+  source_asset: background_tool.png
+  required: true
+  pass_condition:
+    - source_export_is_landscape_responsive_master
+    - pc_landscape_16_9_crop_keeps_center_safe_area_clean
+    - mobile_landscape_20_9_crop_keeps_center_safe_area_clean
+    - mobile_landscape_16_9_crop_keeps_center_safe_area_clean
+    - no_critical_identity_detail_lost_in_either_crop
+    - no_hard_full_frame_cut_off_in_either_crop
+    - background_still_supports_ui_after_cover_crop
+  fail_if:
+    - portrait_only_export
+    - square_default_export
+    - landscape_image_depends_on_all_four_edges_remaining_visible
+    - mobile_crop_loses_style_identity
+    - pc_crop_loses_style_identity
+    - center_safe_area_becomes_busy_after_crop
+```
 
 ### Genericness Check
 
@@ -1113,8 +1211,9 @@ procedural_panel_qa_rule:
 - 直线边只延展线段，不拉伸位图。
 - 不要求 `backgroundSlice`、`slice_config` 或其他 9-slice metadata。
 
-### 可选局部装饰
+### 面板局部装饰
 
+- 当 `target_assets.values` 包含 `optional_panel_accent` 时，是否恰好生成 1 个 `panel_corner_accent.png` 或 `panel_accent.png`。
 - 是否最多只有 1 个 `panel_corner_accent.png` 或 `panel_accent.png`。
 - 是否固定像素尺寸，不随面板宽高缩放。
 - 是否优先锚定右下角；如改用其他角，必须有组件避让原因或 03 明确允许。
@@ -1220,7 +1319,7 @@ procedural_panel_failure_attribution:
 
 ### 小卡片拥挤
 
-修复：减薄 `border_layers`、降低 glow、关闭 optional accent 或扩大卡片 padding；不要在中心区加入纹理、粒子或复杂固定几何。
+修复：减薄 `border_layers`、降低 glow、让局部装饰避开该小卡片或扩大卡片 padding；不要把全局必交付的面板装饰资产从输出包里删除，也不要在中心区加入纹理、粒子或复杂固定几何。
 
 ### 主容器和卡片完全一样
 

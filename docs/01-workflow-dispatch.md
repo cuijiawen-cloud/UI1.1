@@ -40,6 +40,12 @@ dispatch_mode:
     - optional_panel_accent
     - state_guidance
   forced_generation_allowed: true
+  forced_image_assets_expected:
+    - background_tool.png
+    - one_of:
+        - panel_corner_accent.png
+        - panel_accent.png
+  forced_image_asset_count: 2
   still_required:
     - style_brief_resolution
     - workflow_request_preview
@@ -55,6 +61,7 @@ dispatch_mode:
 - 用户只说“制作 / 新增 / 定义 XX 风格”时，也临时视为全量应用请求。
 - 仍必须先执行 `style_brief_resolution`，不能跳过 02。
 - 仍必须输出 `workflow_request_preview`，不能直接生成图片、写代码或导出素材。
+- 在当前全量测试模式下，预期图片资产必须恰好为 2 个：`background_tool.png` + `panel_corner_accent.png` / `panel_accent.png` 二选一；`programmatic_panel` 仍是非图片 recipe。
 - 仍必须经过 03 的 `logical_output_mapping` 和 05 的 `generation_preflight_gate`。
 - 该模式只用于链路测试；正式生产前必须关闭，并恢复下方 `intent_routing` 的正常分诊。
 
@@ -98,7 +105,7 @@ intent_routing:
       - background_tool.png
 
   full_game_style_skin:
-    user_says: "整体换成 XX 游戏风格"
+    user_says: "改成 / 换成 XX 风格；整体 / 全套 / 页面 / UI 全部换成 XX 游戏风格"
     steps:
       - resolve_style_brief
       - identify_target_page_or_screen
@@ -203,7 +210,9 @@ workflow_request:
 - 用户明确说“面板 / panel / 卡片 / 弹窗面板 / 面板主体”时，必须按 `panel_programmatic_draw` 分诊，不得按 `full_ui_skin` 处理。
 - 当 `route_to == panel_programmatic_draw` 时，本次实际 `target_assets.values` 只能包含 `programmatic_panel` 和 `optional_panel_accent`，不得包含 `background_tool.png`。
 - `target_assets_by_route` 是规则表，不是本次实际目标产物列表；05 执行时必须读取 `target_assets.values`。
-- 只有用户说“整体 / 全套 / 页面 / 背景也一起 / UI 全部换成 XX 风格”时，才进入 `full_ui_skin`。
+- 当用户说“改成 / 换成 XX 风格”且没有明确限定“只改背景 / 只改面板 / 只改状态”时，按全局风格应用进入 `full_ui_skin`。
+- 用户说“整体 / 全套 / 页面 / 背景也一起 / UI 全部换成 XX 风格”时，进入 `full_ui_skin`。
+- 当 `route_to == full_ui_skin` 时，本次实际 `target_assets.values` 必须包含 `background_tool.png`、`programmatic_panel`、`optional_panel_accent` 和 `state_guidance`；03 / 05 会把它解析为 2 个图片资产：背景 1 张 + 面板装饰 1 张。
 - `style_discovery_only` 必须设置 `target_assets: []`、`default_generation: false`，且不进入 05；只有 02 产出可用 `style_brief` 后，才允许从 `pending_generation_request` 恢复原始路由。
 - 用户只要求验收、检查、QA、看看合不合格时，进入 `qa_gate`，不默认生成新素材。
 - 用户要求状态、选中态、禁用态、warning 或 error 时，进入 `state_guidance`，并把状态需求写入 `target_components.state_requirements`。
@@ -343,7 +352,7 @@ panel_candidate_inventory:
 - `safe_panel_components` 可以进入 `programmatic_panel`，但仍需遵守 03 的尺寸和 QA 要求。
 - `caution_components` 必须说明风险；无法确认尺寸、内容密度或层级时，先保守标记为 `skip` 或仅 `state_overlay`。
 - `not_panel_components` 不得套用通用 panel skin；如用户要求状态变化，只允许进入 `state_overlay` 或由 05 给出状态视觉建议。
-- `optional_accent` 只能用于 03 / 05 允许的固定角部局部装饰，不得把按钮、徽章、状态、图标或 IP 物件塞进面板装饰。
+- `optional_accent` 是组件层“是否承接局部装饰”的标记，不决定资产包是否生成装饰；当 `target_assets.values` 包含 `optional_panel_accent` 时，03 / 05 仍必须交付 1 张固定角部局部装饰。不得把按钮、徽章、状态、图标或 IP 物件塞进面板装饰。
 
 ## 四、target_components 输出
 

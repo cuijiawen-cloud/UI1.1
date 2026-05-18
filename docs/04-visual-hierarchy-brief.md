@@ -255,10 +255,43 @@ visual_hierarchy_brief:
     decorative_accent:
     text_primary:
     text_secondary:
+    text_on_surface:
+    text_on_primary_action:
+    text_on_secondary_action:
+    text_disabled:
     state_colors:
+  text_on_surface_policy:
+    page_background:
+      allowed_text_roles:
+        - text_primary
+        - text_secondary
+      forbidden_text_roles:
+        - decorative_accent
+        - surface_highlight
+    primary_surface:
+      allowed_text_roles:
+        - text_primary
+        - text_secondary
+        - text_on_surface
+    secondary_surface:
+      allowed_text_roles:
+        - text_primary
+        - text_secondary
+        - text_on_surface
+    primary_action:
+      required_label_role: text_on_primary_action
+      contrast_priority: highest
+    secondary_action:
+      required_label_role: text_on_secondary_action
+      contrast_priority: high
+    disabled_control:
+      required_label_role: text_disabled
+      must_still_signal_disabled_state: true
   readability_policy:
     min_body_text_contrast:
     min_large_text_contrast:
+    min_interactive_text_contrast:
+    min_disabled_text_contrast:
     content_scrim_allowed:
     fallback_if_contrast_fails:
   style_strength:
@@ -272,6 +305,10 @@ visual_hierarchy_brief:
     - every_rectangle_gets_panel_skin
     - action_buttons_look_same_as_containers
     - decorative_color_used_as_main_text_surface
+    - interactive_text_too_low_contrast
+    - button_label_uses_decorative_accent_as_text
+    - enabled_button_looks_disabled
+    - control_outline_more_visible_than_label
     - existing_good_style_removed_without_reason
     - violates_03_production_constraints
 ```
@@ -288,8 +325,9 @@ visual_hierarchy_brief:
 - `edge_decoration_level` 可以承载更多游戏识别语义，但不能压过按钮、导航、输入框和状态提示。
 - `component_treatment` 必须逐类说明组件层级和处理方式，05 不能只看组件是否是矩形。
 - `use_programmatic_panel: true` 表示允许使用完整程序化面板主体；`limited` 表示只允许轻量程序化表面、细描边、弱 tint 或状态 overlay；`false` 表示不得套用程序化面板主体。
-- `use_accent` 只表示允许使用 02 / 03 约束下的 0-1 个固定角部局部装饰，不表示可新增通用装饰图。
+- `use_accent` 只表示该组件是否承接 02 / 03 约束下的固定角部局部装饰，不表示可新增通用装饰图；当 03 / 05 已因 `target_assets.values` 包含 `optional_panel_accent` 而要求生成面板装饰时，`use_accent: false` 只能表示“不贴到该组件”，不能取消资产包里的必交付装饰。
 - `color_roles` 必须区分背景、容器、行动、装饰、文字和状态，避免所有元素抢同一个主色。
+- `text_on_surface_policy` 必须说明文字落在页面背景、内容面、行动按钮和禁用控件上时使用哪个文字角色，避免把装饰高光色当作功能文案色。
 - `readability_policy` 必须给出对比底线和失败兜底，通常优先降低背景强度或增加内容 scrim，再调整文字色。
 - `style_strength` 用于把风格强度分配到背景、主面板、次面板、控件和装饰，不允许每层都满强度。
 - `forbidden_visual_outcomes` 记录页面级禁忌结果，05 和 QA 必须按这些结果检查，而不是只检查单个资产是否合规。
@@ -300,7 +338,7 @@ visual_hierarchy_brief:
 
 ### 可以使用完整 programmatic_panel 的组件
 
-以下组件可以使用完整程序化面板，但仍需遵守 02 的尺寸、图层和 QA 约束：
+以下组件可以使用完整程序化面板，但仍需遵守 03 的尺寸、图层和 QA 约束：
 
 - 主内容容器。
 - 弹窗主体。
@@ -382,6 +420,21 @@ full_panel_forbidden:
 
 按钮必须像按钮，标签必须像标签，输入框必须像输入框。它们可以继承色彩、描边、圆角、hover / pressed / selected 等状态语言，但不能变成和内容容器一样的面板。
 
+### 交互控件文字规则
+
+按钮、标签、pill、input 和状态控件的文案属于功能文本层，不属于装饰层。04 必须为这些控件指定清晰的文字落色关系，05 不得用装饰色、浅高光色、背景氛围色或边框色替代可点击控件的主要文案色。
+
+规则：
+
+- 可点击控件的文字对比优先级高于风格柔和感；风格可以低饱和，但交互文案不能低可读。
+- enabled button / tag / pill 的文案必须比控件描边、装饰线和背景氛围更清楚，不能出现“轮廓比文字更显眼”的结果。
+- `primary_action` 必须使用 `text_on_primary_action`，并保留页面中最高或接近最高的交互文字对比。
+- `secondary_action` 必须使用 `text_on_secondary_action`，可以弱于主按钮，但必须明显高于 disabled 文案。
+- disabled 控件必须使用 `text_disabled`，并通过透明度、饱和度、描边或状态说明表达不可用；disabled 仍需可辨认，不得完全消失。
+- `decorative_accent`、`surface_highlight`、发光色和浅边框色不得作为 enabled 控件的主要文案色。
+- 如果按钮或标签底色很浅，应优先加深文案色或调整底色，而不是靠文字描边、glow、阴影或新增装饰解决。
+- 如果风格要求白色、浅金、浅粉或其他浅色文字，只能用于足够深的底色；不能直接落在浅色按钮面、浅色页面背景或浅色半透明表面上。
+
 ## 七、色彩角色规则
 
 04 必须为页面分配颜色角色，防止背景、面板和操作控件争夺同一主色。
@@ -412,6 +465,18 @@ color_role_policy:
   text_secondary:
     purpose: metadata_or_supporting_text
     strength: readable_but_lower_emphasis
+  text_on_surface:
+    purpose: readable_text_on_primary_or_secondary_surface
+    strength: functional_text_not_decoration
+  text_on_primary_action:
+    purpose: label_text_on_primary_action
+    strength: highest_interactive_legibility
+  text_on_secondary_action:
+    purpose: label_text_on_secondary_action
+    strength: high_interactive_legibility
+  text_disabled:
+    purpose: disabled_or_unavailable_control_label
+    strength: readable_but_clearly_disabled
   state_colors:
     purpose: selected_disabled_warning_error_success_new_reward
     strength: semantic_not_decorative
@@ -423,6 +488,10 @@ color_role_policy:
 - `decorative_accent` 只能小面积使用，不能成为大面积文字底或普通面板底。
 - `primary_surface` 必须服务内容阅读，不能因为风格化而牺牲正文和表单。
 - `secondary_surface` 应比主内容容器更轻，避免所有层级都像主卡片。
+- `text_primary`、`text_secondary`、`text_on_surface`、`text_on_primary_action`、`text_on_secondary_action` 和 `text_disabled` 必须是功能文字角色，不得被 `decorative_accent`、浅高光色或背景氛围色替代。
+- `text_on_primary_action` 和 `text_on_secondary_action` 必须根据按钮底色反向选择深浅；浅底按钮优先用深色文字，深底按钮才允许用浅色文字。
+- enabled 控件文案的可读性必须高于 disabled 文案；如果 enabled 控件看起来像 disabled，判定为色彩角色分配失败。
+- 控件边框、外描边、装饰线或 glow 不能比控件文案更抢眼；否则用户会先识别轮廓而不是操作含义。
 - warning / error 不能被装饰色或 selected 色混淆。
 - 如果背景颜色很有识别度，面板和按钮必须降低同色竞争，让页面留出焦点。
 
@@ -475,6 +544,7 @@ background_strength_defaults:
 - 面板全都填充时，优先减少 secondary / tertiary 组件的 `programmatic_panel` 使用，只保留主容器使用完整面板。
 - 按钮不突出时，优先把最强色彩留给 `primary_action`，不要让背景或普通面板抢走主色。
 - 文字不好读时，优先降低底层干扰、增加内容区稳定面或 scrim，再考虑调整文字色和字重。
+- 按钮、标签或 pill 文案不好读时，优先调整 `text_on_primary_action` / `text_on_secondary_action` 与控件底色的对比；不要优先加文字描边、glow、阴影或装饰。
 - 风格方向可用但过重时，保留材质、形状和小面积识别语义，削弱 glow、厚边框、强纹理和高饱和大色块。
 - 当前风格不像目标游戏时，先判断是 02 风格理解问题、05 prompt 消费问题、背景 identity anchor 位置问题，还是 04 页面强度分配问题，再决定反馈对象。
 
@@ -539,6 +609,7 @@ visual_hierarchy_skip_reason:
 - 必须按 `component_treatment` 决定每个组件的处理方式。
 - 背景 prompt / 背景参数必须遵守 `background.strength`、`center_detail_level`、`center_contrast_level` 和 `edge_decoration_level`。
 - `panel_render_recipe` 必须遵守 `hierarchy_level` 和 `color_roles`，主容器、次级容器、按钮、标签、输入框不能同强度处理。
+- 按钮、标签、pill、input 和状态控件必须遵守 `text_on_surface_policy` 与 `readability_policy`，不能让 enabled 控件文案低对比、像 disabled，或让边框比文案更清楚。
 - QA 必须检查 `every_rectangle_gets_panel_skin` 是否发生。
 - QA 必须检查 `background_competes_with_content` 是否发生。
 - 迭代模式下，05 必须保护 `current_visual_audit.keep`，优先执行 `reduce / remove / adjust`，不能无理由清空当前可用风格方向。
@@ -558,10 +629,15 @@ visual_hierarchy_trace:
       use_programmatic_panel:
       color_role:
   color_roles_used:
+  text_on_surface_policy_used:
   forbidden_visual_outcome_checks:
     background_competes_with_content:
     every_rectangle_gets_panel_skin:
     action_buttons_look_same_as_containers:
+    interactive_text_too_low_contrast:
+    button_label_uses_decorative_accent_as_text:
+    enabled_button_looks_disabled:
+    control_outline_more_visible_than_label:
 ```
 
 ## 十二、职责边界
@@ -608,6 +684,26 @@ visual_hierarchy_failure_attribution:
     fix_direction:
       - reassign_color_roles
       - restore_text_contrast
+  interactive_text_too_low_contrast:
+    likely_responsible: docs/04-visual-hierarchy-brief.md | docs/05-material-generation.md
+    fix_direction:
+      - define_or_correct_text_on_surface_policy
+      - increase_interactive_text_contrast_before_adding_decoration
+  button_label_uses_decorative_accent_as_text:
+    likely_responsible: docs/04-visual-hierarchy-brief.md | docs/05-material-generation.md
+    fix_direction:
+      - move_button_label_to_text_on_primary_or_secondary_action
+      - keep_decorative_accent_as_border_or_small_highlight_only
+  enabled_button_looks_disabled:
+    likely_responsible: docs/04-visual-hierarchy-brief.md | docs/05-material-generation.md
+    fix_direction:
+      - separate_enabled_and_disabled_text_roles
+      - increase_enabled_control_label_contrast
+  control_outline_more_visible_than_label:
+    likely_responsible: docs/04-visual-hierarchy-brief.md | docs/05-material-generation.md
+    fix_direction:
+      - make_label_more_legible_than_outline
+      - reduce_outline_or_raise_text_role
   existing_good_style_removed_without_reason:
     likely_responsible: docs/04-visual-hierarchy-brief.md | docs/05-material-generation.md
     fix_direction:
@@ -663,10 +759,25 @@ visual_hierarchy_brief:
     decorative_accent:
     text_primary:
     text_secondary:
+    text_on_surface:
+    text_on_primary_action:
+    text_on_secondary_action:
+    text_disabled:
     state_colors:
+  text_on_surface_policy:
+    primary_action:
+      required_label_role: text_on_primary_action
+      contrast_priority: highest
+    secondary_action:
+      required_label_role: text_on_secondary_action
+      contrast_priority: high
+    disabled_control:
+      required_label_role: text_disabled
   readability_policy:
     min_body_text_contrast: "WCAG AA target or project equivalent"
     min_large_text_contrast: "WCAG AA target or project equivalent"
+    min_interactive_text_contrast: "WCAG AA target or project equivalent"
+    min_disabled_text_contrast: "readable but visibly disabled"
     content_scrim_allowed: true
     fallback_if_contrast_fails:
   style_strength:
@@ -680,6 +791,10 @@ visual_hierarchy_brief:
     - every_rectangle_gets_panel_skin
     - action_buttons_look_same_as_containers
     - decorative_color_used_as_main_text_surface
+    - interactive_text_too_low_contrast
+    - button_label_uses_decorative_accent_as_text
+    - enabled_button_looks_disabled
+    - control_outline_more_visible_than_label
     - existing_good_style_removed_without_reason
     - violates_03_production_constraints
 ```
@@ -757,10 +872,25 @@ visual_hierarchy_brief:
     decorative_accent:
     text_primary:
     text_secondary:
+    text_on_surface:
+    text_on_primary_action:
+    text_on_secondary_action:
+    text_disabled:
     state_colors:
+  text_on_surface_policy:
+    primary_action:
+      required_label_role: text_on_primary_action
+      contrast_priority: highest
+    secondary_action:
+      required_label_role: text_on_secondary_action
+      contrast_priority: high
+    disabled_control:
+      required_label_role: text_disabled
   readability_policy:
     min_body_text_contrast:
     min_large_text_contrast:
+    min_interactive_text_contrast:
+    min_disabled_text_contrast:
     content_scrim_allowed:
     fallback_if_contrast_fails:
   style_strength:
@@ -774,6 +904,10 @@ visual_hierarchy_brief:
     - every_rectangle_gets_panel_skin
     - action_buttons_look_same_as_containers
     - decorative_color_used_as_main_text_surface
+    - interactive_text_too_low_contrast
+    - button_label_uses_decorative_accent_as_text
+    - enabled_button_looks_disabled
+    - control_outline_more_visible_than_label
     - existing_good_style_removed_without_reason
     - violates_03_production_constraints
 ```

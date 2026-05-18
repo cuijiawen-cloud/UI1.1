@@ -91,11 +91,12 @@ image_assets_allowed:
     purpose: 页面氛围与世界观语义背景
   "panel_corner_accent.png | panel_accent.png":
     max_count: 1
-    optional: true
+    required_when_targeted: true
+    not_required_when_route_to: background_generation
     purpose: 固定位置面板角部抽象装饰，不参与拉伸
 ```
 
-`panel_corner_accent.png` 和 `panel_accent.png` 二选一，默认最多生成 1 张。除上述白名单外，不允许生成其他 image assets。
+`panel_corner_accent.png` 和 `panel_accent.png` 二选一，最多生成 1 张；当 `target_assets.values` 包含 `optional_panel_accent` 时，必须生成其中 1 张。纯 `background_generation` 不需要、也不应生成面板装饰。除上述白名单外，不允许生成其他 image assets。
 
 以下交付项是 non-image outputs，不计入图片资产数量，也不得导出为 PNG：
 
@@ -111,7 +112,7 @@ non_image_outputs:
 
 逻辑产物名必须先映射到实际产物类型，不能把未知逻辑名直接当作新增图片资产：
 
-- `optional_panel_accent`：可选面板角饰逻辑产物。
+- `optional_panel_accent`：历史命名保留的面板角饰逻辑产物；一旦被 `target_assets.values` 点名，就是必交付的 1 张固定角部装饰，不得因为名字含 optional 而省略。
 - `allowed_image_assets`：允许落地的真实图片文件名。
 - `allowed_when`：允许出现的路由。
 
@@ -126,11 +127,15 @@ logical_output_mapping:
     output: state_visual_rule
     png_allowed: false
   optional_panel_accent:
-    type: optional_image_asset
+    type: conditional_required_image_asset
     allowed_image_assets:
       - panel_corner_accent.png
       - panel_accent.png
     max_count: 1
+    required_when_in_target_assets: true
+    resolved_image_count_when_targeted: exactly_1
+    not_required_when_route_to:
+      - background_generation
     allowed_when:
       - panel_programmatic_draw
       - panel_demo
@@ -167,6 +172,9 @@ asset_mapping_gate:
 - `state_guidance` 只能进入 `non_image_outputs_after_mapping: state_visual_rule`。
 - `background_tool.png` 只有 `background_generation` / `full_ui_skin` 可进入 `image_assets_after_mapping`。
 - `optional_panel_accent` 只有 `panel_programmatic_draw` / `panel_demo` / `full_ui_skin` 可映射为 `panel_corner_accent.png` 或 `panel_accent.png`。
+- 当 `target_assets.values` 包含 `optional_panel_accent` 时，`asset_mapping_gate` 必须映射出且仅映射出 1 个 `panel_corner_accent.png` 或 `panel_accent.png`。
+- 当 `route_to == full_ui_skin` 时，`image_assets_after_mapping` 必须恰好包含 2 个图片资产：`background_tool.png` + 1 个面板装饰图。
+- 当 `route_to == background_generation` 时，`image_assets_after_mapping` 只能包含 `background_tool.png`，不得包含 `panel_corner_accent.png` 或 `panel_accent.png`。
 
 禁止生成以下 image assets：
 
@@ -188,7 +196,7 @@ forbidden_image_assets:
 asset_budget_default:
   image_assets:
     background_tool.png: max 1
-    panel_corner_accent_or_panel_accent.png: max 1 optional
+    panel_corner_accent_or_panel_accent.png: max 1, required when target_assets contains optional_panel_accent
     all_other_png: 0
   non_image_outputs:
     programmatic_panel: panel_render_recipe only
@@ -204,7 +212,7 @@ asset_budget_default:
 1. 先使用 UI primitive。
 2. 仅当 `route_to` 为 `background_generation` 或 `full_ui_skin` 时，允许 / 需要输出 1 张 `background_tool.png`；`panel_programmatic_draw`、`panel_demo`、`state_guidance`、`qa_gate`、`style_discovery_only` 不默认生成背景图。
 3. 面板主体默认使用 `programmatic_draw`，输出 `panel_render_recipe`，不输出面板 PNG。
-4. 面板装饰最多使用 1 张固定角部 PNG，且不参与拉伸。
+4. 面板装饰最多使用 1 张固定角部 PNG，且不参与拉伸；当本次 `target_assets.values` 包含 `optional_panel_accent` 时，这 1 张装饰是必交付项。
 5. 状态视觉只输出 `state_visual_rule`，不生成 `state_*.png`。
 6. 不生成新按钮、图标、徽章或分割线 PNG；装饰语义优先由背景图、程序化面板、固定角部面板装饰、UI primitive 或已有图标库承载。
 
@@ -230,6 +238,45 @@ asset_budget_default:
 - 中央 45%-60% 保持低纹理、低对比、低信息密度。
 - 装饰优先放在边缘和角落。
 - 不得影响正文、表单、列表、按钮和可点击区域识别。
+- 默认 `background_tool.png` 必须是 PC / Mobile 横屏共用的 responsive landscape background master。
+- 默认导出 1 张横屏母版，推荐 `2048x1152` 或 `1920x1080`；允许 `2560x1440` / `1536x864` / `1280x720` 作为横屏尺寸。
+- 同一张背景必须通过居中 cover 裁切同时适配 PC 横屏 `16:9` 和手机横屏宽比例 `19.5:9` / `20:9`。
+- 风格识别元素只能放在多端横屏裁切都安全的区域，或作为可被裁掉也不影响识别的边缘氛围。
+- 不允许生成竖版手机壁纸、正方形默认图、长图卡片、完整四边硬边框、贴边整圈装饰或只能在单一横屏比例下成立的构图。
+
+```yaml
+background_responsive_master:
+  asset: background_tool.png
+  export_size:
+    preferred: 2048x1152
+    allowed_fallback:
+      - 2560x1440
+      - 1920x1080
+      - 1536x864
+      - 1280x720
+  use_mode: single_asset_cover_crop
+  required_crop_previews:
+    pc_landscape:
+      aspect_ratio: 16:9
+      preview_size: 1920x1080
+    mobile_landscape_wide:
+      aspect_ratio: 20:9
+      preview_size: 2400x1080
+    mobile_landscape_standard:
+      aspect_ratio: 16:9
+      preview_size: 1920x1080
+  safe_composition:
+    center_content_safe_area: 45%-60%
+    no_required_identity_in_outer_crop_bands: true
+    edge_decoration_may_be_cropped: true
+  forbidden:
+    - portrait_only_export
+    - phone_wallpaper_ratio_only
+    - square_default_export
+    - vertical_card_ratio
+    - full_four_side_frame_touching_edges
+    - critical_detail_on_extreme_edges
+```
 
 禁止的整图 / 切片面板 PNG：
 
@@ -303,7 +350,7 @@ forbidden_image_fallbacks:
 ```yaml
 1: background_image_or_page_color
 2: programmatic_panel_base
-3: optional_panel_accent_png
+3: panel_corner_accent_or_panel_accent_png_when_targeted
 4: optional_tint_or_surface_overlay
 5: content_image_or_icon
 6: text
