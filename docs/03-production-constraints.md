@@ -143,6 +143,31 @@ logical_output_mapping:
       - full_ui_skin
 ```
 
+05 调用图片生成前必须先执行 asset mapping gate。05 只能从 `image_assets_after_mapping` 中生成图片，不能直接把 `workflow_request.target_assets` 当作图片资产清单：
+
+```yaml
+asset_mapping_gate:
+  required_before_generate_image: true
+  input:
+    - workflow_request.route_to
+    - workflow_request.target_assets.values
+  output:
+    image_assets_after_mapping:
+      - string
+    non_image_outputs_after_mapping:
+      - string
+    blocked_assets:
+      - string
+```
+
+硬规则：
+
+- `image_assets_after_mapping` 为空时，禁止调用 `generate_image`。
+- `programmatic_panel` 只能进入 `non_image_outputs_after_mapping: panel_render_recipe`。
+- `state_guidance` 只能进入 `non_image_outputs_after_mapping: state_visual_rule`。
+- `background_tool.png` 只有 `background_generation` / `full_ui_skin` 可进入 `image_assets_after_mapping`。
+- `optional_panel_accent` 只有 `panel_programmatic_draw` / `panel_demo` / `full_ui_skin` 可映射为 `panel_corner_accent.png` 或 `panel_accent.png`。
+
 禁止生成以下 image assets：
 
 ```yaml

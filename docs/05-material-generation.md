@@ -210,6 +210,50 @@ visual_hierarchy_brief_consumption:
 
 如果 `workflow_request.route_to == panel_programmatic_draw`，但 `workflow_request.target_assets.values` 中出现 `background_tool.png`，05 不应生成背景图。该请求必须判定为 01 分诊输出冲突，并反馈 `01-workflow-dispatch.md` 修正 route 或 target assets。
 
+### Generation Preflight Gate
+
+05 是最后执行层。以下动作必须先通过 `generation_preflight_gate`，不得绕过：
+
+```yaml
+generation_preflight_gate:
+  required_before:
+    - generate_image
+    - write_code
+    - export_asset
+    - material_package
+  required_fields:
+    - workflow_request_preview.route_to
+    - workflow_request_preview.target_assets.values
+    - production_constraints.logical_output_mapping
+    - image_assets_after_mapping
+    - non_image_outputs_after_mapping
+    - blocked_assets
+  pass_condition:
+    - route_to != style_discovery_only
+    - every target_assets.values item resolved by logical_output_mapping
+    - every image asset is allowed by image_assets_allowed
+    - every image asset allowed_when includes route_to
+    - blocked_assets is empty
+  fail_action:
+    - do_not_generate
+    - do_not_call_generate_image
+    - output_block_reason
+    - feedback_to_01_or_03
+  special_rules:
+    style_discovery_only:
+      action: block_immediately
+      generate_image: forbidden
+    no_image_assets_after_mapping:
+      action: do_not_call_generate_image
+    panel_programmatic_draw:
+      allowed_image_assets_after_mapping:
+        - panel_corner_accent.png
+        - panel_accent.png
+      max_image_asset_count: 1
+      forbidden_image_assets_after_mapping:
+        - background_tool.png
+```
+
 ```yaml
 material_package:
   route_to: workflow_request.route_to
@@ -1084,6 +1128,10 @@ procedural_panel_qa_rule:
 
 ```yaml
 workflow_dispatch_failure_attribution:
+  generation_preflight_gate_failed:
+    condition: generation_preflight_gate pass_condition not satisfied
+    action: do_not_generate_and_output_block_reason
+    responsible: docs/01-workflow-dispatch.md | docs/03-production-constraints.md | docs/05-material-generation.md
   style_discovery_only_reached_05:
     condition: route_to == style_discovery_only
     action: no_material_generation_wait_for_style_brief_then_restore_pending_generation_request

@@ -151,6 +151,7 @@ workflow_request:
 ### 01 的默认判断
 
 - 用户说“制作 / 新增 / 定义 XX 风格”时，默认按 `style_discovery_only` 分诊；这不是明确素材生成请求，也不是全套 UI 换肤请求。
+- 用户只说“制作 / 新增 / 定义 XX 风格”时，不得推断为 `full_ui_skin`。
 - 当 02 没有该风格或没有可用 `style_brief` 时，先进入 `style_discovery_only`，不直接进入 `full_ui_skin`。
 - 当用户原话已经限定生成范围，例如“把面板改成 XX 风格”，但 02 暂无可用 `style_brief` 时，`style_discovery_only` 只负责补风格；01 必须把原始生成范围写入 `pending_generation_request`，不得丢掉“只改面板”的范围。
 - 用户明确只改背景时，不默认生成面板或状态方案。
@@ -329,7 +330,32 @@ target_components:
 
 ## 五、workflow_request 输出契约
 
-01 的最终产物是初始结构化 `workflow_request`。当 `visual_hierarchy_scope == required` 时，04 根据该请求产出 `visual_hierarchy_brief`，并在进入 05 前补全 `visual_hierarchy_brief_ref`；当 `visual_hierarchy_scope == not_required` 时，01 直接 pass-through 给 05。05 不应重新猜测用户意图。
+01 必须在任何生成前先输出 `workflow_request_preview`。01 的最终产物是初始结构化 `workflow_request`。当 `visual_hierarchy_scope == required` 时，04 根据该请求产出 `visual_hierarchy_brief`，并在进入 05 前补全 `visual_hierarchy_brief_ref`；当 `visual_hierarchy_scope == not_required` 时，01 直接 pass-through 给 05。05 不应重新猜测用户意图。
+
+```yaml
+workflow_request_preview:
+  required_before_any_generation: true
+  route_to:
+  target_assets:
+    values:
+      - string
+  pending_generation_request:
+    required_when: route_to == style_discovery_only && original_user_intent_has_generation_scope
+  enter_05: true | false
+  generation_allowed: true | false
+```
+
+硬规则：
+
+- 未输出 `workflow_request_preview`，不得生成图片、写代码或生成素材。
+- 当 `route_to == style_discovery_only` 时，必须设置：
+  ```yaml
+  enter_05: false
+  generation_allowed: false
+  target_assets:
+    values: []
+  ```
+- 用户只说“制作 / 新增 / 定义 XX 风格”时，不得推断为 `full_ui_skin`。
 
 ```yaml
 workflow_request:
