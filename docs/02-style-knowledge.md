@@ -326,37 +326,7 @@ style_brief:
   forbidden_mistakes: "被误判成真实田园、儿童绘本或高饱和农场经营"
 ```
 
-## 02. 乱涂彩世界
-
-```yaml
-style_brief:
-  name: "乱涂彩世界"
-  aliases: []
-  tags: ["graffiti", "paint", "anime", "casual-shooter"]
-  source:
-    checked: "https://www.taptap.cn/app/748842"
-    confidence: "high"
-  game_features:
-    type: "休闲射击 / 二次元 / 涂鸦染色"
-    core_gameplay: "以染色、弹幕射击、神明娘伙伴与无厘头漫画剧情驱动的轻爽闯关"
-  visual_identity: "潮酷涂鸦系二次元爆涂休闲射击"
-  genre_presentation: "把射击视觉化为颜料喷溅、颜色反应、漫画梗和黑白世界被染色的反差。"
-  mood: "高能、搞怪、解压、彩色爆发"
-  world_elements: "颜料枪、喷漆罐、涂鸦、黑白世界、神明娘、漫画分格、外星入侵、爆色进度条"
-  colors: "黑白灰作底层世界；青/粉/黄/紫作染色强调；白色面板保证可读；红色仅作危险或火系反应"
-  materials: "高饱和油漆、贴纸胶带、漫画纸、塑料喷罐、亮面颜料层"
-  shape_language: "不规则喷溅边、漫画爆炸框、粗描边、倾斜标签、圆角卡片"
-  background_visual_language: "灰白城市或漫画纸底，边缘被彩色颜料侵蚀，中央保持浅色干净区域"
-  ui_translation:
-    panel: "白底漫画卡+粗黑边+少量颜料飞溅，主按钮可用彩色胶囊但字区必须纯净"
-    panel_base_style_hint: "白底漫画纸卡或亮面颜料薄层卡底，粗黑描边、不规则喷溅边和倾斜贴纸感；可联想胶带角、颜料滴边、漫画爆炸框边缘，但神明娘、喷漆罐、文字感叹号和大面积颜料泼洒不作为基础主体或局部装饰来源"
-    state: "selected 用彩色描边+喷溅角标；warning 用红黑警示，不可与普通彩色装饰混淆"
-    text: "标题可用漫画粗体，正文用黑色无衬线；副文字放在纯色底上"
-    accent: "喷漆滴落、胶带、手绘箭头、漫画感叹号、颜料块、神格小徽章。装饰应具有功能或世界观语义，避免每张卡都堆强装饰。"
-  forbidden_mistakes: "误判成普通赛博霓虹或儿童绘画；不要把所有区域都喷满颜料"
-```
-
-## 03. 潜水员戴夫
+## 02. 潜水员戴夫
 
 ```yaml
 style_brief:
@@ -386,7 +356,7 @@ style_brief:
   forbidden_mistakes: "误判成纯海洋治愈或纯餐厅经营，忽略像素幽默与双场景"
 ```
 
-## 04. 鹅鸭杀
+## 03. 鹅鸭杀
 
 ```yaml
 style_brief:
@@ -416,157 +386,102 @@ style_brief:
   forbidden_mistakes: "误判成儿童低龄卡通；需要保留“可疑/投票/推理”语义"
 ```
 
-## 05. 以闪亮之名
-
-```yaml
-style_brief:
-  name: "以闪亮之名"
-  aliases: []
-  tags: ["fashion", "dress-up", "luxury", "modern"]
-  source:
-    checked: "https://www.taptap.cn/app/218210"
-    confidence: "high"
-  game_features:
-    type: "女性向 / 换装 / 生活"
-    core_gameplay: "高自由度捏脸、服装搭配、家园与社交内容"
-  visual_identity: "现代高定时装生活美学"
-  genre_presentation: "把换装视觉化为时尚杂志、轻奢摄影棚、珠光玻璃和精致妆造系统。"
-  mood: "精致、闪耀、优雅、自由表达"
-  world_elements: "高定礼服、化妆镜、衣架、珠宝、镜面、摄影灯、香水瓶"
-  colors: "珍珠白作底；浅粉/香槟金作高级感；银灰作信息层；玫瑰金/星光蓝作选中；黑色用于时尚对比"
-  materials: "珠光玻璃、半透明亚克力、丝绸纸、金属细边、柔光卡片"
-  shape_language: "纤细圆角、轻薄层叠、细线框、留白丰富"
-  background_visual_language: "柔焦摄影棚或衣帽间边缘元素，中央保持纯净高亮但不过曝"
-  ui_translation:
-    panel: "大卡用磨砂玻璃+细金属边，小卡去掉复杂花纹只保留光泽"
-    panel_base_style_hint: "珍珠白磨砂玻璃或丝绸纸卡底，纤细圆角、玫瑰金/银灰细边和柔光层次；可联想杂志页角、镜框细线、星光切片感，但礼服、珠宝主体、化妆镜和摄影灯不作为基础主体或局部装饰来源"
-    state: "selected 用玫瑰金细描边+星点；warning 用珊瑚红小标签，不污染整体"
-    text: "标题可高对比优雅字重，正文现代无衬线，字间距略松"
-    accent: "钻石、缎带、衣架、镜框、星光、香水瓶、杂志页角。装饰应具有功能或世界观语义，避免每张卡都堆强装饰。"
-  forbidden_mistakes: "误判成普通粉色少女或婚礼风，忽略现代时装杂志感"
-```
-
-## 06. 植物大战僵尸2
-
-```yaml
-style_brief:
-  name: "植物大战僵尸2"
-  aliases: []
-  tags: ["cartoon", "tower-defense", "plants", "zombies"]
-  source:
-    checked: "https://www.taptap.cn/app/54031"
-    confidence: "high"
-  game_features:
-    type: "塔防 / 休闲 / 卡通"
-    core_gameplay: "植物单位放置、僵尸波次、跨时空主题关卡"
-  visual_identity: "诙谐卡通植物塔防"
-  genre_presentation: "把塔防视觉化为后院棋盘、夸张植物表情、僵尸喜剧和清晰的格子攻防。"
-  mood: "幽默、轻松、策略、闹腾"
-  world_elements: "草坪格子、向日葵、坚果、豌豆、墓碑、路障、时空旅行"
-  colors: "草绿作环境；泥土棕作边框；阳光黄作资源/选中；灰紫作僵尸和危险；红色仅作警告"
-  materials: "草地板、木牌、泥土卡、漫画纸、石碑按钮"
-  shape_language: "圆润夸张、厚描边、棋盘网格、木牌标签"
-  background_visual_language: "浅草坪或时空主题远景，边缘植物/墓碑，中心安全区不放密集格子"
-  ui_translation:
-    panel: "木牌/泥土面板，按钮像种子包但文字区平整"
-    panel_base_style_hint: "泥土棕木牌或浅草地纸卡底，圆润厚描边、木牌边和轻漫画颗粒；可联想种子包纸角、叶片边、泥土小裂纹，但植物角色、僵尸、墓碑主体和草坪格阵不作为基础主体或局部装饰来源"
-    state: "selected 用阳光黄光圈；locked 用灰墓碑；warning 用僵尸紫/红警示"
-    text: "标题可漫画粗体，正文深棕/黑色"
-    accent: "阳光、叶子、种子包、墓碑、路障桶、泥土裂纹。装饰应具有功能或世界观语义，避免每张卡都堆强装饰。"
-  forbidden_mistakes: "误判成普通农场或儿童园艺，必须保留塔防棋盘和僵尸喜剧"
-```
-
-## 07. 崩坏：星穹铁道
-
-```yaml
-style_brief:
-  name: "崩坏：星穹铁道"
-  aliases: []
-  tags: ["space-fantasy", "turn-based-rpg", "train", "anime"]
-  source:
-    checked: "https://www.taptap.cn/app/224267"
-    confidence: "high"
-  game_features:
-    type: "回合制 RPG / 太空幻想"
-    core_gameplay: "列车穿越星海、多星球冒险、角色回合制战斗"
-  visual_identity: "星际列车式华丽太空幻想 RPG"
-  genre_presentation: "把回合制 RPG 视觉化为星轨旅行、车票、档案、行星文明和精致科幻魔法混合界面。"
-  mood: "史诗、浪漫、神秘、精致"
-  world_elements: "星穹列车、车票、星轨、行星、命途符号、档案馆、空间站"
-  colors: "深蓝/黑作宇宙底；银白作信息层；金色作高级/命途；青蓝/紫作能量；红色只作危险"
-  materials: "深色玻璃 HUD、金属细边、星图纸、车票卡、能量纹理"
-  shape_language: "圆角与锐角结合、细线框、轨道弧线、星图节点"
-  background_visual_language: "深色星空或列车舷窗远景，中心避免高亮星云和密集粒子"
-  ui_translation:
-    panel: "深色磨砂玻璃卡+细金边/银边，大卡可加星图线，小卡简洁"
-    panel_base_style_hint: "深色磨砂玻璃或车票卡质感，细金/银金属边，圆角与轻切角结合；可联想轨道弧线、星图节点和档案卡边，但星图线、命途徽记、车票图形和发光粒子不作为基础主体或局部装饰来源"
-    state: "selected 用金色轨道光；warning 用红橙小警示；disabled 降亮度并保留线框"
-    text: "标题可细致高对比，正文用浅灰白，避免小字发光"
-    accent: "车票、星轨、星星节点、命途徽记、列车窗、档案夹。装饰应具有功能或世界观语义，避免每张卡都堆强装饰。"
-  forbidden_mistakes: "误判成通用蓝紫科幻手游；要保留列车旅行与档案质感"
-```
-
-## 08. 我的休闲时光
-
-```yaml
-style_brief:
-  name: "我的休闲时光"
-  aliases: []
-  tags: ["cozy", "home", "decor", "casual"]
-  source:
-    checked: "https://www.taptap.cn/app/242251"
-    confidence: "high"
-  game_features:
-    type: "装修模拟 / 休闲 / 生活"
-    core_gameplay: "DIY 小窝、服装造型、猫、种花、网购、料理钓鱼等佛系生活"
-  visual_identity: "柔和手绘宅家装修生活模拟"
-  genre_presentation: "把休闲模拟视觉化为温馨小屋、软萌家居、猫咪陪伴和轻手绘生活质感。"
-  mood: "佛系、温馨、可爱、慢节奏"
-  world_elements: "小窝、猫、花盆、家具、咖啡、网购纸箱、钓鱼、料理"
-  colors: "奶油白/浅粉作底；浅木棕作结构；薄荷绿/天蓝作辅助；暖橙作奖励；灰色用于已完成/不可用"
-  materials: "米白纸卡、布艺贴片、浅木、软塑料按钮"
-  shape_language: "大圆角、软卡片、轻手绘描边、贴纸式小图标"
-  background_visual_language: "温馨房间或窗边远景，边缘放家具和绿植，中心简洁"
-  ui_translation:
-    panel: "布艺/纸质圆角卡，卡片之间保持宽松呼吸感"
-    panel_base_style_hint: "米白纸卡或布艺圆角卡底，浅木/布边、柔软手绘描边和低饱和家居感；可联想猫爪压痕、纸箱胶带、花朵贴边，但猫、家具、料理和钓鱼小物不作为基础主体或局部装饰来源"
-    state: "selected 用暖橙描边+猫爪；locked 用小门牌；warning 用柔和红棕"
-    text: "标题圆润可爱，正文深灰，副文浅棕"
-    accent: "猫爪、花朵、纸箱、咖啡杯、沙发、窗帘、小鱼。装饰应具有功能或世界观语义，避免每张卡都堆强装饰。"
-  forbidden_mistakes: "误判成高饱和儿童装修或真实家装软件"
-```
-
-## 09. 三角洲行动
+## 04. 三角洲行动
 
 ```yaml
 style_brief:
   name: "三角洲行动"
-  aliases: []
-  tags: ["tactical", "military", "shooter", "hud"]
+  aliases:
+    - "Delta Force"
+    - "三角洲行动手游"
+  tags:
+    - "战术射击"
+    - "搜打撤"
+    - "生存"
+    - "FPS"
+    - "多人联机"
+    - "军事写实"
   source:
-    checked: "https://www.taptap.cn/app/330259"
-    confidence: "high"
+    checked: "TapTap 页面：游戏名、搜打撤/生存/射击/动作标签，以及新一代战术射击、交战搜索撤离、24v24 海陆空载具协同、重火力破坏、随机事件、电影级剧情战役描述。"
+    confidence: high
   game_features:
-    type: "战术射击 / 搜打撤 / 军事"
-    core_gameplay: "现代战术小队、枪械、撤离、兵种协作和高信息密度战斗"
-  visual_identity: "现代战术军事 HUD"
-  genre_presentation: "把射击视觉化为专业军规终端、装备仓、战术地图、枪械参数和紧张但克制的信息系统。"
-  mood: "专业、紧张、硬核、冷静"
-  world_elements: "战术地图、军用装备、弹匣、编号、坐标、护甲、警戒条、补给箱"
-  colors: "深橄榄/枪灰作底；浅灰绿作信息；琥珀黄作选中/任务；红色只用于受伤/危险；蓝色用于友军/系统"
-  materials: "磨砂军用终端、碳纤维、旧金属、橡胶、半透明 HUD"
-  shape_language: "硬边、切角、网格线、短横条、编号标签、窄边框"
-  background_visual_language: "暗绿灰战术地图或仓库墙面，中央低纹理，边缘放装备箱与地图线"
+    type: "写实战术射击游戏"
+    core_gameplay: "搜打撤、多人战场、载具协同、场景破坏、剧情战役、随机事件"
+  visual_identity: "现代军事写实与高规格战术 UI 结合，强调危险、专业、压迫、装备可信度和战场信息控制。"
+  genre_presentation: "以真实战术语境包装多模式射击，不是夸张英雄射击，也不是玩具化军事。"
+  mood: "紧张、冷峻、专业、危险、硬核、电影化；情绪来自低饱和战场色、战术装备、烟尘、爆炸、夜视和信息化 HUD。"
+  world_elements: "特战队员、战术装备、撤离点、物资箱、海陆空载具、破坏场景、重火力、随机战场事件、战役任务。"
+  colors: "主色倾向军绿、沙褐、灰黑、铁灰、低饱和蓝；强调色多为战术橙、警示红、HUD 青绿；对比克制但关键状态强烈。"
+  materials: "写实军工材质；尼龙织物、凯夫拉、防弹板、磨砂金属、橡胶、泥沙、混凝土、烟雾和火光；边缘有磨损和战场脏污。"
+  shape_language: "硬边矩形、模块化装备块、斜切战术卡、网格、坐标线、扫描框、军工标签和危险警示条。"
+  background_visual_language: "背景适合战区废墟、港口、荒漠、工业设施、烟尘、夜战和远处载具轮廓；安全倾向是低饱和、强空间纵深、中心留出战术信息区。"
   ui_translation:
-    panel: "深色硬边面板+切角边框+网格底纹，小卡减少材质保留编号"
-    panel_base_style_hint: "深橄榄/枪灰磨砂终端卡底，硬边切角、窄金属边和克制网格线；可联想装备箱嵌片、坐标短线、军用编号条，但枪械、弹匣、护甲、警戒三角和战场地图不作为基础主体或局部装饰来源"
-    state: "selected 用琥珀黄边框+扫描线；locked 用金属锁/封条；warning 用红色高优先级"
-    text: "标题窄体硬朗，正文浅灰；小字不要依赖发光"
-    accent: "螺丝、军用编号、坐标线、弹孔、警戒三角、装备插槽。装饰应具有功能或世界观语义，避免每张卡都堆强装饰。"
-  forbidden_mistakes: "误判成赛博霓虹或泛科幻蓝 UI；不要过多发光"
+    panel: "面板系统偏军用终端和战术 HUD，大卡像任务档案、装备仓或地图面板，小卡像物资栏、战备槽、队伍状态；标签偏窄、硬、斜切，状态层强调威胁、撤离、品质、耐久、队友和资源风险。"
+    panel_base_style_hint: "深色军工塑料、磨砂金属、战术布料或旧终端底色，硬边矩形、斜切角、细网格线、低亮 HUD 光和厚重阴影；可选局部装饰可联想磨损边角、警示条纹、扫描线、坐标网格、战术贴片纹理片段，但具体角色、logo、徽章、状态标记、文字、可识别武器、具体世界观物件不作为基础主体或局部装饰来源。"
+    state: "状态反馈偏高风险战术信息，常见警示色、扫描框、品质色、血量护甲、倒计时、撤离提示和地图标记。"
+    text: "字体偏窄体、工业、无衬线、强可读；标题可大写化、压缩字宽，正文像战术终端信息。"
+    accent: "语义候选包括 HUD 青绿、战术橙、坐标网格、警示条、扫描框、装备仓、撤离标记、军工磨损。"
+  forbidden_mistakes: "不要误判成卡通吃鸡、科幻机甲射击、赛博朋克、英雄技能射击或普通丧尸生存。"
+  style_archetype: "现代军事写实战术射击"
+  archetype_shared_traits:
+    - "低饱和战场色"
+    - "硬边军工 UI"
+    - "装备和物资可信度"
+    - "战术信息优先"
+  specific_differentiators:
+    - "搜打撤风险感与大战场协同并存"
+    - "电影化战役和真实战术装备结合"
+    - "HUD 要专业克制，不应娱乐化"
+    - "重火力破坏提升战场压迫"
+  signature_semantics:
+    must_include:
+      - "现代战术军工质感"
+      - "搜打撤风险信息"
+      - "硬边 HUD 和坐标网格"
+      - "低饱和烟尘战场"
+    should_include:
+      - "装备仓和物资格语义"
+      - "警示条与扫描线"
+      - "载具协同远景"
+      - "磨损金属和战术布料"
+    should_reduce:
+      - "鲜艳卡通色"
+      - "夸张英雄技能光效"
+      - "圆润玩具按钮"
+      - "纯科幻蓝光界面"
+    must_avoid:
+      - "香肠派对式搞怪卡通"
+      - "赛博霓虹城市"
+      - "二次元角色中心"
+      - "直接照搬真实枪械型号、官方 logo 或部队徽章"
+  background_identity_anchors:
+    foreground_forbidden:
+      - "不可直接放置可识别干员、武器、军徽、官方 logo 或具体载具作为前景主体"
+    edge_or_corner_allowed:
+      - "警示条纹"
+      - "坐标网格"
+      - "磨损金属片"
+      - "战术织物纹理"
+    far_background_allowed:
+      - "战区废墟"
+      - "工业设施"
+      - "烟尘火光"
+      - "远处载具剪影"
+    center_safe_area_allowed:
+      - "低饱和烟雾"
+      - "暗色终端渐变"
+      - "弱网格和地图纹理"
+  anti_generic_guardrails:
+    - "必须有战术信息感，不能只做战争背景。"
+    - "军事写实要克制，不要赛博化。"
+    - "搜打撤需要风险和物资语义，不只是 FPS 枪战。"
+    - "UI 形状要硬朗，不要圆润卡通。"
+  visual_identity_test:
+    question: "如果去掉游戏名，这张背景是否仍能区别于同原型下的其他游戏？"
+    pass_condition: "仍能看出现代战术、搜打撤、军工 HUD、低饱和战场和高风险装备信息。"
 ```
 
-## 10. 明日方舟：终末地
+## 05. 明日方舟：终末地
 
 ```yaml
 style_brief:
@@ -596,7 +511,7 @@ style_brief:
   forbidden_mistakes: "误判成传统明日方舟医疗黑白 UI 或通用未来蓝"
 ```
 
-## 11. 我的世界：移动版
+## 06. 我的世界：移动版
 
 ```yaml
 style_brief:
@@ -626,7 +541,7 @@ style_brief:
   forbidden_mistakes: "误判成普通像素复古，必须保留体素方块和合成语义"
 ```
 
-## 12. 王者荣耀
+## 07. 王者荣耀
 
 ```yaml
 style_brief:
@@ -656,97 +571,7 @@ style_brief:
   forbidden_mistakes: "误判成泛蓝紫魔幻手游，需保留竞技和荣耀段位语义"
 ```
 
-## 13. 鸣潮
-
-```yaml
-style_brief:
-  name: "鸣潮"
-  aliases: []
-  tags: ["post-apocalyptic", "resonance", "anime", "open-world"]
-  source:
-    checked: "https://www.taptap.cn/app/234280"
-    confidence: "high"
-  game_features:
-    type: "开放世界 ARPG / 二次元"
-    core_gameplay: "末世后探索、共鸣能力、动作战斗与声骸收集"
-  visual_identity: "后启示录声波科幻二次元开放世界"
-  genre_presentation: "把动作开放世界视觉化为冷白黑灰、声波共振、断裂城市和高机动战斗界面。"
-  mood: "孤寂、清冷、锋利、探索"
-  world_elements: "共鸣、声波、残响、废墟、黑石、白色装甲、频谱线"
-  colors: "黑/白/灰作大基调；青蓝作共鸣和系统；少量红橙作危险；避免大面积紫粉"
-  materials: "冷白玻璃、黑灰金属、频谱 HUD、半透明能量层"
-  shape_language: "锐利切角、细线、波形曲线、留白与断裂边"
-  background_visual_language: "低饱和废墟/天空远景，中央浅灰或深灰安全区"
-  ui_translation:
-    panel: "冷白/黑灰半透明卡+青蓝细线，小卡极简"
-    panel_base_style_hint: "冷白/黑灰半透明玻璃卡底，锐利切角、青蓝细线和轻频谱断裂感；可联想波形边、碎片嵌片、坐标点，但声骸符号、废墟物件、黑石主体和大面积能量波不作为基础主体或局部装饰来源"
-    state: "selected 用青蓝频谱边；warning 用红橙故障条；disabled 去饱和"
-    text: "标题冷峻纤细，正文高对比黑白，避免大面积发光"
-    accent: "波形、频谱、碎片、黑石纹、坐标点、声骸符号。装饰应具有功能或世界观语义，避免每张卡都堆强装饰。"
-  forbidden_mistakes: "误判成通用赛博二次元或末世废土脏乱风"
-```
-
-## 14. Phigros
-
-```yaml
-style_brief:
-  name: "Phigros"
-  aliases: []
-  tags: ["rhythm", "minimal", "geometry", "music"]
-  source:
-    checked: "https://www.taptap.cn/app/165287"
-    confidence: "high"
-  game_features:
-    type: "音乐节奏 / 抽象"
-    core_gameplay: "动态判定线、谱面节奏和音乐章节体验"
-  visual_identity: "极简抽象几何音乐节奏"
-  genre_presentation: "把节奏游戏视觉化为线条、几何、速度、空白和音乐动势，而不是具象世界观。"
-  mood: "纯净、专注、律动、实验"
-  world_elements: "判定线、音符、几何块、波形、章节封面、节拍轨迹"
-  colors: "黑/白/深灰作底；高纯度单色作章节强调；青紫粉黄可按曲风变化；警示色极少用"
-  materials: "纯色面板、半透明玻璃、细线网格、轻粒子"
-  shape_language: "极简矩形、锐利线段、非对称动态构图"
-  background_visual_language: "大面积纯色/渐变，边缘少量线条和音符，中心绝对干净"
-  ui_translation:
-    panel: "面板极简，低边框或无边框，靠线条和间距建立层级"
-    panel_base_style_hint: "黑白/深灰纯净几何卡底，极细线框、锐利矩形和低密度透明层；可联想判定线片段、几何切片、轻节拍光点，但音符图形、章节封面、波形轨迹和粒子群不作为基础主体或局部装饰来源"
-    state: "selected 用细亮线/节拍脉冲；warning 用小红点，不大面积"
-    text: "标题可现代几何，正文极简高对比"
-    accent: "音符点、判定线、波形、几何碎片、节拍光点。装饰应具有功能或世界观语义，避免每张卡都堆强装饰。"
-  forbidden_mistakes: "误判成通用霓虹 EDM；需要保留克制极简和动态线条"
-```
-
-## 15. 杖剑传说
-
-```yaml
-style_brief:
-  name: "杖剑传说"
-  aliases: []
-  tags: ["idle-rpg", "isekai", "light-fantasy", "adventure"]
-  source:
-    checked: "https://www.taptap.cn/app/717836"
-    confidence: "high"
-  game_features:
-    type: "放置 RPG / 异世界冒险"
-    core_gameplay: "轻松放置成长、异世界探索、伙伴、圣兽与转职技能搭配"
-  visual_identity: "轻爽异世界放置冒险"
-  genre_presentation: "把异世界 RPG 视觉化为浮空岛、小木屋、地图迷雾、幻兽伙伴和不压迫的成长感。"
-  mood: "轻松、明亮、冒险、陪伴"
-  world_elements: "浮空岛、软床、小木屋、地图迷雾、圣兽、宝箱、剑与法杖"
-  colors: "暖白/浅黄作面板；木棕作结构；天空蓝/草绿作探索；金色作宝物；红色仅作战斗警示"
-  materials: "羊皮纸、浅木、软布、宝石小徽章、地图纸"
-  shape_language: "圆润厚卡、卷轴边、木牌、地图折角"
-  background_visual_language: "天空浮岛和小木屋远景，中央保持云雾留白"
-  ui_translation:
-    panel: "纸质/木质圆角面板，大卡可加地图纹，小卡保留宝箱角标"
-    panel_base_style_hint: "暖白羊皮纸或浅木冒险卡底，圆润厚卡、卷轴边和地图纸折痕感；可联想宝箱金属扣、地图针边、云朵纸角，但圣兽、剑杖、宝箱主体和浮空岛场景不作为基础主体或局部装饰来源"
-    state: "selected 用金色宝箱光或蓝色探索边；locked 用迷雾遮罩"
-    text: "标题冒险手写感，正文深棕清晰"
-    accent: "宝箱、云朵、法杖、短剑、地图针、羊、圣兽脚印。装饰应具有功能或世界观语义，避免每张卡都堆强装饰。"
-  forbidden_mistakes: "误判成硬核西幻暗黑或泛 RPG 蓝紫"
-```
-
-## 16. 原神
+## 08. 原神
 
 ```yaml
 style_brief:
@@ -776,1022 +601,773 @@ style_brief:
   forbidden_mistakes: "误判成通用二次元魔幻或高饱和手游"
 ```
 
-## 17. 洛克王国：世界
+## 09. 香肠派对
 
 ```yaml
 style_brief:
-  name: "洛克王国：世界"
-  aliases: []
-  tags: ["pet-collection", "magic", "open-world", "nostalgia"]
+  name: "香肠派对"
+  aliases:
+    - "Sausage Man"
+    - "香肠派对手游"
+  tags:
+    - "卡通射击"
+    - "吃鸡"
+    - "TPS"
+    - "多人联机"
+    - "搞怪派对"
+    - "竞技"
   source:
-    checked: "https://www.taptap.cn/app/188212"
-    confidence: "high"
+    checked: "TapTap 页面：游戏名、截图入口、射击/吃鸡/卡通/TPS/多人联机标签，以及“搞怪魔性、内容丰富且手感出众的卡通射击派对游戏”描述。"
+    confidence: high
   game_features:
-    type: "精灵收集 / 开放世界 / 社交"
-    core_gameplay: "精灵收集对战、开放世界探索、魔法学院与自由社交"
-  visual_identity: "明亮童年魔法精灵大世界"
-  genre_presentation: "把精灵收集视觉化为魔法学院、精灵伙伴、孵蛋、奇景和轻快社交。"
-  mood: "明亮、童趣、怀旧、轻快"
-  world_elements: "精灵球/捕捉器、魔法书、学院、新生、孵蛋、奇景、菜园、伙伴羁绊"
-  colors: "天空蓝/奶油白作底；草绿作探索；金色作奖励；紫蓝作魔法；红色仅作危险"
-  materials: "魔法书纸、圆润玻璃、糖果色徽章、浅木/石板"
-  shape_language: "圆润厚卡、学院徽章、书页折角、星星魔法线"
-  background_visual_language: "魔法学院或草地远景，中心清爽，边缘放精灵脚印和书页"
+    type: "卡通派对射击竞技游戏"
+    core_gameplay: "吃鸡、搜打撤、多人竞技、团队合作、活动玩法"
+  visual_identity: "以香肠人身体比例为核心识别的荒诞卡通射击风，军事竞技被软化成玩具化、派对化和整蛊化体验。"
+  genre_presentation: "把传统战术射击转译成低门槛、强娱乐、强角色记忆点的卡通战场。"
+  mood: "搞怪、轻松、热闹、竞技、魔性；情绪来自圆柱角色、夸张表情、玩具枪械、亮色地图和派对式道具。"
+  world_elements: "肠岛、香肠人、玩具化武器、载具、机甲、赛季主题、摸金撤离、怪物、补给、夸张战备物资。"
+  colors: "整体高饱和、高明度，常见蓝天草地、糖果色建筑、鲜亮服装和高对比赛季色；强调色跳脱，服务搞怪识别和竞技反馈。"
+  materials: "半写实卡通材质；塑料、橡胶、软糖、亮面金属、玩具武器感明显；高光干净，阴影柔和，边缘圆滑。"
+  shape_language: "圆柱、胶囊、泡泡、软边矩形、厚描边、夸张比例；装饰母题偏贴纸、徽章、补给箱、玩具零件和派对符号。"
+  background_visual_language: "背景可采用明亮岛屿、竞技场、赛季主题空间和玩具化战场；安全倾向是色块清晰、冲突轻松、危险元素被卡通化。"
   ui_translation:
-    panel: "书页卡+圆润玻璃按钮，大卡可加学院徽章，小卡只放精灵脚印"
-    panel_base_style_hint: "天空蓝/奶油白书页或圆润玻璃卡底，厚圆角、学院徽章式边框和轻魔法星线；可联想书签边、蛋壳小片、星尘线，但精灵、捕捉器、学院徽章主体和蝴蝶结不作为基础主体或局部装饰来源"
-    state: "selected 用金色星星描边；locked 用书锁；warning 用红色感叹号"
-    text: "标题圆润魔法感，正文深蓝灰清晰"
-    accent: "魔法星、精灵脚印、书签、蛋壳、学院徽章、蝴蝶结。装饰应具有功能或世界观语义，避免每张卡都堆强装饰。"
-  forbidden_mistakes: "误判成冷蓝仙侠或低龄宠物乐园；要保留学院与精灵收集"
+    panel: "面板偏厚实圆角、亮色卡片、贴纸化标签和玩具按钮；状态层常用大图标、徽章、赛季标识、红点和夸张动效语义；内容组合层强调热闹、活动感和易读性。"
+    panel_base_style_hint: "亮面塑料、软胶或玩具包装感底色，圆润厚边、轻快描边、软阴影与弹性质感；可选局部装饰可联想贴纸折角、胶囊轮廓、泡泡高光、软塑料纹理片段，但具体角色、logo、徽章、状态标记、文字、可识别道具、具体世界观物件不作为基础主体或局部装饰来源。"
+    state: "状态反馈偏夸张和即时，常见弹跳、闪光、贴纸章、彩色描边、任务奖励爆点。"
+    text: "字体偏粗圆、活泼、游戏综艺感；标题可有厚描边、渐变和阴影，正文保持清晰友好。"
+    accent: "语义候选包括胶囊轮廓、派对贴纸、玩具补给、亮色赛季光效、软塑料高光、夸张警示符号。"
+  forbidden_mistakes: "不要误判成严肃军武吃鸡、硬核战术射击、低龄纯儿童卡通、普通糖果休闲或二次元射击。"
+  style_archetype: "搞怪卡通竞技射击"
+  archetype_shared_traits:
+    - "军事题材被玩具化"
+    - "高饱和色彩与圆润造型"
+    - "强贴纸化 UI 和派对反馈"
+    - "危险感被幽默感抵消"
+  specific_differentiators:
+    - "香肠人胶囊身体是核心识别"
+    - "射击竞技与整蛊派对并存"
+    - "赛季主题可以强变体但底层仍保持软胶卡通"
+    - "武器和载具更像玩具而非真实装备"
+  signature_semantics:
+    must_include:
+      - "圆润胶囊化角色语义"
+      - "搞怪派对射击气质"
+      - "亮色玩具化战场"
+      - "贴纸化 UI 反馈"
+    should_include:
+      - "软塑料高光"
+      - "夸张补给与赛季感"
+      - "玩具武器轮廓"
+      - "轻松竞技氛围"
+    should_reduce:
+      - "真实枪械压迫感"
+      - "暗色军事写实"
+      - "过细科技线框"
+      - "严肃血腥表现"
+    must_avoid:
+      - "写实战争废墟"
+      - "冷硬特种兵 UI"
+      - "成人向血腥暴力"
+      - "直接照搬香肠角色或 logo"
+  background_identity_anchors:
+    foreground_forbidden:
+      - "不可直接放置香肠人主角、官方 logo、赛季徽章或可识别武器作为前景主体"
+    edge_or_corner_allowed:
+      - "抽象胶囊边角"
+      - "贴纸折角"
+      - "玩具包装纹理"
+      - "泡泡高光"
+    far_background_allowed:
+      - "卡通岛屿"
+      - "明亮竞技场"
+      - "玩具化建筑剪影"
+      - "轻松赛季主题空间"
+    center_safe_area_allowed:
+      - "清亮渐变"
+      - "低对比云朵或草地色块"
+      - "软塑料浅纹理"
+  anti_generic_guardrails:
+    - "必须同时保留射击竞技和搞怪派对感。"
+    - "卡通不等于幼儿化，要保留竞技节奏。"
+    - "武器元素应玩具化，不能转向真实军武。"
+    - "亮色背景不能变成普通休闲糖果风。"
+  visual_identity_test:
+    question: "如果去掉游戏名，这张背景是否仍能区别于同原型下的其他游戏？"
+    pass_condition: "仍能看出胶囊香肠式搞怪射击、玩具化战场、贴纸 UI 和派对竞技气质。"
 ```
 
-## 18. 蛋仔派对
+## 10. 解压泡泡
 
 ```yaml
 style_brief:
-  name: "蛋仔派对"
-  aliases: []
-  tags: ["party", "toy", "cute", "ugc"]
+  name: "解压泡泡"
+  aliases:
+    - "解压泡泡测试"
+  tags:
+    - "休闲"
+    - "解压"
+    - "泡泡"
+    - "小游戏"
+    - "轻量"
   source:
-    checked: "https://www.taptap.cn/app/206776"
-    confidence: "high"
+    checked: "TapTap 页面：游戏名、测试状态、休闲标签、上线日期 2026-05-16，以及“一款很有趣的休闲解压小游戏”描述。"
+    confidence: medium
   game_features:
-    type: "派对 / 休闲竞技 / UGC"
-    core_gameplay: "多人闯关、圆滚角色、派对地图与 UGC 创作"
-  visual_identity: "糖果玩具体圆滚派对竞技"
-  genre_presentation: "把派对竞技视觉化为软塑料玩具、糖果色关卡、圆形角色和强社交表情。"
-  mood: "欢乐、闹腾、可爱、竞技"
-  world_elements: "蛋仔、弹簧、障碍、糖果、盲盒、游乐场、表情贴纸"
-  colors: "高明度蓝粉黄作主视觉；白色作面板；紫/橙作活动；红色只作失败/危险"
-  materials: "亮面软塑料、糖果胶、贴纸、泡泡玻璃"
-  shape_language: "超圆润、厚块面、充气感、胶囊按钮"
-  background_visual_language: "游乐场或玩具盒边缘，中央大面积浅色安全区"
+    type: "休闲解压小游戏"
+    core_gameplay: "点击、消除、触发泡泡反馈、轻量关卡体验"
+  visual_identity: "以泡泡、柔软、弹性和即时反馈为核心的轻休闲视觉，强调无压力、可爱和连续释放感。"
+  genre_presentation: "不靠复杂世界观，而靠触感联想、明快色彩和简单反馈建立可玩性。"
+  mood: "轻松、舒缓、清爽、愉快、低负担；情绪来自圆形泡泡、柔和渐变、弹性形变和清脆反馈联想。"
+  world_elements: "泡泡、气泡群、软糖质感、清透液体、轻量关卡、简单障碍、奖励反馈。"
+  colors: "倾向浅亮、低压、糖果色和清透色；常见粉、蓝、紫、薄荷绿、奶白；对比柔和，强调干净和治愈。"
+  materials: "偏卡通扁平加轻 3D 质感；透明泡泡、软胶、果冻、玻璃高光、水润渐变；阴影轻，边缘圆滑。"
+  shape_language: "圆形、椭圆、泡泡簇、软边矩形、漂浮小粒子；重复母题是圆点、气泡、高光弧线和轻弹性曲线。"
+  background_visual_language: "背景适合清爽浅色、柔和渐变、稀疏气泡和低对比纹理；安全倾向是不抢主体、保持干净、避免复杂叙事。"
   ui_translation:
-    panel: "圆鼓鼓面板+软塑料高光，小卡用胶囊形态"
-    panel_base_style_hint: "白底亮面软塑料或糖果胶卡底，超圆润厚块面、泡泡高光和胶囊边；可联想盲盒贴边、彩带色块、软弹小凸起，但蛋仔表情、障碍、弹簧和盲盒主体不作为基础主体或局部装饰来源"
-    state: "selected 用彩虹描边或弹跳光；locked 用盲盒锁；warning 红色障碍标记"
-    text: "标题可胖圆体，正文深色高对比"
-    accent: "糖豆、星星、贴纸、弹簧、盲盒、彩带、表情。装饰应具有功能或世界观语义，避免每张卡都堆强装饰。"
-  forbidden_mistakes: "误判成普通儿童乐园；要保留竞技闯关和盲盒玩具质感"
+    panel: "面板偏轻薄圆角、半透明或果冻卡片，小卡像软糖贴片，标签像圆润气泡，状态层以弹出、闪光、连击和奖励粒子表达。"
+    panel_base_style_hint: "半透明泡泡、果冻软胶或浅色磨砂底色，圆润无锐角边框、柔和内高光、轻浮阴影；可选局部装饰可联想气泡弧线、果冻折光、软糖贴片、圆点纹理片段，但具体角色、logo、徽章、状态标记、文字、可识别道具、具体世界观物件不作为基础主体或局部装饰来源。"
+    state: "状态反馈强调释放和满足感，适合泡泡破裂、轻闪、粒子散开、连击数字和柔和震动语义。"
+    text: "字体偏圆润、亲切、轻量；标题可有软描边或果冻高光，正文简单清晰。"
+    accent: "语义候选包括泡泡高光、果冻折射、软糖圆角、清透水感、舒缓粒子。"
+  forbidden_mistakes: "不要误判成复杂三消、儿童教育、海洋冒险、医疗清洁或重度卡通经营。"
+  style_archetype: "清爽泡泡解压休闲"
+  archetype_shared_traits:
+    - "圆形重复带来触感暗示"
+    - "浅色渐变降低压力"
+    - "反馈比叙事更重要"
+    - "材质柔软透明"
+  specific_differentiators:
+    - "核心是解压反馈而非策略消除"
+    - "泡泡语义应保持轻盈清透"
+    - "画面不宜过度堆叠系统感"
+    - "触感想象比角色识别更重要"
+  signature_semantics:
+    must_include:
+      - "泡泡圆形母题"
+      - "清透柔软质感"
+      - "轻松低压氛围"
+      - "即时解压反馈"
+    should_include:
+      - "浅色糖果渐变"
+      - "圆润软边 UI"
+      - "轻微粒子和高光"
+      - "果冻或水润联想"
+    should_reduce:
+      - "复杂纹理"
+      - "强对抗色"
+      - "厚重金属边"
+      - "暗黑背景"
+    must_avoid:
+      - "写实污渍清洁风"
+      - "硬核消除棋盘风"
+      - "恐怖黏液感"
+      - "直接照搬 TapTap 截图里的具体图标或 logo"
+  background_identity_anchors:
+    foreground_forbidden:
+      - "不可直接放置可识别 logo、关卡图标或特定截图 UI 作为前景主体"
+    edge_or_corner_allowed:
+      - "气泡群"
+      - "果冻高光弧"
+      - "浅色圆点"
+      - "软糖贴片"
+    far_background_allowed:
+      - "淡色渐变"
+      - "漂浮泡泡"
+      - "轻量抽象空间"
+      - "低对比液体纹理"
+    center_safe_area_allowed:
+      - "浅蓝、浅粉或奶白清爽留白"
+      - "稀疏气泡"
+      - "柔和光斑"
+  anti_generic_guardrails:
+    - "必须突出泡泡触感和解压反馈，不能只做普通休闲按钮。"
+    - "画面要轻，不要堆满活动运营感。"
+    - "透明和柔软是关键，不要做成硬塑料玩具。"
+    - "色彩应舒缓，避免高压霓虹。"
+  visual_identity_test:
+    question: "如果去掉游戏名，这张背景是否仍能区别于同原型下的其他游戏？"
+    pass_condition: "仍能看出泡泡、清透、软弹、舒缓解压，而不是普通三消或泛休闲糖果背景。"
 ```
 
-## 19. 鬼谷八荒
+## 11. 伊洛纳
 
 ```yaml
 style_brief:
-  name: "鬼谷八荒"
-  aliases: []
-  tags: ["xianxia", "ink", "cultivation", "sandbox"]
+  name: "伊洛纳"
+  aliases:
+    - "Elona"
+    - "伊洛纳手游"
+  tags:
+    - "像素"
+    - "开放世界"
+    - "高自由度"
+    - "角色扮演"
+    - "回合制"
+    - "冒险"
   source:
-    checked: "https://www.taptap.cn/app/700558"
-    confidence: "high"
+    checked: "TapTap 页面：游戏名、角色扮演/开放世界/像素/高自由度/冒险/回合制标签，以及高自由度、高难度、以太风异变世界描述。"
+    confidence: high
   game_features:
-    type: "修仙 / 沙盒 / 角色扮演"
-    core_gameplay: "开放修仙、宗门、机缘、功法、境界成长与随机事件"
-  visual_identity: "东方水墨修仙沙盒"
-  genre_presentation: "把修仙沙盒视觉化为山海卷轴、法阵、丹炉、宗门令牌和命运事件。"
-  mood: "玄妙、苍茫、修行、古朴"
-  world_elements: "山海、云雾、八卦、丹炉、符箓、宗门、功法卷轴、灵石"
-  colors: "米黄宣纸作面板；墨黑作文字；青绿/玉色作灵力；朱砂作印章和重点；暗红只作危机"
-  materials: "宣纸、墨迹、古铜、玉石、卷轴、石碑"
-  shape_language: "水墨边、卷轴角、篆刻印章、圆形法阵"
-  background_visual_language: "水墨山峦和云雾远景，中央淡宣纸留白"
+    type: "像素开放世界 Roguelike RPG"
+    core_gameplay: "自由探索、角色养成、地下城冒险、职业种族搭配、生活行为和随机事件"
+  visual_identity: "复古像素 RPG 与荒诞高自由度世界结合，视觉不追求华丽，而强调密集信息、奇妙事件和老派冒险质感。"
+  genre_presentation: "以像素格子承载复杂开放世界，用粗粝、低分辨率和高信息密度表达自由人生。"
+  mood: "奇异、自由、复古、混乱、冒险、略带荒诞；情绪来自像素地图、地下城、怪物、职业符号和随机生活细节。"
+  world_elements: "以太风、异变世界、地面城镇、地下城、怪物、职业、种族、钢琴家、种田钓鱼、自由人生。"
+  colors: "像素色板倾向中高饱和但受限，常见草地绿、土黄、石灰、暗红、深蓝、木色；对比直接，明暗分块清楚。"
+  materials: "低分辨率像素材质；石块、泥土、木板、布料、金属和魔法效果被压缩成色块与少量高光；边缘锯齿是风格的一部分。"
+  shape_language: "方格、瓦片、像素边、粗轮廓、小图标、模块化地图块；面板与图标强调老派 RPG 的清晰分类和功能密度。"
+  background_visual_language: "背景适合像素城镇、地牢、荒野、异变气候和瓦片地图语言；安全倾向是网格感明确、符号密集但主体区域可控。"
   ui_translation:
-    panel: "宣纸面板+墨线边+朱砂小印，小卡极简"
-    panel_base_style_hint: "米黄宣纸或淡墨卷轴卡底，水墨边、卷轴角和朱砂/玉色细节；可联想篆刻印边、符纸纤维、山形淡纹，但八卦法阵、丹炉、灵石和功法卷轴主体不作为基础主体或局部装饰来源"
-    state: "selected 用朱砂印/玉色光；warning 用暗红劫雷符，不作普通选中"
-    text: "标题可书法化，正文必须宋/黑体清晰"
-    accent: "符箓、八卦、印章、灵石、丹药、山形纹。装饰应具有功能或世界观语义，避免每张卡都堆强装饰。"
-  forbidden_mistakes: "误判成冷蓝仙侠或宫廷古风；要保留沙盒修行和道法语义"
+    panel: "面板系统偏复古 RPG 菜单、像素边框、深浅色块分区、物品格、状态条和小图标矩阵；大卡像背包/角色面板，小卡像道具格或任务条。"
+    panel_base_style_hint: "像素石板、旧纸、暗色木框或低分辨率色块底色，方正边框、阶梯状像素边、硬阴影和粗线分隔；可选局部装饰可联想像素折角、瓦片纹理、低清图案块、粗颗粒纹理片段，但具体角色、logo、徽章、状态标记、文字、可识别道具、具体世界观物件不作为基础主体或局部装饰来源。"
+    state: "状态反馈偏老派数值化，常见条形血量、像素图标、闪烁边框、颜色替换和小型提示。"
+    text: "字体应接近像素或低分辨率 RPG 字体；字重清晰，描边少，强调可读和复古。"
+    accent: "语义候选包括像素瓦片、以太异变色、地牢石纹、背包格、复古 RPG 状态条、魔法小光点。"
+  forbidden_mistakes: "不要误判成高清二次元 RPG、现代扁平像素、可爱农场像素、赛博像素或纯复古街机。"
+  style_archetype: "高自由度复古像素 RPG"
+  archetype_shared_traits:
+    - "低分辨率像素构成世界"
+    - "UI 信息密度高"
+    - "地图和道具以格子组织"
+    - "冒险感来自复杂系统而非华丽演出"
+  specific_differentiators:
+    - "以太风和异变世界带有奇诡感"
+    - "自由人生玩法让视觉包含战斗和生活杂糅"
+    - "像素粗粝感不能被过度精修"
+    - "荒诞职业与事件比标准勇者史诗更重要"
+  signature_semantics:
+    must_include:
+      - "像素瓦片质感"
+      - "复古 RPG 菜单气质"
+      - "自由冒险与混乱生活感"
+      - "以太异变世界语义"
+    should_include:
+      - "地牢和城镇格子"
+      - "背包物品格"
+      - "职业与种族符号感"
+      - "粗颗粒色块"
+    should_reduce:
+      - "高清渐变"
+      - "光滑 3D 材质"
+      - "大面积现代玻璃拟态"
+      - "过度可爱圆角"
+    must_avoid:
+      - "精致二次元立绘主导"
+      - "纯田园治愈像素"
+      - "现代手游卡片化过强"
+      - "直接照搬具体怪物、角色或 logo"
+  background_identity_anchors:
+    foreground_forbidden:
+      - "不可直接放置可识别角色、怪物、logo、具体道具或官方图标作为前景主体"
+    edge_or_corner_allowed:
+      - "像素瓦片边"
+      - "粗颗粒石纹"
+      - "物品格暗纹"
+      - "低分辨率折角"
+    far_background_allowed:
+      - "像素城镇"
+      - "地牢墙面"
+      - "荒野格子地图"
+      - "异变天空色块"
+    center_safe_area_allowed:
+      - "低对比像素地面"
+      - "旧纸或暗色格纹"
+      - "简化瓦片留白"
+  anti_generic_guardrails:
+    - "像素必须粗粝、有老派 RPG 信息感，不能变成高清伪像素。"
+    - "自由和混乱是识别点，不能只做普通地牢。"
+    - "UI 应像系统复杂的 RPG，而不是极简休闲。"
+    - "异变世界要保留奇诡，不要完全田园化。"
+  visual_identity_test:
+    question: "如果去掉游戏名，这张背景是否仍能区别于同原型下的其他游戏？"
+    pass_condition: "仍能看出复古像素、高自由度 RPG、以太异变、地牢与生活系统混杂的伊洛纳式自由冒险。"
 ```
 
-## 20. 异环
+## 12. 王牌竞速
 
 ```yaml
 style_brief:
-  name: "异环"
-  aliases: []
-  tags: ["urban-fantasy", "supernatural", "open-world", "anime"]
+  name: "王牌竞速"
+  aliases:
+    - "Ace Racer"
+  tags:
+    - "赛车"
+    - "竞速"
+    - "漂移"
+    - "高画质"
+    - "多人联机"
+    - "写实赛车"
   source:
-    checked: "https://www.taptap.cn/app/714119"
-    confidence: "high"
+    checked: "TapTap 页面：游戏名、赛车/高画质/竞速/多人联机/漂移/竞技标签，以及写实风格、授权真车、超现实概念车、王牌大招和实景赛道描述。"
+    confidence: high
   game_features:
-    type: "超自然都市 / 开放世界 RPG"
-    core_gameplay: "玩家作为异象猎人，在海特洛市接取委托、解决都市异象并体验生活经营"
-  visual_identity: "超自然都市怪谈开放世界 RPG"
-  genre_presentation: "把开放世界视觉化为现代都市、古董店委托、异象怪谈、轻喜剧角色与稍陌生的日常城市。"
-  mood: "都市、怪奇、轻喜剧、时髦"
-  world_elements: "海特洛市、异象猎人、古董店、电视头海獭、涂鸦滑板、委托档案、店铺经营"
-  colors: "夜色蓝灰/城市灰作底；霓虹粉青作异象；暖黄作店铺生活；红色仅作异常危险"
-  materials: "都市玻璃、霓虹招牌、档案纸、古董金属、街头贴纸"
-  shape_language: "现代圆角卡、街区标牌、档案夹、轻切角、贴纸叠层"
-  background_visual_language: "低对比城市街角/古董店远景，异象元素放边缘，中心干净"
+    type: "写实高画质技能赛车手游"
+    core_gameplay: "竞速、漂移、多人对战、赛车收集、车辆专属大招、实景赛道"
+  visual_identity: "真实汽车工业质感与超现实技能演出结合，强调豪车、速度节、城市与风景赛道的高光竞速体验。"
+  genre_presentation: "不是纯模拟赛车，而是写实外壳下带技能释放和幻想加速的爽感竞速。"
+  mood: "高速、炫酷、豪华、热血、都市、年轻化；情绪来自车漆反光、赛道光带、速度线、霓虹和大招特效。"
+  world_elements: "授权真车、超现实概念车、速度节、西湖、天门山、洪崖洞、全球风光、漂移、大招、豪华超跑。"
+  colors: "常见深色车体与高亮霓虹对比，蓝紫、橙红、金属银、赛道白线、城市夜景光；高对比、高亮点，强调速度和高级感。"
+  materials: "写实 PBR 质感明显；车漆、碳纤维、玻璃、镀铬、湿地反光、柏油路、霓虹光带；高光锐利，反射丰富。"
+  shape_language: "流线型、低趴、锐角、空气动力学曲线、仪表盘弧线、速度箭头、赛道切线和科技卡片。"
+  background_visual_language: "背景适合城市夜景、山路、景区赛道、湿地反光和速度模糊；安全倾向是强透视和光带引导，但避免遮挡信息。"
   ui_translation:
-    panel: "半透明城市卡+档案夹标签，局部霓虹但不过亮"
-    panel_base_style_hint: "浅灰白 / 淡档案纸或低透明城市玻璃底，现代圆角卡和轻档案夹边；可联想异常封条、委托标签角、街头贴纸边角，但霓虹不过亮，电视头、交通牌、涂鸦堆、角色和机械 HUD 不作为基础主体或局部装饰来源"
-    state: "selected 用霓虹青粉边；warning 用异常红封条；locked 用档案锁"
-    text: "标题现代都市感，正文深浅对比清楚"
-    accent: "委托单、古董标签、涂鸦、电视头图标、交通牌、异常封条。装饰应具有功能或世界观语义，避免每张卡都堆强装饰。"
-  forbidden_mistakes: "误判成赛博朋克或纯二次元都市；需保留超自然怪谈和生活经营"
+    panel: "面板偏现代车机和赛事转播语言，大卡像赛车展台或赛事卡，小卡像车辆参数卡，标签偏锐角、斜切和发光条，状态层强调速度、稀有度、技能充能和赛事奖励。"
+    panel_base_style_hint: "深色磨砂金属、碳纤维、玻璃或车漆反光底色，斜切边框、锐利细线、冷色辉光和高速投影；可选局部装饰可联想赛道切线、碳纤维纹理、光带折角、仪表弧线片段，但具体角色、logo、徽章、状态标记、文字、可识别车辆、具体世界观物件不作为基础主体或局部装饰来源。"
+    state: "状态反馈偏赛事化和能量化，常见充能条、速度光带、氮气感、排名闪光、技能释放特效。"
+    text: "字体偏现代无衬线、斜体、粗窄、速度感；标题可金属渐变和发光，数字要像仪表读数。"
+    accent: "语义候选包括速度光带、碳纤维、车漆高光、赛道箭头、仪表盘、霓虹城市、赛事编号。"
+  forbidden_mistakes: "不要误判成纯写实模拟赛车、卡通漂移、复古街机赛车、赛博朋克都市或普通豪车广告。"
+  style_archetype: "写实幻想技能赛车"
+  archetype_shared_traits:
+    - "真实车体材质"
+    - "速度光效强化反馈"
+    - "现代赛事 UI"
+    - "赛道透视和动感模糊"
+  specific_differentiators:
+    - "真车与超现实概念车并置"
+    - "车辆大招是核心视觉差异"
+    - "国内外实景赛道带旅行感"
+    - "豪车质感与手游爽感并存"
+  signature_semantics:
+    must_include:
+      - "写实车漆和金属质感"
+      - "高速光带和漂移动势"
+      - "现代赛事科技 UI"
+      - "超现实技能释放语义"
+    should_include:
+      - "霓虹城市或景区赛道"
+      - "碳纤维纹理"
+      - "仪表盘弧线"
+      - "湿地或车身反射"
+    should_reduce:
+      - "纯卡通轮廓"
+      - "低清贴图"
+      - "厚重军武 UI"
+      - "过度可爱装饰"
+    must_avoid:
+      - "儿童玩具赛车"
+      - "硬核模拟器冷界面"
+      - "全赛博无真实车感"
+      - "直接照搬授权车辆、logo 或赛事标识"
+  background_identity_anchors:
+    foreground_forbidden:
+      - "不可直接放置可识别授权车辆、车标、官方 logo 或赛事徽章作为前景主体"
+    edge_or_corner_allowed:
+      - "碳纤维纹理"
+      - "斜切光带"
+      - "赛道线片段"
+      - "仪表弧线"
+    far_background_allowed:
+      - "城市夜景"
+      - "山路赛道"
+      - "景区道路"
+      - "霓虹灯带和速度模糊"
+    center_safe_area_allowed:
+      - "暗色磨砂渐变"
+      - "低对比路面纹理"
+      - "柔化光带透视"
+  anti_generic_guardrails:
+    - "必须保留写实车体高级感，不能变成卡通赛车。"
+    - "必须有技能竞速的能量感，不能只做模拟器。"
+    - "速度节和赛事感要强于普通汽车广告。"
+    - "实景赛道语义可出现，但不要喧宾夺主。"
+  visual_identity_test:
+    question: "如果去掉游戏名，这张背景是否仍能区别于同原型下的其他游戏？"
+    pass_condition: "仍能看出写实豪车、技能大招、速度节赛事、霓虹光带和高画质漂移竞速。"
 ```
 
-## 21. 最强蜗牛
+## 13. 绝尘漂移
 
 ```yaml
 style_brief:
-  name: "最强蜗牛"
-  aliases: []
-  tags: ["idle", "absurd", "scrapbook", "collection"]
+  name: "绝尘漂移"
+  aliases:
+    - "绝尘漂移"
+  tags:
+    - "赛车"
+    - "漂移"
+    - "竖屏"
+    - "快节奏"
+    - "多人联机"
+    - "休闲竞技"
   source:
-    checked: "https://www.taptap.cn/app/187376"
-    confidence: "high"
+    checked: "TapTap 页面：游戏名、赛车/竞速/漂移/DIY/多人联机/竖屏/休闲标签，以及真实玩家对战、超过 60 辆车型、多天气、近道、加速带、首款竖屏快节奏赛车对战描述。"
+    confidence: high
   game_features:
-    type: "放置 / 收集 / 荒诞剧情"
-    core_gameplay: "蜗牛进化、收集贵重品、探索和无厘头叙事"
-  visual_identity: "荒诞手账式蜗牛放置收集"
-  genre_presentation: "把放置收集视觉化为蜗牛基地、伪科学档案、博物馆藏品和密集梗图式幽默。"
-  mood: "荒诞、搞笑、猎奇、收集癖"
-  world_elements: "蜗牛壳、贵重品、基因、抽屉、档案、便签、地球仪、恶搞小物"
-  colors: "旧纸黄/木棕作底；红蓝印章作重点；绿色作成长/基因；紫金作稀有；红色作危险/吐槽"
-  materials: "旧纸、手账贴纸、木桌、档案夹、复古塑料、瓶罐"
-  shape_language: "手作不规则、贴纸堆叠、圆角纸片、旧票据"
-  background_visual_language: "桌面手账/收藏柜边缘，中央留出浅纸面"
+    type: "竖屏快节奏漂移赛车对战游戏"
+    core_gameplay: "短局漂移、多人对战、车辆收集升级、单人和组队挑战、天气与近道赛道"
+  visual_identity: "轻量化赛车竞技风，强调竖屏、快节奏、漂移烟尘和车辆收集，介于写实赛车和休闲对战之间。"
+  genre_presentation: "把赛车对战压缩成移动端短局体验，用清晰赛道、漂移反馈和升级收集支撑循环。"
+  mood: "爽快、紧凑、竞技、轻休闲、尘土飞扬；情绪来自漂移烟雾、加速带、赛道弯道和快速排名变化。"
+  world_elements: "肌肉车、改装车、越野车、超跑、多天气赛道、近道、加速带、联赛、滚滚浓烟。"
+  colors: "倾向鲜明运动色和赛道环境色；车体色可高饱和，背景更自然；强调色常用于加速、排名、警示和奖励。"
+  materials: "半写实移动端赛车材质；车漆、轮胎、柏油、尘烟、雨雪天气、泥地和赛道道具；反光适中，整体比高端写实赛车更轻。"
+  shape_language: "竖向构图、赛道 S 弯、箭头、速度线、轮胎痕、烟尘云、斜切按钮和车辆卡片。"
+  background_visual_language: "背景适合竖屏赛道纵深、天气层次、弯道、近道和加速带；安全倾向是路径清晰、速度感强、信息不复杂。"
   ui_translation:
-    panel: "纸片堆叠卡+印章角标，大卡可放藏品阴影，小卡不要堆梗"
-    panel_base_style_hint: "旧纸黄手账纸片或木桌档案卡底，不规则圆角、贴纸叠层和复古印刷颗粒；可联想旧票边、红蓝印章痕、博物馆标签角，但蜗牛壳、贵重品、瓶罐和恶搞小物不作为基础主体或局部装饰来源"
-    state: "selected 用红蓝印章或金色藏品框；warning 用红色吐槽标"
-    text: "标题可手账粗体，正文黑棕清晰"
-    accent: "蜗牛壳、印章、便签、瓶盖、旧票、博物馆标签。装饰应具有功能或世界观语义，避免每张卡都堆强装饰。"
-  forbidden_mistakes: "误判成普通可爱动物或硬核科幻进化"
+    panel: "面板偏移动端竞技卡片，车辆卡、升级卡、联赛卡和挑战卡清晰分层；标签多用斜切、箭头、速度条，状态层强调排名、升级、车辆稀有度和漂移反馈。"
+    panel_base_style_hint: "运动塑料、轻金属、柏油纹理或车漆感底色，斜切轮廓、速度线边框、轻量阴影和清晰高光；可选局部装饰可联想轮胎痕、烟尘弧线、赛道箭头、加速光带片段，但具体角色、logo、徽章、状态标记、文字、可识别车辆、具体世界观物件不作为基础主体或局部装饰来源。"
+    state: "状态反馈强调短局爽感，常见漂移连击、加速亮光、排名跳变、车辆升级闪光和烟尘爆发。"
+    text: "字体偏粗、运动、易读，适合竖屏小空间；数字和排名可更强烈，标题可斜体或带速度感。"
+    accent: "语义候选包括轮胎痕、漂移烟尘、加速带、赛道箭头、车漆高光、天气粒子。"
+  forbidden_mistakes: "不要误判成王牌竞速式高端写实豪车、QQ 飞车式强卡通潮流、极限竞速模拟器或儿童玩具赛车。"
+  style_archetype: "竖屏轻量漂移竞技"
+  archetype_shared_traits:
+    - "短局快节奏"
+    - "漂移动作是主要视觉反馈"
+    - "车辆收集升级清晰"
+    - "UI 更轻量移动端化"
+  specific_differentiators:
+    - "竖屏构图是明显差异"
+    - "烟尘和轮胎痕比豪华光效更关键"
+    - "休闲竞技和真实玩家对战并重"
+    - "车型多样但不以授权豪车奢华为核心"
+  signature_semantics:
+    must_include:
+      - "竖屏赛道纵深"
+      - "漂移烟尘和轮胎痕"
+      - "轻量竞技 UI"
+      - "车辆收集升级感"
+    should_include:
+      - "加速带箭头"
+      - "多天气赛道"
+      - "短局排名反馈"
+      - "运动色块"
+    should_reduce:
+      - "过度豪车广告感"
+      - "复杂霓虹科技"
+      - "严肃模拟器仪表"
+      - "低龄玩具感"
+    must_avoid:
+      - "纯写实高端超跑大片"
+      - "强二次元赛车娘风"
+      - "横屏主机赛车构图"
+      - "直接照搬具体车辆、logo 或车牌"
+  background_identity_anchors:
+    foreground_forbidden:
+      - "不可直接放置可识别车辆、车牌、官方 logo 或联赛徽章作为前景主体"
+    edge_or_corner_allowed:
+      - "轮胎痕"
+      - "烟尘弧线"
+      - "赛道箭头"
+      - "轻金属折角"
+    far_background_allowed:
+      - "竖向赛道"
+      - "弯道远景"
+      - "天气粒子"
+      - "近道和加速带轮廓"
+    center_safe_area_allowed:
+      - "低对比柏油纹理"
+      - "柔化赛道透视"
+      - "淡烟尘留白"
+  anti_generic_guardrails:
+    - "必须强调竖屏短局，不要做成横屏大片。"
+    - "漂移烟尘是识别重点，不能只放速度光。"
+    - "休闲竞技要轻快，不能过度硬核模拟。"
+    - "车辆视觉可多样，但不要依赖具体车标。"
+  visual_identity_test:
+    question: "如果去掉游戏名，这张背景是否仍能区别于同原型下的其他游戏？"
+    pass_condition: "仍能看出竖屏、短局、漂移烟尘、车辆收集和轻量多人竞速，而非泛赛车背景。"
 ```
 
-## 22. 明日方舟
+## 14. 无限大
 
 ```yaml
 style_brief:
-  name: "明日方舟"
-  aliases: []
-  tags: ["arknights", "tactical", "industrial", "dystopia"]
+  name: "无限大"
+  aliases:
+    - "Project Mugen"
+  tags:
+    - "开放世界"
+    - "都市"
+    - "二次元"
+    - "角色扮演"
+    - "动作"
+    - "高自由度"
   source:
-    checked: "https://www.taptap.cn/app/70253"
-    confidence: "high"
+    checked: "TapTap 页面：游戏名、开放世界/角色扮演/高自由度/都市/二次元/动作/高画质/3D 标签，以及都市开放世界、商业中心、街巷角落、异常威胁、霓虹灯下烟火气、社交媒体和对策局描述。"
+    confidence: high
   game_features:
-    type: "策略塔防 / 二次元 / 末世科幻"
-    core_gameplay: "干员部署、感染者叙事、罗德岛制药和战术关卡"
-  visual_identity: "医疗工业末世策略 UI"
-  genre_presentation: "把塔防视觉化为制药公司终端、干员档案、灾害警报、黑白灰工业和战术网格。"
-  mood: "克制、严肃、专业、压抑"
-  world_elements: "罗德岛、感染、源石、医疗箱、干员档案、战术地图、警示标识"
-  colors: "黑白灰作主基调；青蓝作系统；橙黄作警示和选中；红色仅作危机/错误"
-  materials: "黑白工业终端、医疗档案纸、磨砂玻璃、橙色警示胶带"
-  shape_language: "硬边、切角、模块网格、编号、条形码"
-  background_visual_language: "暗灰工业墙/战术地图远景，中心低纹理"
+    type: "都市题材二次元开放世界 RPG"
+    core_gameplay: "城市探索、角色切换、动作冒险、伙伴团队、势力任务、都市日常与异常事件"
+  visual_identity: "高画质二次元都市开放世界，日常烟火气与异常危机并存，强调年轻、潮流、社交媒体和城市立体穿梭。"
+  genre_presentation: "把开放世界从自然幻想转向现代都市，用商业街、巷道、霓虹和奇人异事承载冒险。"
+  mood: "鲜活、潮流、自由、奇异、都市日常、轻冒险；情绪来自霓虹、街头招牌、社交界面、角色时尚和异常事件反差。"
+  world_elements: "新启、商业中心、隐秘街巷、对策局、巡卫署、犬魔社、蓝猫物流、社交媒体、网红、异常威胁、伙伴团队。"
+  colors: "倾向现代都市高彩度，白天清亮、夜晚霓虹；常见青蓝、品红、橙黄、黑白灰城市基底；冷暖对比活跃，强调潮流和生活感。"
+  materials: "二次元 3D 渲染与现代城市材质；玻璃幕墙、柏油、霓虹灯箱、金属栏杆、塑料招牌、电子屏和服装布料；质感干净但不纯写实。"
+  shape_language: "现代都市方块、广告牌、手机界面、弹窗、斜切贴纸、潮流图形、漫画式速度线和轻科技卡片。"
+  background_visual_language: "背景适合繁华商圈、天台、街巷、地铁口、霓虹夜景和生活化小店；安全倾向是都市密度高但留出清晰信息区。"
   ui_translation:
-    panel: "硬边黑白卡+橙色小条，卡片不要过度发光"
-    panel_base_style_hint: "黑白灰工业终端或医疗档案卡底，硬边切角、模块网格和橙色短条感；可联想条形码细线、档案夹边、警示胶带片，但罗德岛标识、干员档案头像、源石碎片和医疗十字不作为基础主体或局部装饰来源"
-    state: "selected 用橙黄短条/边框；warning 用红色危机，不作选中"
-    text: "标题冷峻，正文白/黑高对比，信息层级明确"
-    accent: "医疗十字、条形码、源石碎片、战术编号、警示线、档案夹。装饰应具有功能或世界观语义，避免每张卡都堆强装饰。"
-  forbidden_mistakes: "误判成泛科幻蓝或废土脏乱；要保留医疗工业和档案克制"
+    panel: "面板系统偏手机社交、都市服务 App 和轻科技终端混合；大卡像城市任务板或社交动态，小卡像角色身份卡、地点卡、任务贴片，状态层强调声望、势力、异常、社交热度和伙伴关系。"
+    panel_base_style_hint: "清爽玻璃、浅色电子屏、磨砂塑料或霓虹反光底色，现代圆角矩形、轻斜切、细线框、干净投影和局部发光；可选局部装饰可联想广告牌折角、社交弹窗边、霓虹线条、街头贴纸纹理片段，但具体角色、logo、徽章、状态标记、文字、可识别道具、具体世界观物件不作为基础主体或局部装饰来源。"
+    state: "状态反馈偏都市 App 化和潮流化，常见弹窗、点赞热度、任务标记、异常警报、地图定位和霓虹高亮。"
+    text: "字体偏现代无衬线、年轻、干净；标题可有潮流字形和局部霓虹，正文像手机 UI 信息。"
+    accent: "语义候选包括霓虹灯、社交媒体弹窗、城市定位、街头贴纸、电子屏、异常警报、势力任务。"
+  forbidden_mistakes: "不要误判成传统幻想开放世界、赛博朋克重工业、纯校园二次元、硬科幻都市或写实 GTA 风。"
+  style_archetype: "二次元现代都市开放世界"
+  archetype_shared_traits:
+    - "现代城市空间"
+    - "角色时尚和伙伴团队"
+    - "霓虹与日常烟火并存"
+    - "手机化 UI 信息"
+  specific_differentiators:
+    - "社交媒体和网红拯救世界是强识别"
+    - "日常生活与异常威胁交替"
+    - "城市势力带有轻怪诞幽默"
+    - "不是末世都市，而是鲜活繁华都市"
+  signature_semantics:
+    must_include:
+      - "现代都市开放世界"
+      - "二次元高画质角色语义"
+      - "霓虹与烟火气并存"
+      - "社交媒体和城市任务感"
+    should_include:
+      - "商业中心和街巷"
+      - "手机弹窗式 UI"
+      - "潮流贴纸"
+      - "异常警报反差"
+    should_reduce:
+      - "古典幻想纹样"
+      - "过重赛博脏污"
+      - "军事硬核 HUD"
+      - "纯校园粉色调"
+    must_avoid:
+      - "传统魔法大陆"
+      - "废土末世城市"
+      - "写实犯罪都市"
+      - "直接照搬角色、势力 logo 或具体招牌"
+  background_identity_anchors:
+    foreground_forbidden:
+      - "不可直接放置可识别角色、势力标志、官方 logo、具体招牌或 IP 道具作为前景主体"
+    edge_or_corner_allowed:
+      - "霓虹线条"
+      - "街头贴纸"
+      - "电子屏折角"
+      - "社交弹窗框"
+    far_background_allowed:
+      - "商业街"
+      - "天台城市线"
+      - "隐秘巷道"
+      - "霓虹夜景和生活小店"
+    center_safe_area_allowed:
+      - "浅色玻璃渐变"
+      - "虚化城市光斑"
+      - "低对比电子屏纹理"
+  anti_generic_guardrails:
+    - "必须有现代都市生活感，不要只做二次元角色背景。"
+    - "霓虹不能过度赛博废土，要保留烟火气。"
+    - "UI 应像城市 App 与任务终端混合，不是军工 HUD。"
+    - "异常威胁是反差点，不应吞没日常气质。"
+  visual_identity_test:
+    question: "如果去掉游戏名，这张背景是否仍能区别于同原型下的其他游戏？"
+    pass_condition: "仍能看出二次元都市开放世界、霓虹烟火、社交媒体、异常危机和潮流城市任务感。"
 ```
 
-## 23. 尘白禁区
+## 15. 代号：新生
 
 ```yaml
 style_brief:
-  name: "尘白禁区"
-  aliases: []
-  tags: ["sci-fi", "tactical", "shooter", "snow"]
+  name: "代号：新生"
+  aliases:
+    - "代号新生"
+  tags:
+    - "俯视角射击"
+    - "搜打撤"
+    - "多人联机"
+    - "末世"
+    - "小动物特工"
+    - "3D"
   source:
-    checked: "https://www.taptap.cn/app/222089"
-    confidence: "high"
+    checked: "TapTap 页面：游戏名、射击/俯视角/搜打撤/多人联机/3D/动作标签，以及小动物特工、风雪末世、价值物资撤离、末日庇护所、末班车和冰原描述。"
+    confidence: high
   game_features:
-    type: "科幻射击 / 二次元 / 动作"
-    core_gameplay: "队员协作、枪械射击、泰坦/灾变背景与基地系统"
-  visual_identity: "雪域战术科幻美少女射击"
-  genre_presentation: "把 TPS 视觉化为白灰冷色、战术装备、隔离区、枪械 HUD 和高洁净实验室质感。"
-  mood: "冷峻、紧张、清洁、战斗"
-  world_elements: "禁区、雪尘、枪械、战术服、实验室、数据终端、弹药、隔离门"
-  colors: "冷白/浅灰作面板；深灰作结构；冰蓝作系统；黄色作战术提示；红色只作伤害/警报"
-  materials: "冷白磨砂玻璃、枪灰金属、冰蓝 HUD、橡胶装备"
-  shape_language: "硬边圆角混合、切角、数据线、装备插槽"
-  background_visual_language: "冷白实验室或雪域禁区远景，中心不放高亮角色"
+    type: "俯视角动物特工搜打撤射击游戏"
+    core_gameplay: "组队探索、俯视角战斗、搜集物资、撤离、庇护所打造、末班车基地推进"
+  visual_identity: "冰雪末世与可爱小动物特工形成反差，既有搜打撤的谨慎和危险，也有毛茸茸角色与移动基地的温度。"
+  genre_presentation: "用俯视角和动物拟人降低硬核门槛，把撤离射击转译成寒冷世界里的小队生存冒险。"
+  mood: "寒冷、谨慎、可爱、坚韧、孤独中带温暖；情绪来自风雪、冰原、钢铁列车、火种、物资和小动物特工。"
+  world_elements: "末班车、无尽冰原、企业、军团、火种、移动钢铁基地、小动物特工、风雪末世、物资撤离、末日庇护所。"
+  colors: "整体偏冷，常见冰蓝、雪白、灰钢、暗青和低饱和棕；火种、警示灯和物资奖励可用暖橙形成生存希望感。"
+  materials: "半写实卡通 3D；雪、冰、旧钢铁、车厢、布料、背包、毛绒角色、木箱和煤火；材质带寒冷磨损，但不应过度写实残酷。"
+  shape_language: "俯视角地图块、圆润动物轮廓、战术装备小件、车厢模块、雪地脚印、箱体、轨道线和庇护所构件。"
+  background_visual_language: "背景适合冰原、风雪、列车基地、废弃设施、补给点和低能见度空间；安全倾向是冷色大气、边缘有生存设施线索，中心保持清晰。"
   ui_translation:
-    panel: "冷白半透明卡+灰色硬边，局部冰蓝线条"
-    panel_base_style_hint: "冷白磨砂玻璃或枪灰金属卡底，硬边圆角混合、冰蓝数据线和洁净装备槽感；可联想隔离封条边、弹匣槽片、雪粒淡边，但枪械、角色战术服、准星和实验室门体不作为基础主体或局部装饰来源"
-    state: "selected 用冰蓝描边；warning 用红色警报；locked 用隔离封条"
-    text: "标题窄体科技感，正文深灰/白高可读"
-    accent: "弹匣、十字准星、隔离线、雪粒、芯片、装备槽。装饰应具有功能或世界观语义，避免每张卡都堆强装饰。"
-  forbidden_mistakes: "误判成通用蓝白科幻医疗；需保留枪械战术和禁区冷感"
+    panel: "面板系统可结合移动基地终端、补给箱、车票、电台和寒地战术卡；大卡像车厢任务板或物资清单，小卡像补给格、动物特工状态卡，状态层强调撤离、温度、物资价值、风险和庇护所成长。"
+    panel_base_style_hint: "冷色旧钢、磨砂玻璃、雪覆金属或厚布料底色，圆角箱体边框、轻战术线、寒冷阴影和微弱暖光；可选局部装饰可联想雪痕折角、车厢铆钉纹理、冰晶线条、补给箱贴片片段，但具体角色、logo、徽章、状态标记、文字、可识别道具、具体世界观物件不作为基础主体或局部装饰来源。"
+    state: "状态反馈兼具搜打撤风险和温暖庇护所感，常见撤离提示、物资价值、寒冷警示、火种暖光、队友状态和补给完成反馈。"
+    text: "字体偏清晰无衬线，可带电台/车票/末世档案感；标题可略粗，避免过分可爱或过分军工。"
+    accent: "语义候选包括火种暖光、雪痕、车厢金属、补给箱、冰晶、撤离箭头、电台波形、小动物特工身份感。"
+  forbidden_mistakes: "不要误判成三角洲式硬核军事、明日之后式写实废土、纯动物治愈经营、冰雪童话或卡通塔防。"
+  style_archetype: "冰雪末世动物特工搜打撤"
+  archetype_shared_traits:
+    - "冷色末世环境"
+    - "物资撤离风险"
+    - "小队生存和基地成长"
+    - "可爱角色缓和残酷题材"
+  specific_differentiators:
+    - "小动物特工是核心反差"
+    - "末班车移动基地提供温暖识别"
+    - "冰原而非沙漠或城市废土"
+    - "俯视角让战术更像小队棋盘"
+  signature_semantics:
+    must_include:
+      - "冰雪末世冷色氛围"
+      - "小动物特工反差"
+      - "末班车移动基地语义"
+      - "搜打撤物资和撤离风险"
+    should_include:
+      - "火种暖光"
+      - "补给箱和物资清单"
+      - "风雪粒子"
+      - "车厢或轨道线索"
+    should_reduce:
+      - "纯硬核军武"
+      - "过度血腥废土"
+      - "糖果动物乐园"
+      - "高饱和热带色"
+    must_avoid:
+      - "三角洲式现代特战写实"
+      - "纯冰雪童话"
+      - "丧尸恐怖血污"
+      - "直接照搬动物角色、末班车 logo 或具体物资图标"
+  background_identity_anchors:
+    foreground_forbidden:
+      - "不可直接放置可识别小动物特工、官方 logo、具体物资、车厢标识或阵营标志作为前景主体"
+    edge_or_corner_allowed:
+      - "雪痕"
+      - "冰晶线条"
+      - "旧钢铆钉"
+      - "补给箱贴片纹理"
+    far_background_allowed:
+      - "冰原"
+      - "风雪废弃设施"
+      - "远处列车基地"
+      - "暖光车厢剪影"
+    center_safe_area_allowed:
+      - "冷色雪雾"
+      - "低对比冰面纹理"
+      - "微弱暖光渐变"
+  anti_generic_guardrails:
+    - "必须同时有寒冷末世和可爱动物特工，缺一会变成泛废土或泛萌宠。"
+    - "搜打撤风险要存在，但不要变成硬核军事压迫。"
+    - "末班车和火种提供温度，不能全画成绝望冰原。"
+    - "俯视角信息感应比 FPS 枪械特写更重要。"
+  visual_identity_test:
+    question: "如果去掉游戏名，这张背景是否仍能区别于同原型下的其他游戏？"
+    pass_condition: "仍能看出冰雪末世、动物特工、末班车火种、俯视角搜打撤和温暖庇护所反差。"
 ```
 
-## 24. 球球旅行记
+## 16. 怪物猎人：旅人
 
 ```yaml
 style_brief:
-  name: "球球旅行记"
-  aliases: []
-  tags: ["cooking", "time-management", "travel", "airplane"]
+  name: "怪物猎人：旅人"
+  aliases:
+    - "怪猎旅人"
+    - "Monster Hunter Outlanders"
+    - "怪物猎人旅人"
+  tags:
+    - "ARPG"
+    - "动作"
+    - "冒险"
+    - "多人联机"
+    - "共斗"
+    - "开放世界狩猎"
+    - "怪物猎人 IP"
   source:
-    checked: "https://www.taptap.cn/app/726060"
-    confidence: "high"
+    checked: "TapTap 页面：游戏名、ARPG/冒险/多人联机/社交/共斗/动作标签，以及“卡普空正版授权、腾讯天美研发、保留经典武器和狩猎体验、全新世界观、冒险家、随从和独占新怪物”描述；补充参考官网关于埃索岛、随从、融光种火龙等公开设定。"
+    confidence: high
   game_features:
-    type: "烹饪 / 时间管理 / 旅行"
-    core_gameplay: "飞机厨房服务、乘客餐食、环球城市关卡和设备升级"
-  visual_identity: "环球航班烹饪时间管理"
-  genre_presentation: "把烹饪经营视觉化为空中厨房、托盘、城市旅行、快节奏服务和食物满足感。"
-  mood: "明快、忙碌、治愈、旅行感"
-  world_elements: "飞机舷窗、餐车、托盘、汉堡牛排、城市明信片、登机牌、厨房设备"
-  colors: "天空蓝/云白作底；餐食暖黄/橙作奖励；深蓝作航空信息；绿色作完成；红色仅作超时"
-  materials: "干净塑料托盘、航空蓝玻璃、菜单纸卡、不锈钢厨房面"
-  shape_language: "圆角卡、登机牌切角、托盘格、清爽图标"
-  background_visual_language: "云层和机舱厨房远景，边缘放食物/城市明信片，中心清洁"
+    type: "开放世界共斗狩猎动作手游"
+    core_gameplay: "探索生态区域、追踪大型怪物、使用经典武器狩猎、多人共斗、采集素材、随从协作、营地与移动端探索"
+  visual_identity: "以怪物猎人系列的原始生态、巨兽狩猎、工艺装备和冒险营地为基础，加入移动端开放世界的明亮探索感与新大陆旅行感。"
+  genre_presentation: "不是纯幻想 RPG，也不是写实生存游戏，而是以生态可信度、怪物压迫感、猎人工艺和团队狩猎仪式构成的动作冒险。"
+  mood: "壮阔、野性、探索、紧张、工匠感、共斗感；情绪来自巨大怪物、自然地貌、骨木皮革装备、营地火光、追踪痕迹和战斗后的素材收获。"
+  world_elements: "埃索岛、冒险家、经典武器、随从艾露猫、原生兽人、特有鸟类随从、独占新怪物、融光化怪物、火龙、森林、火山、荒野、营地、素材、狩猎工具。"
+  colors: "整体偏自然生态色，常见森林绿、泥土棕、岩石灰、兽皮黄、火焰橙、天空蓝和营地暖光；饱和度中等，强调自然环境的真实层次与怪物战斗时的高亮危险色。"
+  materials: "半写实偏写实的狩猎工艺材质；皮革、骨甲、兽鳞、木材、粗布、岩石、泥土、金属刃、火焰、熔岩与生态植被；纹理丰富，边缘有磨损、绑带、缝线和手作痕迹。"
+  shape_language: "轮廓偏原始、厚重、手工、不规则；常见骨刺、兽牙、鳞片、爪痕、绳结、木框、皮革包边、营地牌、地图卷边和狩猎工具轮廓。"
+  background_visual_language: "背景以自然生态区域和狩猎旅途为核心，适合森林、火山、岩壁、营地、草原、怪物栖息地、远景山体与生态痕迹；安全倾向是保留自然纵深和冒险氛围，避免把背景做成纯 UI 纹样或泛魔幻场景。"
   ui_translation:
-    panel: "白蓝圆角卡+登机牌标签，食物图标小而干净"
-    panel_base_style_hint: "云白/航空蓝圆角纸卡或干净塑料托盘卡底，登机牌切角、清爽蓝边和托盘格感；可联想明信片边、云朵贴边、餐盘细线，但食物图标、飞机舷窗、餐车和城市贴纸主体不作为基础主体或局部装饰来源"
-    state: "selected 用蓝色登机牌边或金色餐盘；warning 用红色计时器"
-    text: "标题亲切圆体，正文深蓝灰"
-    accent: "登机牌、云朵、餐盘、城市贴纸、餐车、计时器。装饰应具有功能或世界观语义，避免每张卡都堆强装饰。"
-  forbidden_mistakes: "误判成普通餐厅经营，必须保留航班和旅行语义"
-```
-
-## 25. 绝区零
-
-```yaml
-style_brief:
-  name: "绝区零"
-  aliases: []
-  tags: ["urban", "street", "action", "vhs"]
-  source:
-    checked: "https://www.taptap.cn/app/234493"
-    confidence: "high"
-  game_features:
-    type: "都市动作 / 二次元 / 箱庭"
-    core_gameplay: "代理人战斗、录像店、空洞灾害、街区生活与潮流文化"
-  visual_identity: "潮流街区录像带式都市动作"
-  genre_presentation: "把动作游戏视觉化为街头文化、录像带故障、黑黄警示、贴纸招牌和高节奏打击感。"
-  mood: "酷、躁动、幽默、街头"
-  world_elements: "录像店、空洞、代理人、邦布、警示条、街头贴纸、CRT 噪声"
-  colors: "黑/白/灰作强对比；黄色作核心强调；红色作危险；青粉作为潮流点缀；避免大面积柔粉"
-  materials: "粗糙塑料、贴纸胶带、黑黄警示胶、CRT 玻璃、混凝土墙"
-  shape_language: "厚块面、粗描边、切角标签、斜贴纸、错位排版"
-  background_visual_language: "街区墙面/录像店远景，边缘贴纸和警示条，中心控制对比"
-  ui_translation:
-    panel: "厚卡+黑白底+黄色标签，贴纸层在 overlay 上方"
-    panel_base_style_hint: "黑白厚卡或粗糙塑料卡底，切角标签、粗描边和黑黄警示胶带感；可联想 VHS 边条、街头贴纸角、故障块，但邦布图标、录像店招牌、涂鸦图形和危险条主体不作为基础主体或局部装饰来源"
-    state: "selected 用黄色粗边/标签；warning 用红黑危险条；disabled 用灰化故障"
-    text: "标题可粗体错位，正文必须黑白高对比"
-    accent: "邦布图标、VHS、警示胶带、涂鸦、街牌、故障条。装饰应具有功能或世界观语义，避免每张卡都堆强装饰。"
-  forbidden_mistakes: "误判成赛博朋克霓虹；核心是街头录像带与黑黄警示"
-```
-
-## 26. 火影忍者
-
-```yaml
-style_brief:
-  name: "火影忍者"
-  aliases: []
-  tags: ["ninja", "anime", "fighting", "scroll"]
-  source:
-    checked: "https://www.taptap.cn/app/2247"
-    confidence: "high"
-  game_features:
-    type: "横版格斗 / 动漫 IP"
-    core_gameplay: "忍者角色、忍术连招、奥义大招、2V2 和竞技格斗"
-  visual_identity: "热血忍者卷轴格斗"
-  genre_presentation: "把格斗视觉化为忍术、卷轴、查克拉、木叶标识和高速连击的动漫战斗气势。"
-  mood: "热血、燃、速度、羁绊"
-  world_elements: "木叶、护额、手里剑、卷轴、查克拉、苦无、忍术印、火之意志"
-  colors: "橙红作热血/火；黑灰作忍具；米黄作卷轴；蓝色作查克拉；红色用于危险和火系强调"
-  materials: "卷轴纸、忍具金属、木牌、布料护额、查克拉能量"
-  shape_language: "斜切速度线、卷轴边、粗描边、忍具角标"
-  background_visual_language: "忍村屋檐/卷轴纹理远景，中心清爽不放角色战斗"
-  ui_translation:
-    panel: "卷轴卡+金属护额条，大卡可加查克拉速度线"
-    panel_base_style_hint: "米黄卷轴纸或布料护额卡底，斜切速度线、忍具金属条和粗劲动漫描边；可联想卷轴轴头、护额金属片、疾风线，但木叶标识、手里剑、苦无和忍术印主体不作为基础主体或局部装饰来源"
-    state: "selected 用蓝色查克拉或橙色火光；warning 用红色爆符"
-    text: "标题可粗劲动漫感，正文深棕/白高可读"
-    accent: "手里剑、苦无、护额、卷轴、忍术印、火焰、疾风线。装饰应具有功能或世界观语义，避免每张卡都堆强装饰。"
-  forbidden_mistakes: "误判成泛日式武士或普通动漫热血；必须保留忍术和卷轴"
-```
-
-## 27. 龙族：卡塞尔之门
-
-```yaml
-style_brief:
-  name: "龙族：卡塞尔之门"
-  aliases: []
-  tags: ["urban-fantasy", "dragon", "academy", "strategy-rpg"]
-  source:
-    checked: "https://www.taptap.cn/app/382099"
-    confidence: "high"
-  game_features:
-    type: "策略 RPG / 都市幻想 / IP"
-    core_gameplay: "卡塞尔学院、混血种、屠龙冒险、言灵与角色羁绊"
-  visual_identity: "黑金学院派屠龙都市幻想"
-  genre_presentation: "把策略 RPG 视觉化为精英学院、龙血秘仪、言灵档案、黑金校徽和青春宿命感。"
-  mood: "热血、忧郁、神秘、学院感"
-  world_elements: "卡塞尔学院、龙血、言灵、校徽、长剑、档案、论坛、混血种"
-  colors: "黑/深棕作底；金色作学院荣耀；暗红作龙血/危机；冷蓝作言灵；米白作档案"
-  materials: "黑金金属、皮革档案、学院徽章、暗色玻璃、羊皮纸"
-  shape_language: "学院徽章、细金边、暗色卡、锐角装饰"
-  background_visual_language: "暗色学院走廊/档案馆远景，中心保持阅读区"
-  ui_translation:
-    panel: "暗色档案卡+金边徽章，大卡可加封蜡/龙鳞纹"
-    panel_base_style_hint: "黑棕暗色玻璃或皮革档案卡底，细金边、锐角学院轮廓和轻龙鳞压纹感；可联想封蜡边、档案夹角、校徽轮廓片，但校徽主体、龙血、长剑、论坛标签和角色符号不作为基础主体或局部装饰来源"
-    state: "selected 用金边校徽；warning 用暗红龙血封条"
-    text: "标题学院 serif/黑体混合，正文米白/浅灰清晰"
-    accent: "校徽、龙鳞、长剑、档案夹、封蜡、论坛标签。装饰应具有功能或世界观语义，避免每张卡都堆强装饰。"
-  forbidden_mistakes: "误判成普通西幻屠龙或青春校园；需要都市学院和龙族宿命"
-```
-
-## 28. TapAim
-
-```yaml
-style_brief:
-  name: "TapAim"
-  aliases: []
-  tags: ["fps-training", "utility", "aim", "hud"]
-  source:
-    checked: "https://www.taptap.cn/app/815993"
-    confidence: "high"
-  game_features:
-    type: "FPS 训练工具 / 靶场"
-    core_gameplay: "移动端 FPS 靶场、练枪、反应和天赋测试"
-  visual_identity: "专业轻量移动 FPS 靶场工具"
-  genre_presentation: "把训练工具视觉化为干净靶场、数据指标、准星、命中率和性能测试界面。"
-  mood: "专业、清晰、效率、训练感"
-  world_elements: "准星、靶球、命中率、反应时间、灵敏度、排行榜、训练模块"
-  colors: "深灰/白作底；蓝色作训练系统；绿色作通过/提升；橙色作注意；红色只作失误"
-  materials: "深浅 HUD 面板、磨砂玻璃、靶场墙面、数据卡"
-  shape_language: "极简硬边、圆形靶点、网格、进度条"
-  background_visual_language: "低对比靶场网格或训练室墙面，中心安全区留白"
-  ui_translation:
-    panel: "清爽数据卡+靶心 icon，避免战场脏污纹理"
-    panel_base_style_hint: "深浅灰数据卡或磨砂 HUD 卡底，极简硬边、靶场网格和蓝色训练线框；可联想准星环片、计时刻度、数据柱短线，但靶心图标、触控点、排行榜和具体训练模块不作为基础主体或局部装饰来源"
-    state: "selected 用蓝色准星框；warning 用橙/红失误标识"
-    text: "标题科技无衬线，数字大且清晰"
-    accent: "准星、靶心、计时器、数据柱、触控点、陀螺仪图标。装饰应具有功能或世界观语义，避免每张卡都堆强装饰。"
-  forbidden_mistakes: "误判成军事战场；它更像训练工具而非战斗场景"
-```
-
-## 29. 江南百景图
-
-```yaml
-style_brief:
-  name: "江南百景图"
-  aliases: []
-  tags: ["jiangnan", "ink", "city-builder", "ancient-china"]
-  source:
-    checked: "https://www.taptap.cn/app/179371"
-    confidence: "high"
-  game_features:
-    type: "模拟经营 / 古风建造"
-    core_gameplay: "古代江南城市营造、居民、生产与布局"
-  visual_identity: "雅致江南水墨市井营造"
-  genre_presentation: "把模拟经营视觉化为江南画卷、白墙黛瓦、水路桥巷、印章和古籍账册。"
-  mood: "雅致、烟火气、古朴、悠然"
-  world_elements: "江南水乡、白墙黛瓦、石桥、船、灯笼、账册、印章、亭台"
-  colors: "米白/宣纸黄作面板；墨黑作文字；黛青/水绿作环境；朱砂作印章和重点；金色少量作奖励"
-  materials: "宣纸、青砖、木牌、古籍账本、印泥、淡墨"
-  shape_language: "卷轴边、细墨线、方形印章、屋檐角、留白"
-  background_visual_language: "淡墨江南远景，边缘白墙黛瓦/水波，中心干净宣纸"
-  ui_translation:
-    panel: "宣纸面板+淡墨边+朱砂印，小卡简洁"
-    panel_base_style_hint: "米白宣纸或古籍账本卡底，淡墨细边、卷轴边和朱砂印泥质感；可联想瓦片线、桥纹淡边、印章痕，但江南建筑、船、灯笼、铜钱和折扇主体不作为基础主体或局部装饰来源"
-    state: "selected 用朱砂印章；warning 用暗红告示；locked 用木牌锁"
-    text: "标题可古风但正文深墨清晰"
-    accent: "印章、折扇、船桨、灯笼、瓦片、铜钱、桥纹。装饰应具有功能或世界观语义，避免每张卡都堆强装饰。"
-  forbidden_mistakes: "误判成宫廷金红或仙侠水墨；需保留市井经营和江南雅致"
-```
-
-## 30. 名将杀
-
-```yaml
-style_brief:
-  name: "名将杀"
-  aliases: []
-  tags: ["card", "history", "strategy", "tabletop"]
-  source:
-    checked: "https://www.taptap.cn/app/737825"
-    confidence: "high"
-  game_features:
-    type: "卡牌 / 历史 / 桌游策略"
-    core_gameplay: "经典杀牌身份策略、战国至秦汉名将策士与多人博弈"
-  visual_identity: "战国秦汉谋略杀牌桌游"
-  genre_presentation: "把卡牌策略视觉化为竹简、兵符、青铜器、战旗和历史谋略牌局。"
-  mood: "谋略、古朴、竞技、烽火"
-  world_elements: "名将、策士、竹简、兵符、战旗、杀牌、古战场、秦汉纹样"
-  colors: "竹简黄/暗木棕作底；青铜绿作边框；朱砂红作杀/攻击；金色作稀有/胜利；黑墨作文字"
-  materials: "竹简、羊皮纸、青铜、暗木桌面、印章"
-  shape_language: "矩形牌框、青铜浮雕、竹简横线、旗帜角标"
-  background_visual_language: "古战场或木桌牌局边缘，中心留出纸面安全区"
-  ui_translation:
-    panel: "卡牌式面板+青铜边，普通小卡减少浮雕"
-    panel_base_style_hint: "竹简黄/暗木棕卡牌底，青铜细边、矩形牌框和竹简横纹感；可联想兵符边、战旗布角、朱砂印痕，但名将人像、剑戈、杀牌字样和古战场场景不作为基础主体或局部装饰来源"
-    state: "selected 用金色牌框或朱砂印；warning 用红色杀牌，不作普通选中"
-    text: "标题古朴硬朗，正文深墨清楚"
-    accent: "兵符、战旗、印章、剑戈、竹简、火漆。装饰应具有功能或世界观语义，避免每张卡都堆强装饰。"
-  forbidden_mistakes: "误判成三国武将立绘手游；要保留桌游卡牌和秦汉谋略"
-```
-
-## 31. 再玩亿关
-
-```yaml
-style_brief:
-  name: "再玩亿关"
-  aliases: []
-  tags: ["casual", "mini-games", "satisfying", "cute"]
-  source:
-    checked: "https://www.taptap.cn/app/247977"
-    confidence: "high"
-  game_features:
-    type: "休闲解压 / 迷你游戏合集"
-    core_gameplay: "多类型解压、拼图、收纳、体育、益智和迷你关卡合集"
-  visual_identity: "清新可爱解压迷你游戏合集"
-  genre_presentation: "把休闲合集视觉化为柔和卡通、满足感小物、收纳格、拼图块和轻量挑战。"
-  mood: "轻松、满足、治愈、亲民"
-  world_elements: "拼图、收纳盒、按钮机关、小球、清洁、体育小物、关卡卡片"
-  colors: "浅米白/浅蓝作底；马卡龙粉绿黄作分类；橙黄作完成奖励；红色仅作失败"
-  materials: "柔软塑料、纸卡、橡皮泥、浅色收纳盒"
-  shape_language: "圆润块面、卡片网格、拼图边、软按钮"
-  background_visual_language: "浅色桌面/收纳盒远景，中央清爽"
-  ui_translation:
-    panel: "白色圆角卡+马卡龙分类标签，小卡极简"
-    panel_base_style_hint: "浅米白/浅蓝软塑料或纸卡底，圆润块面、马卡龙分类边和轻收纳格感；可联想拼图齿边、小星贴片、勾选贴纸角，但手指提示、清洁刷、体育小物和具体关卡物件不作为基础主体或局部装饰来源"
-    state: "selected 用黄色星星/勾选；warning 用小红叉"
-    text: "标题可圆润亲切，正文深灰"
-    accent: "拼图块、收纳格、小星星、手指提示、清洁刷、勾选贴纸。装饰应具有功能或世界观语义，避免每张卡都堆强装饰。"
-  forbidden_mistakes: "误判成幼儿教育或单一三消；需保留多玩法合集和解压感"
-```
-
-## 32. 遗弃之地
-
-```yaml
-style_brief:
-  name: "遗弃之地"
-  aliases: []
-  tags: ["folk-horror", "shadow-puppet", "tower-defense", "chinese"]
-  source:
-    checked: "https://www.taptap.cn/app/753196"
-    confidence: "high"
-  game_features:
-    type: "中式民俗恐怖 / 横版策略塔防"
-    core_gameplay: "修法者、符咒天书、阴阳两界、随机法术和横版策略防守"
-  visual_identity: "黑白皮影中式民俗轻恐怖塔防"
-  genre_presentation: "把策略塔防视觉化为黑白剪影、皮影傀儡、符咒、阴阳界和低饱和恐怖民俗。"
-  mood: "阴冷、诡异、克制、玄秘"
-  world_elements: "皮影、符咒、天书、阴阳、修法者、纸人、傀儡线、法术手牌"
-  colors: "黑白灰作主视觉；旧纸黄作面板；朱砂红作法力/危险；暗青作阴气；避免鲜艳彩色"
-  materials: "旧纸符、黑墨剪影、朱砂印、木刻皮影、暗色纸屏"
-  shape_language: "剪影边、符纸条、破损纸边、横版层次、细红线"
-  background_visual_language: "黑白纸屏/村落剪影远景，中央旧纸低纹理安全区"
-  ui_translation:
-    panel: "旧纸符面板+黑墨边，大卡可加皮影剪影，小卡克制"
-    panel_base_style_hint: "旧纸符或暗色纸屏卡底，黑墨剪影边、破损纸边和朱砂红线质感；可联想符纸纤维、皮影刻边、铜钱印痕，但纸人、傀儡、香炉和法术手牌不作为基础主体或局部装饰来源"
-    state: "selected 用朱砂印/红线；warning 用暗红符火；disabled 用灰白褪色"
-    text: "标题可篆刻/民俗感，正文黑墨清晰"
-    accent: "符箓、纸人、傀儡线、铜钱、香炉、朱砂印。装饰应具有功能或世界观语义，避免每张卡都堆强装饰。"
-  forbidden_mistakes: "误判成血腥恐怖或普通水墨仙侠；应是民俗轻恐怖+皮影"
-```
-
-## 33. 吉星派对
-
-```yaml
-style_brief:
-  name: "吉星派对"
-  aliases: []
-  tags: ["party", "anime", "cards", "chaos"]
-  source:
-    checked: "https://www.taptap.cn/app/524022"
-    confidence: "high"
-  game_features:
-    type: "联机派对 / 卡牌 / 二次元"
-    core_gameplay: "4 人派对、角色技能、手牌攻击、随机事件和友尽博弈"
-  visual_identity: "恶搞卡通二次元友尽派对"
-  genre_presentation: "把多人派对视觉化为卡牌陷阱、随机事件、夸张表情和明亮可爱的恶搞舞台。"
-  mood: "欢乐、混乱、恶搞、竞技"
-  world_elements: "4人棋盘、角色技能牌、随机事件、骰子、表情、恶作剧道具"
-  colors: "亮蓝/粉/黄作派对底；白色作信息卡；紫色作事件；红色只作攻击/惩罚"
-  materials: "亮面纸牌、塑料棋子、贴纸、舞台灯牌"
-  shape_language: "圆润卡牌、厚描边、夸张表情框、彩色标签"
-  background_visual_language: "派对棋盘或舞台远景，边缘放卡牌/骰子，中心清爽"
-  ui_translation:
-    panel: "纸牌面板+彩色标签，小卡可像手牌"
-    panel_base_style_hint: "亮面纸牌或白底派对卡底，圆润厚描边、彩色标签边和轻舞台灯牌感；可联想骰子点边、手牌页角、表情贴纸边，但角色技能牌、炸弹玩具、随机事件图标和表情主体不作为基础主体或局部装饰来源"
-    state: "selected 用黄色聚光灯/卡牌边；warning 用红色恶作剧标"
-    text: "标题活泼粗体，正文高对比"
-    accent: "骰子、卡牌、炸弹玩具、星星、表情贴纸、舞台灯。装饰应具有功能或世界观语义，避免每张卡都堆强装饰。"
-  forbidden_mistakes: "误判成普通美少女卡牌或低龄派对；需保留友尽随机事件"
-```
-
-## 34. 铃兰之剑：为这和平的世界
-
-```yaml
-style_brief:
-  name: "铃兰之剑：为这和平的世界"
-  aliases: []
-  tags: ["tactics-rpg", "medieval", "retro", "hd2d"]
-  source:
-    checked: "https://www.taptap.cn/app/209866"
-    confidence: "high"
-  game_features:
-    type: "战棋 RPG / 中世纪幻想"
-    core_gameplay: "像素/HD-2D 风格战棋、佣兵团、国家冲突与叙事选择"
-  visual_identity: "温厚复古中世纪战棋史诗"
-  genre_presentation: "把战棋 RPG 视觉化为羊皮地图、佣兵旗帜、石质城镇、古典战术棋盘与怀旧像素质感。"
-  mood: "史诗、温厚、策略、怀旧"
-  world_elements: "佣兵团、棋盘格、羊皮地图、旗帜、长剑、石墙、酒馆、命运选择"
-  colors: "羊皮黄作面板；棕/石灰作结构；深蓝/红作阵营；金色作奖励；红色用于敌对和危险"
-  materials: "羊皮纸、旧木、石板、金属徽章、布旗"
-  shape_language: "厚实纸卡、棋盘格、旗帜角、像素细节"
-  background_visual_language: "羊皮地图/石城远景，中心低纹理"
-  ui_translation:
-    panel: "羊皮纸面板+旧木边，大卡可加棋盘格淡纹"
-    panel_base_style_hint: "羊皮地图纸或旧木边战棋卡底，厚实纸卡、棋盘淡纹和复古像素细节；可联想佣兵旗角、地图针边、金属徽章片，但长剑、酒馆杯、命运标识和角色像素形象不作为基础主体或局部装饰来源"
-    state: "selected 用金色棋格边；warning 用红色敌军旗"
-    text: "标题古典，正文深棕清晰"
-    accent: "旗帜、剑盾、地图针、酒馆杯、像素小徽章。装饰应具有功能或世界观语义，避免每张卡都堆强装饰。"
-  forbidden_mistakes: "误判成日系轻幻想或暗黑西幻；需保留复古战棋和温厚叙事"
-```
-
-## 35. 无限升级
-
-```yaml
-style_brief:
-  name: "无限升级"
-  aliases: []
-  tags: ["idle-rpg", "progression", "loot", "equipment"]
-  source:
-    checked: "https://www.taptap.cn/app/241449"
-    confidence: "high"
-  game_features:
-    type: "放置 RPG / 数值养成"
-    core_gameplay: "传统 RPG 养成、刷怪爆装、装备强化附魔、转生和御灵养成"
-  visual_identity: "传统数值放置 RPG 爆装成长"
-  genre_presentation: "把放置 RPG 视觉化为装备栏、属性面板、强化石、转生印记和持续升级的数字爽感。"
-  mood: "爽快、直给、成长、收集"
-  world_elements: "装备、宝石、神器、御灵、转生、技能、强化、属性数值"
-  colors: "深蓝黑/暗棕作底；金色作品质和提升；紫色作神器；绿色作成长；红色只作战斗伤害"
-  materials: "暗色面板、金属装备槽、宝石按钮、卷轴属性卡"
-  shape_language: "矩形装备槽、硬边、等级标签、进度条、数值高亮"
-  background_visual_language: "暗色装备仓/属性页远景，中央留出数值安全区"
-  ui_translation:
-    panel: "深色装备卡+金属边，小卡像装备格"
-    panel_base_style_hint: "深蓝黑/暗棕装备卡底，金属装备槽边、硬边矩形和宝石品质光泽；可联想等级牌边、强化箭头短线、转生印纹，但装备图标、技能书、御灵和大块数值不作为基础主体或局部装饰来源"
-    state: "selected 用金色品质框；warning 用红色伤害/失败强化"
-    text: "标题硬朗，数字要大且清楚"
-    accent: "装备槽、宝石、箭头上升、等级牌、转生印、技能书。装饰应具有功能或世界观语义，避免每张卡都堆强装饰。"
-  forbidden_mistakes: "误判成通用魔幻 RPG；要保留纯数值成长和装备爆装"
-```
-
-## 36. 重返未来：1999
-
-```yaml
-style_brief:
-  name: "重返未来：1999"
-  aliases: []
-  tags: ["retro", "occult", "1999", "strategy-rpg"]
-  source:
-    checked: "https://www.taptap.cn/app/221062"
-    confidence: "high"
-  game_features:
-    type: "策略 RPG / 神秘学 / 复古"
-    core_gameplay: "时间逆流、神秘学家、20 世纪文化切片与卡牌战斗"
-  visual_identity: "英伦复古神秘学时间旅行 RPG"
-  genre_presentation: "把策略 RPG 视觉化为旧报纸、胶片、唱片、雨夜、档案与超现实神秘符号。"
-  mood: "怀旧、神秘、优雅、忧郁"
-  world_elements: "1999、暴雨、旧报纸、神秘学、唱片、胶片、手提箱、时钟"
-  colors: "旧纸黄/褐色作面板；墨黑作文字；酒红作重点；黄铜金作高级；冷绿/蓝作神秘"
-  materials: "旧纸、打字稿、皮革箱、黄铜、胶片、磨砂玻璃"
-  shape_language: "复古矩形、邮票齿边、档案夹、黄铜圆角"
-  background_visual_language: "雨夜窗边/旧档案室远景，中心纸面清爽"
-  ui_translation:
-    panel: "旧纸档案卡+黄铜细边，大卡可加胶片/邮票"
-    panel_base_style_hint: "旧纸打字稿或皮革档案卡底，黄铜细边、邮票齿边和复古矩形轮廓；可联想胶片孔边、雨滴痕、时钟刻度，但唱片、手提箱、神秘学符号和 1999 字样不作为基础主体或局部装饰来源"
-    state: "selected 用酒红邮戳或黄铜框；warning 用暗红异常标"
-    text: "标题复古 serif，正文黑色打字稿清晰"
-    accent: "邮票、胶片、唱片、时钟、雨滴、打字机字条。装饰应具有功能或世界观语义，避免每张卡都堆强装饰。"
-  forbidden_mistakes: "误判成普通蒸汽朋克或欧式宫廷；需保留 20 世纪现代复古与神秘学"
-```
-
-## 37. 瞬搭
-
-```yaml
-style_brief:
-  name: "瞬搭"
-  aliases: []
-  tags: ["fashion", "social", "dress-up", "modern"]
-  source:
-    checked: "https://www.taptap.cn/app/712212"
-    confidence: "high"
-  game_features:
-    type: "时尚换装 / 社交 / 生活"
-    core_gameplay: "自由搭配、捏脸、社区发帖、穿搭博主与多风格服饰收集"
-  visual_identity: "全球潮流时尚社交换装"
-  genre_presentation: "把换装视觉化为手机社媒、杂志版式、穿搭卡、抽奖礼盒和多元审美。"
-  mood: "潮流、自我表达、精致、社交"
-  world_elements: "SU市、穿搭博主、衣橱、社区帖子、搭配挑战、抽奖券、时尚杂志"
-  colors: "白/浅灰作平台底；黑色作时尚对比；粉紫/湖蓝作活动；金色作稀有；红色仅作限时提示"
-  materials: "白色手机卡、磨砂玻璃、杂志纸、亮面贴纸、金属小扣"
-  shape_language: "现代圆角、瀑布流卡片、标签化、轻薄层叠"
-  background_visual_language: "柔焦城市/衣橱/社交 feed 边缘，中心干净"
-  ui_translation:
-    panel: "手机 feed 风圆角卡+时尚标签，小卡像穿搭帖子"
-    panel_base_style_hint: "白/浅灰手机 feed 卡或杂志纸卡底，现代圆角、轻薄层叠和黑白时尚线框；可联想标签边、抽奖券角、亮面贴纸，但衣架、相机、点赞图标和穿搭内容不作为基础主体或局部装饰来源"
-    state: "selected 用黑白高对比或金色细边；warning 用红色限时角标"
-    text: "标题现代时尚，正文清爽无衬线"
-    accent: "衣架、相机、点赞、标签、抽奖券、闪光、杂志贴纸。装饰应具有功能或世界观语义，避免每张卡都堆强装饰。"
-  forbidden_mistakes: "误判成传统少女粉或单一换装；需保留潮流社交和多元审美"
-```
-
-## 38. 梦幻消除战
-
-```yaml
-style_brief:
-  name: "梦幻消除战"
-  aliases: []
-  tags: ["merge", "teahouse", "chinese", "cozy"]
-  source:
-    checked: "https://www.taptap.cn/app/747820"
-    confidence: "high"
-  game_features:
-    type: "合成 / 模拟经营 / 古风茶楼"
-    core_gameplay: "合成茶点、茶楼经营、家具装修、商海与情缘叙事"
-  visual_identity: "国风茶点合成茶楼经营"
-  genre_presentation: "把合成经营视觉化为中式茶点、华庭茶楼、糕点盒、木格柜和烟火人间。"
-  mood: "温润、甜美、市井、经营感"
-  world_elements: "茶楼、芙蓉糕、玉兔点心、茶叶、糕点盒、家具、自宅、商铺"
-  colors: "米黄/茶白作面板；木棕作边框；茶绿作辅助；桃粉/糕点色作奖励；朱红作印章/限时"
-  materials: "宣纸菜单、木质柜台、瓷盘、糕点盒、绸布、铜钱"
-  shape_language: "圆润木格、糕点盒格子、卷草角花、柔和卡牌"
-  background_visual_language: "茶楼室内/庭院边缘，中央浅纸面留白"
-  ui_translation:
-    panel: "菜单式纸卡+木格边，大卡可加瓷盘/糕点盒"
-    panel_base_style_hint: "米黄/茶白菜单纸卡或木格茶楼卡底，圆润木格边、柔和卡牌轮廓和瓷盘光泽；可联想糕点盒格边、茶盏线、花窗淡边，但茶点主体、铜钱、灯笼和家具不作为基础主体或局部装饰来源"
-    state: "selected 用茶绿/金色细边；warning 用朱红限时牌"
-    text: "标题国风温润，正文深棕清晰"
-    accent: "茶盏、点心、木格、铜钱、灯笼、菜单牌、花窗。装饰应具有功能或世界观语义，避免每张卡都堆强装饰。"
-  forbidden_mistakes: "误判成普通三消糖果或宫廷经营；需保留茶点文化和茶楼装修"
-```
-
-## 39. 一念逍遥
-
-```yaml
-style_brief:
-  name: "一念逍遥"
-  aliases: []
-  tags: ["xianxia", "idle", "ink", "cultivation"]
-  source:
-    checked: "https://www.taptap.cn/app/159465"
-    confidence: "high"
-  game_features:
-    type: "修仙放置 / 水墨 RPG"
-    core_gameplay: "放置修炼、炼丹炼器、飞升、宗门和仙魔抉择"
-  visual_identity: "水墨国风放置修仙"
-  genre_presentation: "把放置修仙视觉化为云海、洞府、丹炉、灵气、仙鹤和境界突破。"
-  mood: "飘逸、悠远、修行、清静"
-  world_elements: "洞府、丹炉、飞升、宗门、灵兽、云海、法宝、境界"
-  colors: "米白/淡墨作面板；青绿作灵气；淡金作仙缘；朱砂作印章；暗紫/红用于魔修/劫难"
-  materials: "宣纸、水墨、玉石、青铜丹炉、淡金云纹"
-  shape_language: "卷轴、云纹圆角、法阵圆环、印章"
-  background_visual_language: "水墨云海山峦远景，中央宣纸留白"
-  ui_translation:
-    panel: "宣纸卡+淡墨边+云纹角，大卡可加法阵淡纹"
-    panel_base_style_hint: "米白宣纸或淡墨修行卡底，云纹圆角、淡金/青绿细边和水墨呼吸感；可联想法阵弧线、玉佩边、朱砂印痕，但仙鹤、丹炉、法宝、符箓主体不作为基础主体或局部装饰来源"
-    state: "selected 用淡金/青绿灵气；warning 用暗红天劫符"
-    text: "标题书法感，正文深墨清楚"
-    accent: "仙鹤、丹炉、符箓、法宝、云纹、玉佩。装饰应具有功能或世界观语义，避免每张卡都堆强装饰。"
-  forbidden_mistakes: "误判成冷蓝仙侠或硬核武侠；应是放置修行的淡雅水墨"
-```
-
-## 40. 恋与深空
-
-```yaml
-style_brief:
-  name: "恋与深空"
-  aliases: []
-  tags: ["romance", "sci-fi", "deep-space", "otome"]
-  source:
-    checked: "https://www.taptap.cn/app/201633"
-    confidence: "high"
-  game_features:
-    type: "女性向 / 3D 恋爱 / 科幻"
-    core_gameplay: "近未来恋爱、战斗、陪伴、深空设定和高沉浸角色互动"
-  visual_identity: "近未来深空浪漫恋爱科幻"
-  genre_presentation: "把恋爱互动视觉化为深空、星舰感、柔光玻璃、心率数据和亲密通信界面。"
-  mood: "浪漫、沉浸、神秘、精致"
-  world_elements: "深空、星轨、通讯、心率、约会、战斗搭档、记忆碎片、光粒"
-  colors: "深蓝/银白作深空底；粉紫作浪漫；冰蓝作科技；金色作珍贵；红色只作心率/警告"
-  materials: "柔光玻璃、星空金属、丝绸渐变、半透明通信卡"
-  shape_language: "圆角薄卡、光带、星轨弧线、轻奢细边"
-  background_visual_language: "深空/城市夜景柔焦远景，中心纯净低纹理"
-  ui_translation:
-    panel: "半透明柔光卡+细边，背景粒子必须少"
-    panel_base_style_hint: "深蓝/银白柔光玻璃或半透明通信卡底，圆角薄卡、星轨弧线和轻奢细边；可联想心跳线片段、记忆碎片边、柔粉光带，但角色、约会物件、通讯气泡图标和星舰场景不作为基础主体或局部装饰来源"
-    state: "selected 用粉紫/金色柔光；warning 用红色心率警示"
-    text: "标题优雅现代，正文白/深灰清晰"
-    accent: "星轨、心跳线、通讯气泡、花、记忆碎片、光点。装饰应具有功能或世界观语义，避免每张卡都堆强装饰。"
-  forbidden_mistakes: "误判成通用粉色乙女或硬科幻；需保留浪漫与深空并重"
-```
-
-## 41. 出发吧麦芬
-
-```yaml
-style_brief:
-  name: "出发吧麦芬"
-  aliases: []
-  tags: ["idle-rpg", "cozy", "travel", "muffin"]
-  source:
-    checked: "https://www.taptap.cn/app/222034"
-    confidence: "high"
-  game_features:
-    type: "放置 RPG / 治愈冒险"
-    core_gameplay: "房车旅行、双人同行、放置成长、轻松社交与幻想冒险"
-  visual_identity: "治愈房车异世界放置冒险"
-  genre_presentation: "把放置 RPG 视觉化为房车旅途、伙伴同行、日式西幻、柔软云朵和轻松战斗。"
-  mood: "治愈、轻松、友爱、旅行"
-  world_elements: "房车、麦芬、营地、伙伴、云朵、地图、技能、冒险行囊"
-  colors: "暖白/奶油黄作底；草绿/天蓝作旅途；木棕作结构；金色作奖励；橙色作技能提示"
-  materials: "浅木、帆布、旅行手账、圆角纸卡、软糖色徽章"
-  shape_language: "圆润、手账标签、地图虚线、软木边框"
-  background_visual_language: "晴朗旅途/营地远景，中央云白留白"
-  ui_translation:
-    panel: "手账纸卡+浅木边，大卡可加地图虚线"
-    panel_base_style_hint: "暖白/奶油黄手账纸卡或帆布旅行卡底，浅木边、圆润标签和地图虚线感；可联想背包缝线、地图针边、云朵纸片，但房车、篝火、麦芬和伙伴形象不作为基础主体或局部装饰来源"
-    state: "selected 用金色地图针/云朵边；warning 用橙色提示牌"
-    text: "标题圆润冒险感，正文深棕清晰"
-    accent: "房车、背包、地图针、云朵、篝火、面包/麦芬。装饰应具有功能或世界观语义，避免每张卡都堆强装饰。"
-  forbidden_mistakes: "误判成硬核异世界或低龄宠物；需保留治愈房车旅行"
-```
-
-## 42. 金铲铲之战
-
-```yaml
-style_brief:
-  name: "金铲铲之战"
-  aliases: []
-  tags: ["autobattler", "strategy", "board", "competitive"]
-  source:
-    checked: "https://www.taptap.cn/app/176937"
-    confidence: "high"
-  game_features:
-    type: "自走棋 / 策略 / 英雄"
-    core_gameplay: "棋盘布阵、羁绊、装备合成、小小英雄和赛季主题"
-  visual_identity: "华丽棋盘自走棋策略竞技"
-  genre_presentation: "把自走棋视觉化为战术棋盘、装备合成、羁绊徽章、金铲铲和小小英雄收藏。"
-  mood: "策略、竞技、收集、轻幻想"
-  world_elements: "棋盘、金铲铲、装备、羁绊、商店、金币、小小英雄、传送门"
-  colors: "深蓝/紫作棋盘底；金色作金币和选中；宝石色作羁绊；绿色作经济；红色只作失败/敌方"
-  materials: "深色棋盘石板、金属边、宝石徽章、商店卡"
-  shape_language: "棋格、徽章、金边、装备槽、六边形/方格"
-  background_visual_language: "棋盘/竞技场远景，边缘装备和金币，中心安全区低纹理"
-  ui_translation:
-    panel: "棋盘纹理卡+金边，大卡可加羁绊徽章"
-    panel_base_style_hint: "深蓝/紫棋盘石板或商店卡底，金属金边、棋格纹和装备槽轮廓；可联想金币压纹、羁绊徽章边、六边形格片，但金铲铲、装备图标、小小英雄和传送门不作为基础主体或局部装饰来源"
-    state: "selected 用金色棋格框；warning 用红色连败/敌方标"
-    text: "标题竞技华丽，正文白/金高对比"
-    accent: "金铲铲、金币、装备、小小英雄脚印、羁绊徽章。装饰应具有功能或世界观语义，避免每张卡都堆强装饰。"
-  forbidden_mistakes: "误判成普通 MOBA 或卡牌；核心是棋盘布阵和经济策略"
-```
-
-## 43. 光·遇
-
-```yaml
-style_brief:
-  name: "光·遇"
-  aliases: []
-  tags: ["poetic", "social", "cloud", "light"]
-  source:
-    checked: "https://www.taptap.cn/app/62448"
-    confidence: "high"
-  game_features:
-    type: "社交冒险 / 探索"
-    core_gameplay: "飞行、烛火、牵手社交、云中王国探索"
-  visual_identity: "诗意云海光旅社交冒险"
-  genre_presentation: "把社交冒险视觉化为光、风、云海、斗篷、烛火和极简精神性空间。"
-  mood: "宁静、温柔、诗意、治愈"
-  world_elements: "云海、烛火、光翼、斗篷、牵手、神庙、风、星光"
-  colors: "暖白/云灰作底；金色作光和奖励；天蓝/霞粉作空间；深蓝作夜；红色极少使用"
-  materials: "柔光玻璃、雾面纸、云层渐变、金色光尘"
-  shape_language: "大留白、圆角、轻薄卡、柔和弧线"
-  background_visual_language: "云海/霞光远景，中央空灵留白，避免强光中心"
-  ui_translation:
-    panel: "极简半透明卡+柔光边，装饰极少"
-    panel_base_style_hint: "暖白/云灰柔光玻璃或雾面纸卡底，轻薄圆角、柔和弧线和金色光尘感；可联想烛火光边、风线、星点，但斗篷剪影、光翼、神庙和社交手势不作为基础主体或局部装饰来源"
-    state: "selected 用金色烛光环；warning 几乎不用红，必要时用柔橙"
-    text: "标题轻盈，正文高对比但不锐利"
-    accent: "烛火、光翼、星星、云朵、斗篷剪影、风线。装饰应具有功能或世界观语义，避免每张卡都堆强装饰。"
-  forbidden_mistakes: "误判成普通天空治愈或儿童绘本；需保留社交与光的仪式感"
-```
-
-## 44. 奥比岛：梦想国度
-
-```yaml
-style_brief:
-  name: "奥比岛：梦想国度"
-  aliases: []
-  tags: ["cute", "island", "social-sim", "fairy-tale"]
-  source:
-    checked: "https://www.taptap.cn/app/88544"
-    confidence: "high"
-  game_features:
-    type: "社交模拟 / 岛屿生活"
-    core_gameplay: "小岛生活、家园装扮、社交、宠物和童话活动"
-  visual_identity: "童话玩偶岛屿社交模拟"
-  genre_presentation: "把岛屿生活视觉化为可爱小屋、童话森林、玩偶质感、梦幻活动和强社交装扮。"
-  mood: "可爱、梦幻、童年、热闹"
-  world_elements: "奥比小岛、小屋、家具、精灵、气球、花园、宠物、派对"
-  colors: "粉蓝/奶黄作底；草绿作岛屿；紫粉作梦幻；金色作奖励；红色仅限警示"
-  materials: "棉花糖色塑料、木牌、布艺、彩纸、亮面贴纸"
-  shape_language: "圆润、花边、玩偶厚块、云朵边、糖果按钮"
-  background_visual_language: "童话岛屿/花园边缘，中心浅色安全区"
-  ui_translation:
-    panel: "软糖色圆角卡+花边，小卡保持干净"
-    panel_base_style_hint: "粉蓝/奶黄软糖色塑料或彩纸卡底，圆润花边、玩偶厚块和云朵边感；可联想气球色块、花朵贴边、宠物脚印痕，但小屋、精灵、宠物、蝴蝶结和具体派对物件不作为基础主体或局部装饰来源"
-    state: "selected 用金色星星/粉蓝描边；warning 用小红感叹"
-    text: "标题圆润梦幻，正文深色高可读"
-    accent: "气球、花朵、云朵、蝴蝶结、小屋、星星、宠物脚印。装饰应具有功能或世界观语义，避免每张卡都堆强装饰。"
-  forbidden_mistakes: "误判成低龄儿童 UI；需做成童话社交而非幼教"
-```
-
-## 45. 苍翼：混沌效应
-
-```yaml
-style_brief:
-  name: "苍翼：混沌效应"
-  aliases: []
-  tags: ["cyber", "action", "roguelite", "anime"]
-  source:
-    checked: "https://www.taptap.cn/app/233514"
-    confidence: "high"
-  game_features:
-    type: "动作 Roguelite / 科幻动漫"
-    core_gameplay: "高速动作、角色流派、意识空间、连招与 Roguelite 构筑"
-  visual_identity: "电蓝赛博动漫动作 Roguelite"
-  genre_presentation: "把动作 Roguelite 视觉化为高对比电光、代码故障、硬边 UI、角色数据和高速连击反馈。"
-  mood: "凌厉、炫酷、高速、压迫"
-  world_elements: "意识空间、代码、连击、技能芯片、机甲感、蓝色电弧、数据故障"
-  colors: "黑/深蓝作底；电蓝作核心能量；紫色作混沌；白色作高亮；红色只作受击/危险"
-  materials: "暗色玻璃、金属切片、电蓝能量、故障屏幕"
-  shape_language: "锐角、斜切、碎片化、扫描线、能量条"
-  background_visual_language: "深色数据空间远景，边缘电蓝碎片，中心可读"
-  ui_translation:
-    panel: "深色切角卡+电蓝边，特效控制在边缘"
-    panel_base_style_hint: "黑/深蓝暗色玻璃或金属切片卡底，锐角斜切、电蓝能量边和轻故障扫描感；可联想芯片边、故障块、连击数字轮廓，但角色数据、技能晶片主体、电弧大特效和机甲物件不作为基础主体或局部装饰来源"
-    state: "selected 用电蓝能量边；warning 用红色故障警示"
-    text: "标题锋利科技感，正文白灰清晰"
-    accent: "电弧、芯片、故障块、连击数字、技能晶片。装饰应具有功能或世界观语义，避免每张卡都堆强装饰。"
-  forbidden_mistakes: "误判成普通赛博霓虹；需要格斗动漫速度和 Roguelite 芯片"
-```
-
-## 46. 泰拉瑞亚
-
-```yaml
-style_brief:
-  name: "泰拉瑞亚"
-  aliases: []
-  tags: ["pixel", "sandbox", "side-scroller", "adventure"]
-  source:
-    checked: "https://www.taptap.cn/app/194610"
-    confidence: "high"
-  game_features:
-    type: "像素沙盒 / 冒险 / 生存"
-    core_gameplay: "横版挖掘、建造、探索、Boss 战和装备收集"
-  visual_identity: "复古像素横版沙盒冒险"
-  genre_presentation: "把沙盒冒险视觉化为像素地层、物品栏、矿洞、工作台和昼夜地表探索。"
-  mood: "探索、自由、复古、惊喜"
-  world_elements: "泥土层、矿石、洞穴、火把、木屋、工作台、史莱姆、Boss 战利品"
-  colors: "泥棕/草绿作自然；深蓝作夜和洞穴；木棕作面板；金/紫作稀有；红色作危险"
-  materials: "像素木板、石块、泥土、物品栏槽、复古蓝窗"
-  shape_language: "像素直角、格子、块状边框、物品槽"
-  background_visual_language: "像素地层/木屋/洞穴边缘，中心清晰块状安全区"
-  ui_translation:
-    panel: "像素木板/石砖面板，小卡像物品槽"
-    panel_base_style_hint: "像素木板/石块或复古蓝窗卡底，直角块状边框、物品槽和地层拼接感；可联想矿石色块、火把暖边、星星小片，但镐子、史莱姆、Boss 战利品和洞穴场景不作为基础主体或局部装饰来源"
-    state: "selected 用金色像素框；warning 用红色 Boss/伤害"
-    text: "标题像素体，正文若小需改用清晰字体"
-    accent: "火把、矿石、镐子、史莱姆、物品槽、星星。装饰应具有功能或世界观语义，避免每张卡都堆强装饰。"
-  forbidden_mistakes: "误判成我的世界体素；它是横版像素冒险和地层挖掘"
-```
-
-## 47. 凹凸世界：彩虹收藏家
-
-```yaml
-style_brief:
-  name: "凹凸世界：彩虹收藏家"
-  aliases: []
-  tags: ["match-3", "collection", "merch", "cyber"]
-  source:
-    checked: "https://www.taptap.cn/app/749006"
-    confidence: "high"
-  game_features:
-    type: "三消 RPG / IP 收藏 / 赛博吃谷"
-    core_gameplay: "三消冒险、参赛者信息与周边收藏、盲盒和 DIY 收藏板"
-  visual_identity: "赛博吃谷三消收藏"
-  genre_presentation: "把三消和 IP 收藏视觉化为虚拟谷子展柜、盲盒、彩虹膜工艺、元力战斗和几何 IP 视觉。"
-  mood: "轻快、收藏癖、潮流、热血"
-  world_elements: "谷子、盲盒、收藏图册、参赛者、元力、彩窗、反光、DIY 展板"
-  colors: "白/浅灰作展柜底；彩虹膜高光作稀有；黑色/亮色几何作 IP 对比；金色作限定；红色少用"
-  materials: "亮面亚克力、彩虹膜、白瓷、银葱、透明展柜、卡牌纸"
-  shape_language: "几何切面、展示格、圆角盲盒、彩虹折射边"
-  background_visual_language: "虚拟收藏展柜边缘，中央留出清爽展示区"
-  ui_translation:
-    panel: "展柜格卡+虹彩边，小卡像收藏品槽"
-    panel_base_style_hint: "白/浅灰展柜卡或亮面亚克力卡底，几何切面、彩虹折射边和收藏格轮廓；可联想盲盒盒角、银葱反光、徽章压痕，但参赛者、元力符号、亚克力牌主体和收藏图册图形不作为基础主体或局部装饰来源"
-    state: "selected 用彩虹膜高光；warning 用红色库存/限时小角标"
-    text: "标题可潮流几何，正文黑灰清晰"
-    accent: "盲盒、徽章、亚克力牌、彩虹反光、收藏格、元力符号。装饰应具有功能或世界观语义，避免每张卡都堆强装饰。"
-  forbidden_mistakes: "误判成普通三消糖果或单纯二次元卡牌；需保留赛博吃谷和收藏工艺"
-```
-
-## 48. 前线模拟战
-
-```yaml
-style_brief:
-  name: "前线模拟战"
-  aliases: []
-  tags: ["war-sim", "shooter", "tactical", "hud"]
-  source:
-    checked: "https://www.taptap.cn/app/753312"
-    confidence: "high"
-  game_features:
-    type: "现代战争模拟 / 射击"
-    core_gameplay: "AI 敌人、多模式、经典武器、真实弹道后坐力和团队战术对抗"
-  visual_identity: "轻体量现代战争模拟靶场战术"
-  genre_presentation: "把战争模拟视觉化为真实枪械、弹道参数、战术地图、背包仓库和低成本但清晰的军用 HUD。"
-  mood: "紧张、实用、粗粝、战术"
-  world_elements: "经典武器、弹药、护甲、矿洞撤离点、仓库、流浪商人、AI 敌人"
-  colors: "军绿/灰黑作底；土黄作任务；白灰作参数；红色作受伤/危险；蓝色少量作系统"
-  materials: "军绿终端、粗糙金属、橡胶、仓库格、纸质任务单"
-  shape_language: "硬边、网格、装备槽、粗线框、切角"
-  background_visual_language: "低对比仓库/战术地图/靶场边缘，中心清晰"
-  ui_translation:
-    panel: "硬边装备卡+仓库格，大卡可加任务纸"
-    panel_base_style_hint: "军绿终端或粗糙金属装备卡底，硬边切角、仓库格和粗线框感；可联想任务单纸角、撤离箭头短线、护甲槽片，但枪械、弹匣、矿洞标记、AI 敌人和战场场景不作为基础主体或局部装饰来源"
-    state: "selected 用土黄战术边；warning 用红色伤害/撤离倒计时"
-    text: "标题硬朗，正文和数字清楚"
-    accent: "弹匣、准星、护甲、撤离箭头、仓库锁、矿洞标记。装饰应具有功能或世界观语义，避免每张卡都堆强装饰。"
-  forbidden_mistakes: "误判成 AAA 战争大片或赛博；应保持轻量模拟和实用工具感"
-```
-
-## 49. 境·界 刀鸣
-
-```yaml
-style_brief:
-  name: "境·界 刀鸣"
-  aliases: []
-  tags: ["bleach", "sword", "anime-action", "soul"]
-  source:
-    checked: "https://www.taptap.cn/app/374914"
-    confidence: "high"
-  game_features:
-    type: "动作 / 动漫 IP / 格斗"
-    core_gameplay: "BLEACH 正版授权、剧情体验、拼刀对决、卍解、极速攻防和角色连携"
-  visual_identity: "黑白魂界刀鸣热血动作"
-  genre_presentation: "把动作手游视觉化为斩魄刀、灵压、黑白死神服、墨线斩击和卍解爆发。"
-  mood: "热血、锋利、肃杀、浪漫"
-  world_elements: "尸魂界、斩魄刀、卍解、灵压、守护、拼刀、黑崎一护式魂力"
-  colors: "黑白作主色；蓝白作灵压；橙色作主角热血点；紫/红作敌方或危险；金色少量作稀有"
-  materials: "黑白纸墨、刀刃金属、灵压光、暗色玻璃、和风纹"
-  shape_language: "锐角斩击、墨刷边、切角卡、速度线"
-  background_visual_language: "黑白魂界/夜空远景，边缘斩击线，中心干净"
-  ui_translation:
-    panel: "暗色切角卡+墨刷边+刀痕角标"
-    panel_base_style_hint: "黑白纸墨或暗色玻璃切角卡底，墨刷边、锐角斩击轮廓和刀刃金属冷光；可联想斩击弧边、队章轮廓片、符纸纤维，但斩魄刀主体、卍解符号、角色标志和灵压火焰不作为基础主体或局部装饰来源"
-    state: "selected 用蓝白灵压光；warning 用红紫敌意，不作普通强调"
-    text: "标题锋利动漫感，正文白/黑高对比"
-    accent: "刀痕、灵压火焰、墨线、队章、符纸、斩击弧。装饰应具有功能或世界观语义，避免每张卡都堆强装饰。"
-  forbidden_mistakes: "误判成普通和风武士；必须保留 BLEACH 的黑白死神与灵压"
-```
-
-## 50. 无限暖暖
-
-```yaml
-style_brief:
-  name: "无限暖暖"
-  aliases: []
-  tags: ["dress-up", "open-world", "fairy-tale", "fabric"]
-  source:
-    checked: "https://www.taptap.cn/app/247283"
-    confidence: "high"
-  game_features:
-    type: "换装 / 开放世界 / 冒险"
-    core_gameplay: "开放世界探索、能力套装、拍照、轻冒险和时装收集"
-  visual_identity: "童话织物开放世界换装冒险"
-  genre_presentation: "把开放世界换装视觉化为布料、花朵、阳光、奇想大陆、能力服装和柔软的梦幻旅行。"
-  mood: "梦幻、温柔、自由、精致"
-  world_elements: "奇想大陆、服装能力、花朵、蝴蝶、相机、缎带、旅行、织物"
-  colors: "暖白/浅粉作底；草绿/天空蓝作旅行；金色作高级；薰衣草紫作梦幻；红色仅作少量提示"
-  materials: "丝绸、蕾丝、柔光玻璃、纸卡、花纹布料、珍珠"
-  shape_language: "柔圆、花瓣边、缎带曲线、轻薄层叠"
-  background_visual_language: "童话草地/衣橱/花园远景，边缘织物花朵，中心留白"
-  ui_translation:
-    panel: "柔光纸卡+蕾丝/缎带边，小卡保留干净"
-    panel_base_style_hint: "暖白 / 极淡粉白纸卡或低饱和柔光底，柔圆纸卡边，细珍珠或淡金边；可联想缎带折角、小纽扣、蕾丝角片或单片花瓣边角，但大蝴蝶结、心形吊坠、花束、衣服、相机、角色和复杂蕾丝不作为基础主体或局部装饰来源"
-    state: "selected 用金色花瓣/缎带边；warning 用柔红小提示"
-    text: "标题优雅圆润，正文深灰清晰"
-    accent: "缎带、花瓣、蝴蝶、衣架、相机、纽扣、蕾丝。装饰应具有功能或世界观语义，避免每张卡都堆强装饰。"
-  forbidden_mistakes: "误判成普通粉色换装或儿童童话；需保留开放世界旅行和能力服装"
+    panel: "面板系统应带有猎人营地、任务板、生态笔记和装备工坊语言；大卡像任务委托板、地图档案或装备展示板，小卡像素材格、武器状态卡、随从信息卡，标签可联想皮革签条、木牌、卷边纸片和金属铆钉，状态层强调怪物状态、素材品质、武器锐度、队伍协作、探索进度和狩猎奖励。"
+    panel_base_style_hint: "旧皮革、粗木、兽骨、磨损金属、旧地图纸或营地布料底色，不规则厚边、手作包边、铆钉缝线、爪痕磨损和暖火阴影；可选局部装饰可联想兽骨折角、皮革贴片、绳结线条、鳞片纹理、木牌纹理片段，但具体角色、logo、徽章、状态标记、文字、可识别武器、具体怪物、具体世界观物件不作为基础主体或局部装饰来源。"
+    state: "状态反馈偏狩猎信息化和素材奖励感，常见怪物警戒、部位破坏、武器锋利度、任务完成、采集成功、队伍支援、火焰危险和生态事件提示。"
+    text: "字体气质偏厚重、冒险、工艺感；标题可带木牌、皮革、金属或旧地图质感，正文保持清晰，避免过分现代科技或可爱圆体。"
+    accent: "语义候选包括爪痕、兽骨、鳞片、皮革缝线、营地火光、任务板、旧地图、素材品质、生态痕迹、融光火焰和狩猎警示。"
+  forbidden_mistakes: "不要误判成传统魔法二次元 RPG、写实末日生存、硬核军事狩猎、纯恐龙史前题材、Q版宠物冒险或泛开放世界奇幻。最容易误判为原神式高饱和幻想、方舟式生存建造、暗黑魔幻巨兽或普通 MMORPG 副本 UI。"
+  style_archetype: "生态巨兽共斗狩猎冒险"
+  archetype_shared_traits:
+    - "自然生态与巨型怪物构成核心压迫"
+    - "装备和 UI 有手工制作、素材加工和营地任务感"
+    - "战斗反馈围绕怪物状态、部位、武器和素材收益"
+    - "环境不是纯背景，而是狩猎路径、生态线索和危险来源"
+  specific_differentiators:
+    - "怪物猎人 IP 的武器狩猎仪式感强于普通 ARPG 技能循环"
+    - "工艺材质以兽骨、皮革、木材、鳞片和旧金属为主，而非华丽魔法宝石"
+    - "开放世界探索服务于生态追踪和狩猎准备，不是纯风景漫游"
+    - "随从和营地带来旅途温度，但整体不应变成萌宠休闲"
+    - "融光化与独占新怪物可提供新的火焰、熔融和生态异变识别"
+  signature_semantics:
+    must_include:
+      - "生态巨兽狩猎感"
+      - "猎人工艺材质"
+      - "营地任务与冒险旅途语义"
+      - "多人共斗和经典武器狩猎氛围"
+      - "自然地貌中的危险与探索"
+    should_include:
+      - "兽骨、鳞片、皮革、木材、绳结等素材加工感"
+      - "旧地图、任务板、营地火光"
+      - "怪物痕迹、爪痕、部位破坏和素材奖励语义"
+      - "随从协作和旅人冒险气质"
+      - "火山、森林、岩壁、荒野等生态区域线索"
+    should_reduce:
+      - "过度二次元角色立绘中心化"
+      - "纯科技 HUD"
+      - "高饱和糖果色"
+      - "过分平滑的现代玻璃拟态"
+      - "普通 MMORPG 宝石金边堆叠"
+    must_avoid:
+      - "直接照搬火龙、艾露猫、官方 logo、经典武器外形或怪物造型"
+      - "做成原神式清新幻想 UI"
+      - "做成方舟式生存科技界面"
+      - "做成暗黑魔幻血腥巨兽"
+      - "做成卡通萌宠探险"
+  background_identity_anchors:
+    foreground_forbidden:
+      - "不可直接放置可识别怪物、猎人角色、艾露猫、官方 logo、经典武器、任务图标或具体随从作为前景主体"
+      - "不可用大型可识别 IP 怪物剪影抢占中心"
+    edge_or_corner_allowed:
+      - "抽象爪痕"
+      - "皮革缝线"
+      - "兽骨折角"
+      - "木牌纹理"
+      - "鳞片纹理片段"
+      - "旧地图卷边"
+      - "营地布料边"
+    far_background_allowed:
+      - "森林栖息地"
+      - "火山岩壁"
+      - "荒野山体"
+      - "远处营地火光"
+      - "生态痕迹和大型巢穴轮廓"
+      - "融光或火焰异变的远景色带"
+    center_safe_area_allowed:
+      - "旧地图纸面"
+      - "低对比皮革或木纹"
+      - "柔和自然雾气"
+      - "暗化营地布料"
+      - "不具可识别 IP 指向的生态纹理"
+  anti_generic_guardrails:
+    - "必须同时具备自然生态、巨兽压迫、猎人工艺和共斗狩猎，不能只做普通开放世界。"
+    - "材质要有素材加工和手作痕迹，不能变成现代科技金属卡片。"
+    - "怪物语义应通过爪痕、鳞片、骨质和生态痕迹表达，避免直接复制具体怪物。"
+    - "冒险感应偏狩猎营地和生态调查，不是华丽魔法学院或二次元都市。"
+    - "随从语义可以增加温度，但不能把整体拉成可爱宠物养成。"
+    - "火焰和融光可以作为危险强调，但不能把整套风格误做暗黑熔岩魔幻。"
+  visual_identity_test:
+    question: "如果去掉游戏名，这张背景是否仍能区别于同原型下的其他游戏？"
+    pass_condition: "仍能看出生态巨兽狩猎、猎人工艺材质、营地任务板、旧地图、兽骨皮革鳞片、共斗冒险与怪物痕迹，而不是泛开放世界、泛魔幻 RPG 或普通生存游戏。"
 ```
