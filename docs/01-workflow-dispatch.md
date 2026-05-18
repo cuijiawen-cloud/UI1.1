@@ -16,6 +16,48 @@
 
 01 只决定是否需要 02、`visual_hierarchy_scope` 是否为 `required`、以及是否必须做 `current_visual_audit`。只有 `visual_hierarchy_scope == required` 时，才需要设置 `visual_hierarchy_mode` 并进入 04；当 `visual_hierarchy_scope == not_required` 时，01 直接 pass-through 给 05。
 
+### 临时全量测试模式
+
+当前启用 `force_full_ui_skin_test`，用于临时拆掉自然语言分诊，专门测试 02 / 03 / 04 / 05 后半段链路是否稳定。
+
+```yaml
+dispatch_mode:
+  mode: force_full_ui_skin_test
+  enabled: true
+  purpose: bypass_intent_routing_to_test_downstream_flow
+  applies_to:
+    - style_discovery_only
+    - panel_style_change
+    - background_style_change
+    - full_game_style_skin
+    - state_style_change
+    - panel_demo
+    - qa_only
+  forced_route_to: full_ui_skin
+  forced_target_assets:
+    - background_tool.png
+    - programmatic_panel
+    - optional_panel_accent
+    - state_guidance
+  forced_generation_allowed: true
+  still_required:
+    - style_brief_resolution
+    - workflow_request_preview
+    - production_constraints.logical_output_mapping
+    - asset_mapping_gate
+    - generation_preflight_gate
+```
+
+启用该模式时：
+
+- 所有进入本 workflow 的请求，包括风格化、生成、替换、面板、背景、状态、demo、QA 类请求，都强制输出 `route_to: full_ui_skin`。
+- 不再根据“制作 / 面板 / 背景 / 整体”等词细分路由。
+- 用户只说“制作 / 新增 / 定义 XX 风格”时，也临时视为全量应用请求。
+- 仍必须先执行 `style_brief_resolution`，不能跳过 02。
+- 仍必须输出 `workflow_request_preview`，不能直接生成图片、写代码或导出素材。
+- 仍必须经过 03 的 `logical_output_mapping` 和 05 的 `generation_preflight_gate`。
+- 该模式只用于链路测试；正式生产前必须关闭，并恢复下方 `intent_routing` 的正常分诊。
+
 ### 意图路由
 
 ```yaml
@@ -150,8 +192,10 @@ workflow_request:
 
 ### 01 的默认判断
 
+以下默认判断仅在 `dispatch_mode.enabled: false` 时生效；当前 `force_full_ui_skin_test` 开启时，以“临时全量测试模式”为准。
+
 - 用户说“制作 / 新增 / 定义 XX 风格”时，默认按 `style_discovery_only` 分诊；这不是明确素材生成请求，也不是全套 UI 换肤请求。
-- 用户只说“制作 / 新增 / 定义 XX 风格”时，不得推断为 `full_ui_skin`。
+- 当 `dispatch_mode.enabled: false` 时，用户只说“制作 / 新增 / 定义 XX 风格”不得推断为 `full_ui_skin`；当前 `force_full_ui_skin_test` 开启时不适用。
 - 当 02 没有该风格或没有可用 `style_brief` 时，先进入 `style_discovery_only`，不直接进入 `full_ui_skin`。
 - 当用户原话已经限定生成范围，例如“把面板改成 XX 风格”，但 02 暂无可用 `style_brief` 时，`style_discovery_only` 只负责补风格；01 必须把原始生成范围写入 `pending_generation_request`，不得丢掉“只改面板”的范围。
 - 用户明确只改背景时，不默认生成面板或状态方案。
@@ -348,6 +392,18 @@ workflow_request_preview:
 硬规则：
 
 - 未输出 `workflow_request_preview`，不得生成图片、写代码或生成素材。
+- 当 `dispatch_mode.mode == force_full_ui_skin_test` 且 `enabled: true` 时，`workflow_request_preview` 必须固定为：
+  ```yaml
+  route_to: full_ui_skin
+  target_assets:
+    values:
+      - background_tool.png
+      - programmatic_panel
+      - optional_panel_accent
+      - state_guidance
+  enter_05: true
+  generation_allowed: true
+  ```
 - 当 `route_to == style_discovery_only` 时，必须设置：
   ```yaml
   enter_05: false
@@ -355,7 +411,7 @@ workflow_request_preview:
   target_assets:
     values: []
   ```
-- 用户只说“制作 / 新增 / 定义 XX 风格”时，不得推断为 `full_ui_skin`。
+- 当 `dispatch_mode.enabled: false` 时，用户只说“制作 / 新增 / 定义 XX 风格”不得推断为 `full_ui_skin`；当前 `force_full_ui_skin_test` 开启时不适用。
 
 ```yaml
 workflow_request:
@@ -462,6 +518,7 @@ workflow_request:
 进入 05 前必须具备：
 
 - `route_to` 已确定。
+- 当 `force_full_ui_skin_test` 开启时，`route_to` 必须为 `full_ui_skin`，并直接使用强制 `target_assets.values`；下方 `style_discovery_only` / `pending_generation_request` 条件仅在测试模式关闭时生效。
 - 若 `route_to == style_discovery_only`，不进入 05；等待 02 产出可用 `style_brief` 后从 `pending_generation_request` 恢复原始生成请求。
 - 若 `pending_generation_request.original_route_to == panel_programmatic_draw`，style brief 完成后必须恢复到 `panel_programmatic_draw`，且 `target_assets.values` 只能来自 `pending_generation_request.original_target_assets`；不得重新按“制作 XX 风格”误分到 `full_ui_skin`。
 - `style_brief_resolution` 已完成；若为 `run_02_style_discovery` 或 `blocked_needs_clarification`，不得直接生成物料。
