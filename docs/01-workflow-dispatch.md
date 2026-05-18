@@ -20,6 +20,17 @@
 
 ```yaml
 intent_routing:
+  style_discovery_only:
+    user_says: "制作 / 新增 / 定义 XX 风格"
+    steps:
+      - run_02_style_discovery
+      - output_style_brief_request
+    route_to: style_discovery_only
+    target_assets: []
+    default_generation: false
+    enter_05: false
+    next_step: wait_for_02_usable_style_brief
+
   panel_style_change:
     user_says: "把面板换成 XX 风格"
     steps:
@@ -127,14 +138,28 @@ intent_routing:
       visual_hierarchy_skip_reason:
 ```
 
+`intent_routing.target_assets` 只是路由表中的简写。最终输出给 05 时，必须统一落到：
+
+```yaml
+workflow_request:
+  target_assets:
+    resolved_from: target_assets_by_route[route_to]
+    values:
+      - string
+```
+
 ### 01 的默认判断
 
-- 用户只说“换成 XX 风格”且未说明部位时，默认按 `full_ui_skin` 分诊，但必须在 `workflow_request.assumptions` 中记录该假设。
+- 用户说“制作 / 新增 / 定义 XX 风格”时，默认按 `style_discovery_only` 分诊；这不是明确素材生成请求，也不是全套 UI 换肤请求。
+- 当 02 没有该风格或没有可用 `style_brief` 时，先进入 `style_discovery_only`，不直接进入 `full_ui_skin`。
+- 当用户原话已经限定生成范围，例如“把面板改成 XX 风格”，但 02 暂无可用 `style_brief` 时，`style_discovery_only` 只负责补风格；01 必须把原始生成范围写入 `pending_generation_request`，不得丢掉“只改面板”的范围。
 - 用户明确只改背景时，不默认生成面板或状态方案。
 - 用户明确只改面板时，不默认生成背景图。
 - 用户明确说“面板 / panel / 卡片 / 弹窗面板 / 面板主体”时，必须按 `panel_programmatic_draw` 分诊，不得按 `full_ui_skin` 处理。
-- 当 `route_to == panel_programmatic_draw` 时，`target_assets` 不得包含 `background_tool.png`。
+- 当 `route_to == panel_programmatic_draw` 时，本次实际 `target_assets.values` 只能包含 `programmatic_panel` 和 `optional_panel_accent`，不得包含 `background_tool.png`。
+- `target_assets_by_route` 是规则表，不是本次实际目标产物列表；05 执行时必须读取 `target_assets.values`。
 - 只有用户说“整体 / 全套 / 页面 / 背景也一起 / UI 全部换成 XX 风格”时，才进入 `full_ui_skin`。
+- `style_discovery_only` 必须设置 `target_assets: []`、`default_generation: false`，且不进入 05；只有 02 产出可用 `style_brief` 后，才允许从 `pending_generation_request` 恢复原始路由。
 - 用户只要求验收、检查、QA、看看合不合格时，进入 `qa_gate`，不默认生成新素材。
 - 用户要求状态、选中态、禁用态、warning 或 error 时，进入 `state_guidance`，并把状态需求写入 `target_components.state_requirements`。
 - 用户要求 demo 时，必须把 03 的程序化面板多尺寸 QA 列入请求，不把 demo 当成最终业务组件替换。
@@ -311,7 +336,7 @@ workflow_request:
   request_id:
   original_user_intent:
   normalized_intent:
-  route_to: background_generation | panel_programmatic_draw | full_ui_skin | panel_demo | state_guidance | qa_gate
+  route_to: style_discovery_only | background_generation | panel_programmatic_draw | full_ui_skin | panel_demo | state_guidance | qa_gate
   target_page_or_screen:
   primary_focus_context:
     page_goal:
@@ -339,24 +364,34 @@ workflow_request:
   visual_hierarchy_scope: required | not_required
   visual_hierarchy_brief_ref: null | generated_by_04_before_05
   visual_hierarchy_skip_reason:
+  target_assets_by_route:
+    background_generation:
+      - background_tool.png
+    panel_programmatic_draw:
+      - programmatic_panel
+      - optional_panel_accent
+    panel_demo:
+      - programmatic_panel
+      - optional_panel_accent
+    full_ui_skin:
+      - background_tool.png
+      - programmatic_panel
+      - optional_panel_accent
+      - state_guidance
+    state_guidance:
+      - state_guidance
+    style_discovery_only: []
+    qa_gate: []
   target_assets:
-    required_by_route:
-      background_generation:
-        - background_tool.png
-      panel_programmatic_draw:
-        - programmatic_panel
-        - optional_panel_accent
-      panel_demo:
-        - programmatic_panel
-        - optional_panel_accent
-      full_ui_skin:
-        - background_tool.png
-        - programmatic_panel
-        - optional_panel_accent
-        - state_guidance
-      state_guidance:
-        - state_guidance
-      qa_gate: []
+    resolved_from: target_assets_by_route[route_to]
+    values:
+      - string
+  pending_generation_request:
+    description: 待恢复的生成请求
+    original_route_to:
+    original_target_assets:
+      - string
+    resume_after_style_brief: true | false
   panel_candidate_inventory: []
   target_components: []
   qa_requirements:
@@ -392,12 +427,17 @@ workflow_request:
 - 04 在完成 `current_visual_audit`（如需要）和 `visual_hierarchy_brief` 后生成 `visual_hierarchy_brief_ref`。
 - 当 `visual_hierarchy_scope == not_required` 时，01 直接输出 `visual_hierarchy_scope: not_required`、`visual_hierarchy_brief_ref: null`、`visual_hierarchy_skip_reason` 给 05。
 - 05 消费视觉层级输入时按 `visual_hierarchy_scope` 分支：`required` 时消费 04 生成的 `visual_hierarchy_brief_ref`，`not_required` 时按 01 的 `visual_hierarchy_skip_reason` 跳过视觉层级输入。
+- `pending_generation_request.original_route_to` 记录原始生成路由。
+- `pending_generation_request.original_target_assets` 记录原始目标产物。
+- `pending_generation_request.resume_after_style_brief` 为 `true` 时，表示 02 产出可用 `style_brief` 后必须恢复原路由。
 
 ### 路由到 05 的最低条件
 
 进入 05 前必须具备：
 
 - `route_to` 已确定。
+- 若 `route_to == style_discovery_only`，不进入 05；等待 02 产出可用 `style_brief` 后从 `pending_generation_request` 恢复原始生成请求。
+- 若 `pending_generation_request.original_route_to == panel_programmatic_draw`，style brief 完成后必须恢复到 `panel_programmatic_draw`，且 `target_assets.values` 只能来自 `pending_generation_request.original_target_assets`；不得重新按“制作 XX 风格”误分到 `full_ui_skin`。
 - `style_brief_resolution` 已完成；若为 `run_02_style_discovery` 或 `blocked_needs_clarification`，不得直接生成物料。
 - `visual_hierarchy_scope` 已确定。
 - 如果 `visual_hierarchy_scope == required`：`visual_hierarchy_mode` 已确定；若为 `iterative_style_refinement`，必须设置 `current_visual_audit_required: true`。

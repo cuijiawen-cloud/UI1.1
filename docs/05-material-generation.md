@@ -10,9 +10,11 @@
 inputs:
   workflow_request_ref: docs/01-workflow-dispatch.md output
   workflow_request:
-    route_to: background_generation | panel_programmatic_draw | full_ui_skin | panel_demo | state_guidance | qa_gate
+    route_to: style_discovery_only | background_generation | panel_programmatic_draw | full_ui_skin | panel_demo | state_guidance | qa_gate
     target_assets:
-      - string
+      resolved_from: target_assets_by_route[route_to]
+      values:
+        - string
     relevant_rules:
       required_when: route_to == qa_gate
       value:
@@ -20,6 +22,10 @@ inputs:
   style_brief_ref: docs/02-style-knowledge.md#对应条目
   style_brief: provided_by_retrieval
   production_constraints_ref: docs/03-production-constraints.md
+  production_constraints:
+    logical_output_mapping: provided_by_03
+    image_assets_allowed: provided_by_03
+    non_image_outputs: provided_by_03
   visual_hierarchy_scope: required | not_required
   visual_hierarchy_brief_ref:
     required_when: visual_hierarchy_scope == required
@@ -187,12 +193,42 @@ visual_hierarchy_brief_consumption:
 
 05 必须按 `workflow_request.route_to` 输出 `material_package`，不能在所有场景里默认生成背景、面板或状态规则。
 
-如果 `workflow_request.route_to == panel_programmatic_draw`，但 `workflow_request.target_assets` 中出现 `background_tool.png`，05 不应生成背景图。该请求必须判定为 01 分诊输出冲突，并反馈 `01-workflow-dispatch.md` 修正 route 或 target assets。
+05 只负责执行 `03-production-constraints.md`，不重新定义资源约束。生成前必须消费 03 的 `image_assets_allowed` 和 `non_image_outputs`：
+
+- 必须消费 01 最终 `workflow_request.target_assets.values` 实际列表，不使用 route 的 required_by_route 规则表替代。
+- 必须先通过 03 的 `logical_output_mapping` 解释每个 `workflow_request.target_assets.values` 条目，再判断它是图片资产、非图片输出还是逻辑别名。
+- `programmatic_panel` 映射为 `panel_render_recipe`，只能输出结构化 recipe，不生成 PNG。
+- `state_guidance` 映射为 `state_visual_rule`，只能输出状态视觉规则，不生成 PNG。
+- `optional_panel_accent` 可选映射为 `panel_corner_accent.png` 或 `panel_accent.png`，最多 1 张，并且只允许用于 `panel_programmatic_draw`、`panel_demo`、`full_ui_skin`。
+- `background_tool.png` 只能用于 `background_generation` 或 `full_ui_skin`。
+- 只有经映射后属于 `image_assets_allowed` 的图片资产可以生成图片。
+- 经映射后属于 `non_image_outputs` 的项目只能输出结构化规则、recipe、配置或 QA 结果，不能生成 PNG。
+- 如果请求把 `panel_render_recipe`、`state_visual_rule`、programmatic panel 或其他 `non_image_outputs` 生成成 PNG，05 必须阻断并反馈上游。
+- 如果经 `logical_output_mapping` 解释后仍包含不在 03 图片白名单里的图片请求，05 必须阻断并反馈上游修正 route 或 target assets。
+
+如果 `workflow_request.route_to == style_discovery_only`，这是误入 05 的防御路径，正常入口禁止。05 不生成任何素材，不创建 `material_package`，并反馈 `01-workflow-dispatch.md` / `02-style-knowledge.md`：等待 `style_brief` 可用。`style_brief` 可用后，应优先从 `pending_generation_request` 恢复 `original_route_to` 和 `original_target_assets`；只有 `pending_generation_request` 缺失时，才允许重新分诊。
+
+如果 `workflow_request.route_to == panel_programmatic_draw`，但 `workflow_request.target_assets.values` 中出现 `background_tool.png`，05 不应生成背景图。该请求必须判定为 01 分诊输出冲突，并反馈 `01-workflow-dispatch.md` 修正 route 或 target assets。
 
 ```yaml
 material_package:
   route_to: workflow_request.route_to
   output_by_route:
+    style_discovery_only:
+      normal_entry: forbidden
+      when_misrouted_to_05:
+        generation: false
+        material_package: not_created
+        feedback_to:
+          - docs/01-workflow-dispatch.md
+          - docs/02-style-knowledge.md
+        reason: wait_for_style_brief
+        resume_policy:
+          preferred: restore_from_pending_generation_request
+          restore_fields:
+            - original_route_to
+            - original_target_assets
+          fallback: redispatch_only_when_pending_generation_request_missing
     background_generation:
       background:
         asset: background_tool.png
@@ -633,18 +669,11 @@ No text, logo, character, icon, badge, state marker, button, side pendant, edge 
 Transparent alpha outside the accent.
 ```
 
-### 9-slice fallback
+### 禁止 panel_base 图片兜底
 
-`panel_base_9slice.png` 不再是默认必需资产。只有在 03 明确允许的极简 fallback 条件成立时，才可申请使用。
+05 不得申请、生成或使用 `panel_base_*.png` / `panel_base_9slice.png`。
 
-fallback 必须满足：
-
-- 已确认目标运行环境无法用程序化绘制稳定还原基础面板。
-- 已尝试调整 `panel_render_recipe` 的 fill、radius、border、glow、edge light 和 fixed geometry。
-- QA 归因为程序化绘制能力 / 运行环境不适配，而不是 05 没消费 `style_brief` 或程序化参数写错。
-- fallback 源图必须极简、规则、低纹理，只作为面板主体兜底，不承载复杂风格表达。
-
-即使使用 fallback，AI 也不能默认生成整张风格化面板图；`panel_base_9slice.png` 只能是极简、干净、规则的兜底资源。
+如果程序化绘制能力不足，只能回修 `panel_render_recipe`、Maker 参数或实现能力边界，不得扩大 `image_assets_allowed` 图片资产白名单。
 
 ## 状态视觉规则
 
@@ -1055,10 +1084,31 @@ procedural_panel_qa_rule:
 
 ```yaml
 workflow_dispatch_failure_attribution:
+  style_discovery_only_reached_05:
+    condition: route_to == style_discovery_only
+    action: no_material_generation_wait_for_style_brief_then_restore_pending_generation_request
+    responsible: docs/01-workflow-dispatch.md | docs/02-style-knowledge.md
   panel_route_contains_background_asset:
-    condition: route_to == panel_programmatic_draw && workflow_request.target_assets contains background_tool.png
+    condition: route_to == panel_programmatic_draw && workflow_request.target_assets.values contains background_tool.png
     action: do_not_generate_background
     responsible: docs/01-workflow-dispatch.md
+production_constraint_failure_attribution:
+  requested_image_not_in_03_allowlist:
+    condition: target_assets_after_logical_output_mapping contains image asset not in image_assets_allowed
+    action: block_generation_and_feedback_upstream
+    responsible: docs/01-workflow-dispatch.md | docs/03-production-constraints.md
+  non_image_output_requested_as_png:
+    condition: target_assets_after_logical_output_mapping asks to render non_image_outputs as PNG
+    action: block_png_generation
+    responsible: docs/01-workflow-dispatch.md
+  unknown_logical_output_alias:
+    condition: workflow_request.target_assets.values contains item not resolved by logical_output_mapping
+    action: block_generation_and_feedback_upstream
+    responsible: docs/01-workflow-dispatch.md | docs/03-production-constraints.md
+  logical_output_not_allowed_for_route:
+    condition: logical_output_mapping.allowed_when does not include workflow_request.route_to
+    action: block_generation_and_feedback_upstream
+    responsible: docs/01-workflow-dispatch.md | docs/03-production-constraints.md
 visual_hierarchy_failure_attribution:
   background_competes_with_content:
     responsible_when_brief_allowed_too_much_strength: docs/04-visual-hierarchy-brief.md
@@ -1075,7 +1125,7 @@ visual_hierarchy_failure_attribution:
 procedural_panel_failure_attribution:
   style_brief_not_consumed_by_programmatic_params:
     responsible: docs/05-material-generation.md
-  default_full_panel_base_9slice_generated:
+  forbidden_panel_base_image_generated:
     responsible: docs/05-material-generation.md
   ai_accent_became_full_card_or_panel_or_button_or_state_icon:
     responsible: docs/05-material-generation.md
@@ -1130,7 +1180,7 @@ procedural_panel_failure_attribution:
 
 ### 仍在生成整张面板 PNG
 
-修复：删除默认整图生成步骤，改为输出 `panel_render_recipe`；只有 03 允许的极简 fallback 才能申请 `panel_base_9slice.png`。
+修复：删除默认整图生成步骤，改为输出 `panel_render_recipe`；如果程序化绘制能力不足，回修 `panel_render_recipe`、Maker 参数或实现能力边界，不得申请、生成或使用 `panel_base_*.png` / `panel_base_9slice.png`。
 
 ### 局部装饰变成完整卡片或状态图标
 
