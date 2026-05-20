@@ -6,7 +6,9 @@
 
 ## 一、入口流程
 
-所有风格化需求先进入 01。01 先解析用户意图，再执行 `style_brief` resolution，最后输出路由结果。
+所有风格化需求先进入 01。当前临时关闭细分分诊：01 仍负责采集输入和完成 `style_brief` resolution，但不再因为用户只提到“面板 / 卡片 / 背景 / 状态”而缩小生成范围。
+
+只要用户提出“换成 / 做成 / 生成 / 套用 XX 风格”这类风格化生成请求，除非用户明确说只做 QA、只验收、只查询规则或只改非视觉 metadata，否则统一视为完整风格输出，并要求背景和面板饰品一起进入后续链路。
 
 主链路固定为：
 
@@ -14,7 +16,31 @@
 00 Index -> 01 Dispatch -> 02 Style -> 03 Constraints -> 04 Visual Hierarchy -> 05 Material Generation
 ```
 
-01 只决定是否需要 02、`visual_hierarchy_scope` 是否为 `required`、以及是否必须做 `current_visual_audit`。只有 `visual_hierarchy_scope == required` 时，才需要设置 `visual_hierarchy_mode` 并进入 04；当 `visual_hierarchy_scope == not_required` 时，01 直接 pass-through 给 05。
+01 只决定是否需要 02、`visual_hierarchy_scope` 是否为 `required`、以及是否必须做 `current_visual_audit`。在临时关闭细分分诊期间，所有风格化生成请求都输出 `style_generation_bypass: enabled`，并把 `route_to` 归一为 `full_ui_skin`。只有 `visual_hierarchy_scope == required` 时，才需要设置 `visual_hierarchy_mode` 并进入 04；当 `visual_hierarchy_scope == not_required` 时，01 直接 pass-through 给 05。
+
+### 临时分诊旁路
+
+```yaml
+style_generation_bypass:
+  status: enabled
+  applies_when:
+    - user_requests_make_or_apply_style
+    - user_mentions_panel_card_popup_background_state_but_intent_is_style_generation
+  route_to: full_ui_skin
+  required_assets:
+    - background_tool.png
+    - programmatic_panel
+    - panel_corner_accent.png | panel_accent.png
+  optional_assets:
+    - state_guidance
+  do_not_apply_when:
+    - qa_only
+    - production_constraints_only
+    - style_brief_resolution_only
+    - non_visual_or_metadata_only_request
+```
+
+旁路启用时，旧的 `panel_programmatic_draw`、`background_generation`、`panel_demo` 和 `state_guidance` 只作为历史路由语义或 QA 归因线索，不作为默认输出范围裁剪依据。
 
 ### 意图路由
 
@@ -28,10 +54,11 @@ intent_routing:
       - collect_primary_focus_context
       - build_panel_candidate_inventory
       - output_workflow_request
-    route_to: panel_programmatic_draw
+    route_to: full_ui_skin
     target_assets:
+      - background_tool.png
       - programmatic_panel
-      - optional_panel_accent
+      - panel_corner_accent.png | panel_accent.png
 
   background_style_change:
     user_says: "背景换成 XX 风格"
@@ -40,9 +67,11 @@ intent_routing:
       - identify_target_page_or_screen
       - collect_minimal_visual_context
       - output_workflow_request
-    route_to: background_generation
+    route_to: full_ui_skin
     target_assets:
       - background_tool.png
+      - programmatic_panel
+      - panel_corner_accent.png | panel_accent.png
 
   full_game_style_skin:
     user_says: "整体换成 XX 游戏风格"
@@ -56,7 +85,7 @@ intent_routing:
     target_assets:
       - background_tool.png
       - programmatic_panel
-      - optional_panel_accent
+      - panel_corner_accent.png | panel_accent.png
       - state_guidance
 
   state_style_change:
@@ -67,16 +96,19 @@ intent_routing:
       - decide_visual_hierarchy_need
       - collect_minimal_visual_context_if_04_required
       - output_workflow_request
-    route_to: state_guidance
+    route_to: full_ui_skin
     target_assets:
+      - background_tool.png
+      - programmatic_panel
+      - panel_corner_accent.png | panel_accent.png
       - state_guidance
-    default_generation: false
+    default_generation: true
     requires_04_when:
       - state_visibility_depends_on_page_background_or_panel_hierarchy
       - selected_warning_error_may_conflict_with_existing_color_roles
       - user_feedback_mentions_readability_focus_or_hierarchy
     skip_04_when:
-      - isolated_state_semantics_only
+      - explicitly_isolated_state_semantics_only_without_style_generation
       - no_page_or_screen_context_available
       - no_visual_hierarchy_or_readability_judgement_requested
     direct_pass_through_to_05:
@@ -92,10 +124,11 @@ intent_routing:
       - define_demo_primary_focus_context
       - build_demo_target_components
       - output_workflow_request
-    route_to: panel_demo
+    route_to: full_ui_skin
     target_assets:
+      - background_tool.png
       - programmatic_panel
-      - optional_panel_accent
+      - panel_corner_accent.png | panel_accent.png
     required_qa_sizes_from_03:
       - 800x300
       - 300x500
@@ -129,15 +162,13 @@ intent_routing:
 
 ### 01 的默认判断
 
-- 用户只说“换成 XX 风格”且未说明部位时，默认按 `full_ui_skin` 分诊，但必须在 `workflow_request.assumptions` 中记录该假设。
-- 用户明确只改背景时，不默认生成面板或状态方案。
-- 用户明确只改面板时，不默认生成背景图。
-- 用户明确说“面板 / panel / 卡片 / 弹窗面板 / 面板主体”时，必须按 `panel_programmatic_draw` 分诊，不得按 `full_ui_skin` 处理。
-- 当 `route_to == panel_programmatic_draw` 时，`target_assets` 不得包含 `background_tool.png`。
-- 只有用户说“整体 / 全套 / 页面 / 背景也一起 / UI 全部换成 XX 风格”时，才进入 `full_ui_skin`。
+- 用户只要提出“换成 / 做成 / 生成 / 套用 XX 风格”且不是 QA-only 或 metadata-only，默认按 `full_ui_skin` 分诊，并输出 `style_generation_bypass: enabled`。
+- 用户即使明确提到“背景 / 面板 / panel / 卡片 / 弹窗面板 / 面板主体 / 状态”，只要意图是做风格化生成，也不再裁剪生成范围；`target_assets` 必须包含 `background_tool.png`、`programmatic_panel` 和 1 个 `panel_corner_accent.png | panel_accent.png`。
+- 01 不再把 `panel_programmatic_draw` 作为风格请求的默认 route；只有后续 QA 归因、历史兼容或明确非旁路任务才可引用该 route。
+- 背景和面板饰品是风格承载的默认资产，不需要用户额外说“整体 / 全套 / 背景也一起”。
 - 用户只要求验收、检查、QA、看看合不合格时，进入 `qa_gate`，不默认生成新素材。
-- 用户要求状态、选中态、禁用态、warning 或 error 时，进入 `state_guidance`，并把状态需求写入 `target_components.state_requirements`。
-- 用户要求 demo 时，必须把 03 的程序化面板多尺寸 QA 列入请求，不把 demo 当成最终业务组件替换。
+- 用户要求状态、选中态、禁用态、warning 或 error 且同时要求风格化生成时，仍按 `full_ui_skin` 输出，并把状态需求写入 `target_components.state_requirements`。
+- 用户要求 demo 时，也按完整风格输出背景和面板饰品，但必须把 03 的程序化面板多尺寸 QA 列入请求，不把 demo 当成最终业务组件替换。
 - 所有进入 04 的路由，必须至少采集 `target_page_or_screen` 或 `primary_focus_context`；背景、状态和 QA 路由还应采集最小视觉上下文，避免 04 在没有页面主次依据时判断背景强度、状态冲突或可读性。
 - `state_style_change` 和 `qa_only` 可以跳过视觉层级判断；跳过时由 01 直接 pass-through 给 05，并且只输出 `visual_hierarchy_scope: not_required`、`visual_hierarchy_brief_ref: null`、`visual_hierarchy_skip_reason`。一旦涉及页面层级、背景强度、焦点突出或可读性判断，就必须进入 04 的正常 brief 流程。
 
@@ -262,7 +293,7 @@ panel_candidate_inventory:
     safe_to_apply_panel_skin: true | false
     route:
       - programmatic_panel
-      - optional_accent
+      - panel_accent
       - state_overlay
       - skip
     reason:
@@ -273,11 +304,11 @@ panel_candidate_inventory:
 - `safe_panel_components` 可以进入 `programmatic_panel`，但仍需遵守 03 的尺寸和 QA 要求。
 - `caution_components` 必须说明风险；无法确认尺寸、内容密度或层级时，先保守标记为 `skip` 或仅 `state_overlay`。
 - `not_panel_components` 不得套用通用 panel skin；如用户要求状态变化，只允许进入 `state_overlay` 或由 05 给出状态视觉建议。
-- `optional_accent` 只能用于 03 / 05 允许的固定角部局部装饰，不得把按钮、徽章、状态、图标或 IP 物件塞进面板装饰。
+- `panel_accent` 只能用于 03 / 05 允许的固定角部局部装饰。临时旁路启用时默认生成 1 个；不得把按钮、徽章、状态、图标或 IP 物件塞进面板装饰。
 
 ## 四、target_components 输出
 
-当 `route_to` 为 `panel_programmatic_draw` / `full_ui_skin` / `panel_demo`，或当前请求需要实际替换组件时，01 必须把安全候选转成 `target_components`。`background_generation` / `state_guidance` / `qa_gate` 可按 05 输入契约省略或传空，并在 `open_questions` / `assumptions` 中记录原因。
+当 `route_to` 为 `full_ui_skin`，或当前请求需要实际替换组件时，01 必须把安全候选转成 `target_components`。临时旁路启用后，原本会落到 `panel_programmatic_draw` / `background_generation` / `panel_demo` / `state_guidance` 的风格化生成请求都应先归一为 `full_ui_skin`。`qa_gate` 可按 05 输入契约省略或传空，并在 `open_questions` / `assumptions` 中记录原因。
 
 ```yaml
 target_components:
@@ -311,6 +342,7 @@ workflow_request:
   request_id:
   original_user_intent:
   normalized_intent:
+  style_generation_bypass: enabled | disabled
   route_to: background_generation | panel_programmatic_draw | full_ui_skin | panel_demo | state_guidance | qa_gate
   target_page_or_screen:
   primary_focus_context:
@@ -343,18 +375,25 @@ workflow_request:
     required_by_route:
       background_generation:
         - background_tool.png
+        - programmatic_panel
+        - panel_corner_accent.png | panel_accent.png
       panel_programmatic_draw:
+        - background_tool.png
         - programmatic_panel
-        - optional_panel_accent
+        - panel_corner_accent.png | panel_accent.png
       panel_demo:
+        - background_tool.png
         - programmatic_panel
-        - optional_panel_accent
+        - panel_corner_accent.png | panel_accent.png
       full_ui_skin:
         - background_tool.png
         - programmatic_panel
-        - optional_panel_accent
+        - panel_corner_accent.png | panel_accent.png
         - state_guidance
       state_guidance:
+        - background_tool.png
+        - programmatic_panel
+        - panel_corner_accent.png | panel_accent.png
         - state_guidance
       qa_gate: []
   panel_candidate_inventory: []

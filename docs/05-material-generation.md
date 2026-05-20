@@ -10,6 +10,7 @@
 inputs:
   workflow_request_ref: docs/01-workflow-dispatch.md output
   workflow_request:
+    style_generation_bypass: enabled | disabled
     route_to: background_generation | panel_programmatic_draw | full_ui_skin | panel_demo | state_guidance | qa_gate
     target_assets:
       - string
@@ -35,6 +36,7 @@ inputs:
   target_page_or_screen:
     rule: required_when 优先于 optional_when；例如 qa_gate / state_guidance 通常可选，但当 visual_hierarchy_scope == required 时仍必须提供页面或焦点上下文
     required_when:
+      - style_generation_bypass == enabled
       - visual_hierarchy_scope == required
       - route_to == background_generation
       - route_to == full_ui_skin
@@ -45,10 +47,11 @@ inputs:
       - route_to == qa_gate
   target_components:
     required_when:
-      - route_to == panel_programmatic_draw
-      - route_to == full_ui_skin
-      - route_to == panel_demo
+      - route_to == panel_programmatic_draw && style_generation_bypass != enabled
+      - route_to == full_ui_skin && style_generation_bypass != enabled
+      - route_to == panel_demo && style_generation_bypass != enabled
     optional_when:
+      - style_generation_bypass == enabled
       - route_to == background_generation
       - route_to == state_guidance
       - route_to == qa_gate
@@ -99,8 +102,12 @@ style_brief_consumption:
     - forbidden_mistakes
   background_prompt_required:
     enabled_when:
+      - style_generation_bypass == enabled
       - route_to == background_generation
+      - route_to == panel_programmatic_draw
       - route_to == full_ui_skin
+      - route_to == panel_demo
+      - route_to == state_guidance
     required_items:
       - use style_archetype only as base direction
       - include specific_differentiators
@@ -136,7 +143,7 @@ fix:
 
 ## visual_hierarchy_brief 消费规则
 
-当 `visual_hierarchy_scope: required` 时，`05-material-generation.md` 必须先消费 `04-visual-hierarchy-brief.md` 输出的 `visual_hierarchy_brief`，再生成背景 prompt、`panel_render_recipe`、可选角部贴片和 QA 规则。
+当 `visual_hierarchy_scope: required` 时，`05-material-generation.md` 必须先消费 `04-visual-hierarchy-brief.md` 输出的 `visual_hierarchy_brief`，再生成背景 prompt、`panel_render_recipe`、固定角部贴片和 QA 规则。
 
 ### 必须读取的信息
 
@@ -185,19 +192,40 @@ visual_hierarchy_brief_consumption:
 
 ## 输出包
 
-05 必须按 `workflow_request.route_to` 输出 `material_package`，不能在所有场景里默认生成背景、面板或状态规则。
+05 必须先读取 `workflow_request.style_generation_bypass`。当该字段为 `enabled` 时，风格化生成请求不再按细分 route 裁剪输出范围，必须输出背景、程序化面板和 1 个固定角部面板饰品；状态规则按用户是否提出状态需求输出。
 
-如果 `workflow_request.route_to == panel_programmatic_draw`，但 `workflow_request.target_assets` 中出现 `background_tool.png`，05 不应生成背景图。该请求必须判定为 01 分诊输出冲突，并反馈 `01-workflow-dispatch.md` 修正 route 或 target assets。
+如果 `workflow_request.style_generation_bypass == disabled`，05 才按 `workflow_request.route_to` 的历史细分语义裁剪输出。旁路启用时，即使旧字段仍显示 `panel_programmatic_draw`、`background_generation`、`panel_demo` 或 `state_guidance`，也不得把 `background_tool.png` 或面板饰品视为分诊冲突。
 
 ```yaml
 material_package:
   route_to: workflow_request.route_to
+  style_generation_bypass:
+    enabled:
+      background:
+        asset: background_tool.png
+        rule: background_rule
+      panel:
+        implementation: programmatic_draw
+        renderer_recipe: panel_render_recipe
+        required_accent:
+          asset: panel_corner_accent.png | panel_accent.png
+          required: true
+          max_count: 1
+      state_guidance:
+        rule: state_visual_rule
+        required_when: target_components.state_requirements not empty
   output_by_route:
     background_generation:
       background:
         asset: background_tool.png
         rule: background_rule
-      panel: not_generated_by_default
+      panel:
+        implementation: programmatic_draw
+        renderer_recipe: panel_render_recipe
+        required_accent:
+          asset: panel_corner_accent.png | panel_accent.png
+          required: true
+          max_count: 1
       state_guidance: not_generated_by_default
       qa:
         rules:
@@ -205,13 +233,15 @@ material_package:
           - visual_hierarchy_qa_rule:
               enabled_when: visual_hierarchy_scope == required
     panel_programmatic_draw:
-      background: not_generated_by_default
+      background:
+        asset: background_tool.png
+        rule: background_rule
       panel:
         implementation: programmatic_draw
         renderer_recipe: panel_render_recipe
-        optional_accent:
+        required_accent:
           asset: panel_corner_accent.png | panel_accent.png
-          required: false
+          required: true
           max_count: 1
       state_guidance: not_generated_by_default
       qa:
@@ -220,13 +250,15 @@ material_package:
           - visual_hierarchy_qa_rule:
               enabled_when: visual_hierarchy_scope == required
     panel_demo:
-      background: not_generated_by_default
+      background:
+        asset: background_tool.png
+        rule: background_rule
       panel:
         implementation: programmatic_draw
         renderer_recipe: panel_render_recipe
-        optional_accent:
+        required_accent:
           asset: panel_corner_accent.png | panel_accent.png
-          required: false
+          required: true
           max_count: 1
       qa:
         rules:
@@ -241,9 +273,9 @@ material_package:
       panel:
         implementation: programmatic_draw
         renderer_recipe: panel_render_recipe
-        optional_accent:
+        required_accent:
           asset: panel_corner_accent.png | panel_accent.png
-          required: false
+          required: true
           max_count: 1
       state_guidance:
         rule: state_visual_rule
@@ -255,8 +287,16 @@ material_package:
           - visual_hierarchy_qa_rule:
               enabled_when: visual_hierarchy_scope == required
     state_guidance:
-      background: not_generated_by_default
-      panel: not_generated_by_default
+      background:
+        asset: background_tool.png
+        rule: background_rule
+      panel:
+        implementation: programmatic_draw
+        renderer_recipe: panel_render_recipe
+        required_accent:
+          asset: panel_corner_accent.png | panel_accent.png
+          required: true
+          max_count: 1
       state_guidance:
         rule: state_visual_rule
       qa:
@@ -291,12 +331,12 @@ material_package:
 2. 用关键词或游戏名从 `02-style-knowledge.md` 取 `style_brief`。
 3. 用 `03-production-constraints.md` 检查 Maker 能力、预算、尺寸、资源白名单和 fallback 边界。
 4. 当 `visual_hierarchy_scope: required` 时，从 `04-visual-hierarchy-brief.md` 取得 `visual_hierarchy_brief_ref` 和 `visual_hierarchy_brief`；迭代模式必须同时取得 `current_visual_audit_ref`。当 `visual_hierarchy_scope: not_required` 时，只记录 `visual_hierarchy_skip_reason`，不阻塞等待 04 `brief_id`。
-5. 先读取 `workflow_request.route_to`，再按本次 route 的输入范围规划输出；当 `visual_hierarchy_scope: required` 时，还必须按 `page_goal`、`primary_focus`、`secondary_focus`、`component_treatment` 和 `target_components.role` 执行。
-6. `background_generation` 只输出 `background_tool.png` 和对应 trace / QA，不默认输出 panel。
-7. `panel_programmatic_draw` 只输出 `panel_render_recipe` 和 0-1 个可选角部贴片，不默认输出 background。
-8. `panel_demo` 只输出 demo 用 `panel_render_recipe`、0-1 个可选角部贴片和多尺寸 QA，不作为业务替换。
-9. `full_ui_skin` 输出 background、panel、optional accent 和 state guidance。
-10. `state_guidance` 只输出状态视觉规则，不默认生成背景或面板资产。
+5. 先读取 `workflow_request.style_generation_bypass`；当其为 `enabled` 时，所有风格化生成请求统一输出 background、programmatic panel 和 1 个固定角部面板饰品。只有当 bypass 为 `disabled` 时，才按 `workflow_request.route_to` 裁剪输出范围。
+6. `background_generation` 在旁路启用时不再只输出背景，也必须输出 `panel_render_recipe` 和 1 个固定角部面板饰品。
+7. `panel_programmatic_draw` 在旁路启用时不再阻止背景，也必须输出 `background_tool.png`。
+8. `panel_demo` 在旁路启用时也输出背景和面板饰品，并保留多尺寸 QA；不作为业务替换。
+9. `full_ui_skin` 输出 background、panel、required accent；state guidance 仅在用户提出状态需求时必须输出。
+10. `state_guidance` 在旁路启用时不再只输出状态视觉规则，也必须输出背景和面板饰品。
 11. `qa_gate` 只执行 QA，不生成新素材。
 12. 输出 Maker 配置和物料元数据；当 `visual_hierarchy_scope: required` 时记录 `visual_hierarchy_trace`，当 `visual_hierarchy_scope: not_required` 时记录 `visual_hierarchy_scope` 和 `visual_hierarchy_skip_reason`。
 13. QA 失败时按 02 / 03 / 04 / 05 分工归因回修；如果失败来自 05 没落实程序化面板策略或生成执行，归因到 05。
@@ -306,7 +346,7 @@ material_package:
 ### 目标
 
 背景图负责建立环境气质和页面深度，但必须弱于工具 UI。它不是海报、插画、角色主视觉或游戏截图。
-仅当 `workflow_request.route_to` 包含 `background_generation` 或 `full_ui_skin` 时，必须包含 1 张背景图；其他路由不默认生成背景图。
+当 `workflow_request.style_generation_bypass == enabled`，或 `workflow_request.route_to` 为任一风格化生成路由时，必须包含 1 张背景图；只有 QA-only、规则查询、metadata-only 或明确禁用旁路的非风格生成请求才不默认生成背景图。
 背景图必须保留具名游戏的可识别锚点，不能只生成通用题材背景。
 
 ### 生成要求
@@ -315,9 +355,14 @@ material_package:
 background_rule:
   asset_name: background_tool.png
   required_when:
+    style_generation_bypass:
+      - enabled
     route_to:
       - background_generation
+      - panel_programmatic_draw
       - full_ui_skin
+      - panel_demo
+      - state_guidance
   role: low_density_ui_support_background
   style_anchor_policy: preserve_specificity_contract
   visual_hierarchy_policy:
@@ -421,7 +466,7 @@ This is a support background for an existing tool interface, not a poster, key a
 - 固定几何细节。
 - 状态 overlay 的承载底板。
 
-AI 图片生成只允许用于 0-1 个固定位置局部装饰 PNG。该装饰不参与拉伸，不承担按钮、状态、徽章、图标或完整面板语义。
+AI 图片生成只允许用于固定位置局部装饰 PNG。临时旁路启用时默认生成 1 个；旁路禁用的历史细分流程中仍可按 0-1 控制。该装饰不参与拉伸，不承担按钮、状态、徽章、图标或完整面板语义。
 
 ### 输入来源
 
@@ -522,6 +567,7 @@ panel_render_recipe:
   optional_accent:
     enabled: false
     asset: panel_corner_accent.png | panel_accent.png
+    required_when_bypass_enabled: true
     max_count: 1
     placement_type: corner
     preferred_anchor: bottom_right
@@ -599,9 +645,9 @@ panel_render_recipe:
 - 中心区域必须干净、无图案、无噪声、无场景、无图标、无文字。
 - 状态视觉必须由 overlay、描边、亮度、透明度或已有图标层表达，不能烘焙进面板主体。
 
-### 可选局部装饰 PNG
+### 固定局部装饰 PNG
 
-`panel_corner_accent.png` 或 `panel_accent.png` 是 0-1 个可选角部贴片，只能表达固定位置、不参与拉伸的局部风格点缀。默认优先使用右下角角饰；除非 03 或目标组件明确指定其他角，否则其他角保持干净。不得作为侧边挂件、边中装饰或边框式装饰。
+`panel_corner_accent.png` 或 `panel_accent.png` 是最多 1 个角部贴片，只能表达固定位置、不参与拉伸的局部风格点缀。临时旁路启用时默认生成 1 个；如果 QA 判定会遮挡内容、破坏层级或违反 03 生产约束，必须记录原因后关闭。默认优先使用右下角角饰；除非 03 或目标组件明确指定其他角，否则其他角保持干净。不得作为侧边挂件、边中装饰或边框式装饰。
 
 允许：
 
@@ -813,7 +859,7 @@ panel_render_recipe:
   optional_accent:
     enabled:
     asset: panel_corner_accent.png | panel_accent.png
-    required: false
+    required: true when style_generation_bypass == enabled
     max_count: 1
     placement_type: corner
     fixed_pixel_size: true
@@ -860,12 +906,12 @@ qa_status:
 last_updated:
 ```
 
-### 可选局部装饰
+### 固定局部装饰
 
 ```yaml
 asset_name: panel_corner_accent.png | panel_accent.png
 asset_type: fixed_corner_accent_patch
-required: false
+required: true when style_generation_bypass == enabled
 max_count: 1
 style_brief_ref: docs/02-style-knowledge.md#entry-id
 visual_hierarchy_scope: required | not_required
@@ -1040,7 +1086,7 @@ procedural_panel_qa_rule:
 - 直线边只延展线段，不拉伸位图。
 - 不要求 `backgroundSlice`、`slice_config` 或其他 9-slice metadata。
 
-### 可选局部装饰
+### 固定局部装饰
 
 - 是否最多只有 1 个 `panel_corner_accent.png` 或 `panel_accent.png`。
 - 是否固定像素尺寸，不随面板宽高缩放。
@@ -1057,8 +1103,8 @@ procedural_panel_qa_rule:
 workflow_dispatch_failure_attribution:
   panel_route_contains_background_asset:
     condition: route_to == panel_programmatic_draw && workflow_request.target_assets contains background_tool.png
-    action: do_not_generate_background
-    responsible: docs/01-workflow-dispatch.md
+    action: allow_when_style_generation_bypass_enabled
+    responsible_when_bypass_disabled: docs/01-workflow-dispatch.md
 visual_hierarchy_failure_attribution:
   background_competes_with_content:
     responsible_when_brief_allowed_too_much_strength: docs/04-visual-hierarchy-brief.md

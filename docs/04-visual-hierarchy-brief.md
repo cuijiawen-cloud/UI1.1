@@ -37,6 +37,7 @@
 ```yaml
 visual_hierarchy_inputs:
   workflow_request_ref: docs/01-workflow-dispatch.md output
+  style_generation_bypass: enabled | disabled
   style_brief_ref: docs/02-style-knowledge.md#entry-id
   style_brief: provided_by_02_or_reused
   production_constraints_ref: docs/03-production-constraints.md
@@ -76,6 +77,22 @@ visual_hierarchy_inputs:
 
 ```yaml
 incomplete_target_components_policy:
+  style_generation_bypass_enabled_full_ui_skin:
+    allowed_with:
+      - target_page_or_screen
+      - primary_focus_context
+    output_scope:
+      - background
+      - page_level_programmatic_panel_guidance
+      - fixed_corner_accent_policy
+      - color_roles
+      - readability_policy
+      - forbidden_visual_outcomes
+    component_treatment:
+      - page_level_or_inferred_from_panel_candidate_inventory
+      - unknown_components_must_not_receive_heavy_panel_skin
+      - safe_panel_components_may_use_programmatic_panel
+    generation_allowed: true
   background_generation:
     allowed_with:
       - target_page_or_screen
@@ -107,7 +124,7 @@ incomplete_target_components_policy:
       - keep_reduce_remove_adjust
     generation_allowed: false
   full_ui_skin:
-    requires_complete_target_components: true
+    requires_complete_target_components: true when style_generation_bypass != enabled
   panel_programmatic_draw:
     requires_complete_target_components: true
   panel_demo:

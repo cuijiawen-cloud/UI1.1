@@ -88,14 +88,14 @@ generated_asset_whitelist:
     count: 1
     purpose: 页面氛围与世界观语义背景
   - asset_name: panel_corner_accent.png
-    count: 0-1
+    count: 1 when style_generation_bypass == enabled
     purpose: 固定位置面板角部装饰，不参与拉伸
   - asset_name: panel_accent.png
-    count: 0-1
+    count: 1 when style_generation_bypass == enabled
     purpose: 固定位置面板角部抽象装饰，不参与拉伸
 ```
 
-`panel_corner_accent.png` 和 `panel_accent.png` 二选一，默认最多生成 1 张。除上述白名单外，不允许生成其他独立图片资产。
+`panel_corner_accent.png` 和 `panel_accent.png` 二选一，默认最多生成 1 张。临时分诊旁路启用时，风格化生成请求默认生成其中 1 张固定角部饰品；只有 QA 判定会遮挡内容、破坏层级或违反生产约束时，才可记录原因后关闭。除上述白名单外，不允许生成其他独立图片资产。
 
 ```yaml
 generated_asset_blacklist:
@@ -113,7 +113,7 @@ generated_asset_blacklist:
 asset_budget_default:
   background_image: 1
   panel_programmatic_draw: required
-  panel_accent_png: 0-1
+  panel_accent_png: 1 when style_generation_bypass == enabled
   panel_9slice_base: 0
   panel_9slice_fallback: 0
   generic_decoration_png: 0
@@ -123,7 +123,7 @@ asset_budget_default:
   font_new: 0
 ```
 
-`panel_accent_png: 0-1` 仅指白名单中的 `panel_corner_accent.png` 或 `panel_accent.png`。
+`panel_accent_png` 仅指白名单中的 `panel_corner_accent.png` 或 `panel_accent.png`，二者最多生成 1 张。
 `generic_decoration_png: 0` 表示不开放通用 `decoration_*.png`。
 `icon_new: 0` 表示当前不允许新增任何独立图标资源；风格语义只能由背景图、程序化面板、固定角部面板装饰、UI primitive 或已有图标库承载。
 
@@ -141,9 +141,9 @@ forbidden_standalone_asset_patterns:
 优先级：
 
 1. 先使用 UI primitive。
-2. 背景图必须保留 1 张，用于承载页面氛围和世界观语义。
+2. 风格化生成请求中背景图必须保留 1 张，用于承载页面氛围和世界观语义。
 3. 面板主体默认使用 `programmatic_draw`。
-4. 面板装饰最多使用 1 张固定角部 PNG，且不参与拉伸。
+4. 面板装饰默认使用 1 张固定角部 PNG，且不参与拉伸；最多仍为 1 张。
 5. 不生成新图标；装饰语义优先由背景图、程序化面板、固定角部面板装饰、UI primitive 或已有图标库承载。
 6. 只有确认失败且说明原因后，才允许增加 fallback 资源。
 
