@@ -152,6 +152,8 @@ incomplete_target_components_policy:
 
 如果是 `page_color_rule_only`，04 可以只输出 `color_roles`、`readability_policy` 和 `forbidden_visual_outcomes`；不要求输出背景图、程序化面板或角饰相关 treatment。
 
+当 `style_application_scope.mode == element_style_patch` 且 `preserve_surfaces` 包含 `background`、`page_color_system` 或其他表面时，04 不得用视觉层级理由重新授权这些表面。04 可以记录 `scope_conflict_note`，例如“保留深色背景可能让暖色面板显得突兀”，但不能把修改背景、页面底色或页面级配色写入 `component_treatment`、`color_roles` 或后续执行建议。
+
 ## 三、运行模式
 
 ```yaml
@@ -579,6 +581,7 @@ visual_hierarchy_skip_reason:
 - 必须按 `component_treatment` 决定每个组件的处理方式。
 - 背景 prompt / 背景参数必须遵守 `background.strength`、`center_detail_level`、`center_contrast_level` 和 `edge_decoration_level`。
 - `panel_render_recipe` 必须遵守 `hierarchy_level` 和 `color_roles`，主容器、次级容器、按钮、标签、输入框不能同强度处理。
+- 当 `style_application_scope.mode == element_style_patch` 时，05 必须先执行 scope compliance：`preserve_surfaces` 中的背景、页面底色、页面配色、非目标组件和未授权状态不得被修改；04 的视觉协调性建议不能覆盖 01 的局部范围锁定。
 - 当 01 的 `target_style_rules` 包含 `page_color_rule`，或显式局部请求的 `allowed_outputs` 已授权 `page_color_rule` 时，05 必须把 04 的 `color_roles` 和 `readability_policy` 落成非图片 `page_color_rule`，不得生成背景、面板或角饰来替代配色规则。
 - QA 必须检查 `every_rectangle_gets_panel_skin` 是否发生。
 - QA 必须检查 `background_competes_with_content` 是否发生。

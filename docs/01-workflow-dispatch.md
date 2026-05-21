@@ -68,6 +68,117 @@ explicit_scope_markers:
 
 没有这些显式限定时，组件名只作为 `requested_focus_elements`，用于确定全局风格更新中的重点区域，不用于缩小输出范围。
 
+### 局部范围锁定
+
+一旦命中 `explicit_scope_markers`，01 必须进入通用的局部范围锁定：用户明确点名的对象是唯一授权修改范围，除此之外的所有表面、组件和产物都必须写入保护范围或保护策略。`preserve_surfaces` 是硬边界，不是视觉建议；后续 04 / 05 只能记录协调性风险或提出 open question，不能因为“更统一”“更好看”“避免冲突”自行扩大修改范围。
+
+通用规则：
+
+```yaml
+scope_lock_policy:
+  trigger:
+    - explicit_scope_markers contains only_words | preserve_words | asset_only_words
+  target_scope:
+    source: explicitly_named_targets_only
+    examples:
+      - panel
+      - background
+      - page_color_system
+      - state_system
+      - button
+      - card_container
+      - popup_content_panel
+  allowed_outputs:
+    source: outputs_required_by_target_scope_only
+  preserve_surfaces:
+    rule: all_surfaces_except_explicitly_authorized_targets
+    include:
+      - non_target_visual_surfaces
+      - non_target_components
+      - non_target_state_systems
+      - non_target_image_assets
+      - non_target_style_rules
+      - page_structure
+      - business_logic
+      - interaction_flow
+  forbidden_auto_expansion:
+    - do_not_modify_non_target_surfaces
+    - do_not_generate_non_target_assets
+    - do_not_adjust_non_target_style_rules_for_visual_harmony
+    - do_not_change_page_structure_or_interaction_flow
+  conflict_policy: "如果目标修改与被保护表面不协调，只能记录风险或询问用户是否扩大范围，不得自行修改被保护表面。"
+```
+
+典型口径：
+
+```yaml
+scope_lock_examples:
+  generic_only:
+    user_says:
+      - 仅把 A 换成 XX 风格
+      - 只修改 A
+      - 单独调整 A，其他不变
+    mode: element_style_patch
+    target_elements:
+      - A
+    allowed_outputs:
+      - outputs_for_A_only
+    preserve_surfaces:
+      - every_surface_except_A
+      - every_component_except_A
+      - every_asset_except_outputs_for_A
+      - every_style_rule_except_rules_for_A
+    conflict_policy: "只改 A；A 之外全部保护。"
+  panel_only:
+    user_says:
+      - 仅把面板换成 XX 风格
+      - 只修改面板风格
+      - 只改卡片容器
+    mode: element_style_patch
+    route_to: panel_programmatic_draw
+    global_style_generation_enabled: disabled
+    explicit_scope_markers:
+      - 仅 | 只
+    target_elements:
+      - panel
+      - card_container
+      - popup_content_panel
+    allowed_outputs:
+      - programmatic_panel
+    target_image_assets: []
+    target_implementations:
+      - programmatic_panel
+    target_style_rules: []
+    preserve_surfaces:
+      - background
+      - page_color_system
+      - state_system
+      - non_target_components
+    forbidden_auto_expansion:
+      - do_not_change_root_background_color
+      - do_not_change_page_or_preview_background
+      - do_not_generate_background_tool_png
+      - do_not_adjust_page_palette_for_visual_harmony
+    conflict_policy: "如果保留背景导致新面板不协调，只能记录风险或询问用户，不得自行修改背景或页面底色。"
+  background_only:
+    user_says:
+      - 仅把背景换成 XX 风格
+      - 只修改背景
+    mode: element_style_patch
+    route_to: background_generation
+    target_elements:
+      - background
+    allowed_outputs:
+      - background_tool.png
+    preserve_surfaces:
+      - panel_system
+      - panel_accent
+      - page_color_system
+      - state_system
+      - non_target_components
+    conflict_policy: "如果新背景与旧面板不协调，只能记录风险或询问用户，不得自行改面板或页面配色。"
+```
+
 ### 主链路
 
 ```text
@@ -293,21 +404,52 @@ element_style_patch_intents:
       - 只换背景成 XX
       - 背景单独出一张，其他不动
     route_to: background_generation
+    preserve_surfaces:
+      - panel_system
+      - panel_accent
+      - page_color_system
+      - state_system
+      - non_target_components
   panel_only:
     examples:
       - 只改这些面板
       - 仅给弹窗面板出 programmatic panel 规则
+      - 仅把面板换成 XX 风格
+      - 只修改面板风格
     route_to: panel_programmatic_draw
+    allowed_outputs:
+      - programmatic_panel
+    target_image_assets: []
+    target_implementations:
+      - programmatic_panel
+    target_style_rules: []
+    preserve_surfaces:
+      - background
+      - page_color_system
+      - state_system
+      - non_target_components
   panel_demo_only:
     examples:
       - 只生成 XX 风格面板 demo
       - 单独验证面板 demo
     route_to: panel_demo
+    preserve_surfaces:
+      - background
+      - page_color_system
+      - state_system
+      - business_replacement
+      - non_target_components
   state_only:
     examples:
       - 只改 selected 状态
       - warning 颜色单独调整，不动背景和面板
     route_to: state_guidance
+    preserve_surfaces:
+      - background
+      - panel_system
+      - panel_accent
+      - page_color_system
+      - non_target_components
   color_only:
     examples:
       - 只调页面配色，不出新背景图
@@ -319,9 +461,15 @@ element_style_patch_intents:
       - page_color_rule
     target_image_assets: []
     target_implementations: []
+    preserve_surfaces:
+      - background
+      - panel_system
+      - panel_accent
+      - state_system_when_not_explicitly_authorized
+      - non_target_components
 ```
 
-局部请求必须显式记录 `preserve_surfaces`，例如 `background`、`panel_system`、`panel_accent`、`page_color_system` 或 `state_system`。当局部修改仍可能影响可读性、焦点或状态语义时，仍需进入 04。
+局部请求必须显式记录 `preserve_surfaces`，例如 `background`、`panel_system`、`panel_accent`、`page_color_system` 或 `state_system`。记录原则是“目标之外全部保护”，而不是只保护用户顺口提到的表面。当局部修改仍可能影响可读性、焦点或状态语义时，仍需进入 04，但 04 只能对被授权表面给出处理建议；被写入 `preserve_surfaces` 的表面不得被 04 或 05 重新授权修改。
 
 ### 迭代优化请求
 
@@ -407,11 +555,13 @@ required_context_for_global_page_style:
     known_content_regions:
       - string
   target_background_dimensions:
-    source: user_specified | design_artboard | current_background_node | project_viewport | screenshot_region | unknown
+    source: user_specified | design_artboard | current_background_node | project_viewport | runtime_measured_viewport | screenshot_region | unknown
     width_px:
     height_px:
     device_class: mobile | desktop | tablet | unknown
     orientation: portrait | landscape | square | unknown
+    evidence:
+      - source_file_or_artboard_or_runtime_probe_or_screenshot_ref
     reason:
   minimal_visual_context:
     required_for_04: true
@@ -422,6 +572,8 @@ required_context_for_global_page_style:
 ```
 
 当请求会生成 `background_tool.png` 时，必须已有 `target_background_dimensions.width_px` 和 `target_background_dimensions.height_px`。只知道是手机、电脑或平板但没有具体宽高时，不得编造默认尺寸，必须把 `missing_target_background_dimensions` 写入 `blocked_by` 或 `open_questions`。
+
+`target_background_dimensions.source` 必须可追溯到具体证据：用户明确给出的尺寸、设计稿 / artboard、当前背景节点、工程 viewport、运行时测得的 viewport / 容器尺寸，或当前截图可确认的背景区域。`mobile + portrait`、`手游工具`、`9:16`、`1080x1920` 这类设备类型或常见比例推断不算有效来源；如果只能得到这些信息，`source` 必须为 `unknown`，并阻断背景生成。
 
 进入 `element_style_patch` 时，01 只采集该元素需要的上下文；但如果局部修改会影响页面主次、背景强度、文字可读性或状态颜色冲突，仍必须采集足够上下文并进入 04。
 
@@ -601,16 +753,20 @@ workflow_request:
       target_elements: []
       allowed_outputs: []
       preserve_other_surfaces: true | false
+      forbidden_auto_expansion: []
+      conflict_policy:
   global_style_generation_enabled: enabled | disabled
   route_to: background_generation | panel_programmatic_draw | full_ui_skin | panel_demo | state_guidance | qa_gate | page_color_rule_only | style_brief_resolution_only | production_constraints_only | metadata_only
   target_page_or_screen:
   target_background_dimensions:
     required_when_background_generated: true
-    source: user_specified | design_artboard | current_background_node | project_viewport | screenshot_region | unknown
+    source: user_specified | design_artboard | current_background_node | project_viewport | runtime_measured_viewport | screenshot_region | unknown
     width_px:
     height_px:
     device_class: mobile | desktop | tablet | unknown
     orientation: portrait | landscape | square | unknown
+    evidence:
+      - source_file_or_artboard_or_runtime_probe_or_screenshot_ref
     reason:
   primary_focus_context:
     page_goal:
@@ -694,7 +850,7 @@ workflow_request:
 - `visual_hierarchy_mode` 仅在 `visual_hierarchy_scope == required` 时必填；`visual_hierarchy_scope == not_required` 时应为 `null`。
 - 01 设置 `current_visual_audit_required`。
 - 01 采集 `target_page_or_screen`、`primary_focus_context` 和必要的 `minimal_visual_context`，供 04 判断页面视觉层级。
-- 当请求会生成 `background_tool.png` 时，01 必须采集 `target_background_dimensions`。尺寸必须来自当前目标界面或背景容器；如果只能判断是手机或电脑但没有具体宽高，不能编造默认尺寸，必须把 `missing_target_background_dimensions` 写入 `blocked_by` 或 `open_questions`。
+- 当请求会生成 `background_tool.png` 时，01 必须采集 `target_background_dimensions`。尺寸必须来自当前目标界面或背景容器，并记录 evidence；如果只能判断是手机或电脑但没有具体宽高，不能编造默认尺寸，必须把 `missing_target_background_dimensions` 写入 `blocked_by` 或 `open_questions`。
 - 当 `visual_hierarchy_scope == required` 时，01 不生成 `visual_hierarchy_brief_ref`，也不消费它；01 初始输出时该字段应为空、`null` 或标记为待 04 补全。
 - 04 在完成 `current_visual_audit`（如需要）和 `visual_hierarchy_brief` 后生成 `visual_hierarchy_brief_ref`。
 - 当 `visual_hierarchy_scope == not_required` 时，01 直接输出 `visual_hierarchy_scope: not_required`、`visual_hierarchy_brief_ref: null`、`visual_hierarchy_skip_reason` 给 05。
@@ -712,11 +868,13 @@ workflow_request:
 - 如果 `style_application_scope.mode == global_page_style`：`route_to` 必须为 `full_ui_skin`，`global_style_generation_enabled` 必须为 `enabled`，并且 `target_image_assets` 必须包含 `background_tool.png` 和 1 个 `panel_corner_accent.png | panel_accent.png`，`target_implementations` 必须包含 `programmatic_panel`。
 - 如果 `style_application_scope.mode == global_page_style`：`target_style_rules` 必须包含 `page_color_rule`。
 - 如果 `style_application_scope.mode == element_style_patch`：必须写明 `explicit_scope_markers`、`target_elements`、`allowed_outputs` 和 `preserve_surfaces`。
+- 如果 `style_application_scope.mode == element_style_patch` 且 `preserve_surfaces` 包含 `background`：`target_image_assets` 和 `allowed_outputs` 不得包含 `background_tool.png`，也不得要求采集或生成新的背景尺寸。
+- 如果 `style_application_scope.mode == element_style_patch` 且 `preserve_surfaces` 包含 `page_color_system`：`target_style_rules` 和 `allowed_outputs` 不得包含 `page_color_rule`；如存在视觉冲突，只能写入 `open_questions` 或 `assumptions`，不得自动改页面配色。
 - 如果 `visual_hierarchy_scope == required`：`visual_hierarchy_mode` 已确定；若为 `iterative_style_refinement`，必须设置 `current_visual_audit_required: true`。
 - 如果 `visual_hierarchy_scope == required`：进入 04 的请求已提供 `target_page_or_screen` 或 `primary_focus_context`；背景、状态、QA 这类依赖当前视觉关系的请求还必须提供 `minimal_visual_context`。
 - 如果 `visual_hierarchy_scope == required`：04 已生成 `visual_hierarchy_brief_ref`；该字段不是 01 的产物。
 - 如果 `visual_hierarchy_scope == not_required`：01 已输出 `visual_hierarchy_scope: not_required`、`visual_hierarchy_brief_ref: null`、`visual_hierarchy_skip_reason`。
-- 如果会生成 `background_tool.png`：必须已有 `target_background_dimensions.width_px` 和 `target_background_dimensions.height_px`；只知道 mobile / desktop / tablet 而没有具体宽高时，不得进入 05 生成背景。
+- 如果会生成 `background_tool.png`：必须已有 `target_background_dimensions.width_px`、`height_px` 和可审计 `evidence`；只知道 mobile / desktop / tablet、9:16 或常见预设尺寸而没有当前界面证据时，不得进入 05 生成背景。
 - 面板相关需求已输出 `panel_candidate_inventory`。
 - 需要实际替换组件时已输出 `target_components`。
 - demo 面板已带上 03 要求的程序化面板 QA 尺寸。

@@ -94,6 +94,34 @@ inputs:
 
 `05-material-generation.md` 必须消费完整 `style_brief`，不能把具名游戏压缩成通用风格原型。
 
+风格来源必须来自 01 已完成的 `style_brief_resolution` 和 02 输出的 `style_brief`。模型自身知识、用户一句风格关键词、相似游戏印象或通用题材联想都不能作为背景图 prompt 的权威来源。
+
+```yaml
+authoritative_style_source_policy:
+  required_for:
+    - background_rule
+    - panel_render_recipe
+    - panel_accent_prompt
+    - page_color_rule
+  allowed_sources:
+    - docs/02-style-knowledge.md exact_match entry
+    - docs/02-style-knowledge.md alias_match entry
+    - 02 Style Discovery decision output when no exact entry exists
+  forbidden_sources:
+    - model_memory
+    - user_prompt_keyword_only
+    - generic_archetype_only
+    - similar_game_or_ip_assumption
+    - unsourced_visual_impression
+  blocker_when:
+    - style_brief_ref missing
+    - style_brief_resolution missing
+    - prompt cannot trace style words back to style_brief fields
+    - prompt replaces specific_differentiators with generic scene imagination
+```
+
+通用要求：用户说“生成 / 制作 / 套用 XX 风格”时，背景 prompt 不能从模型自身印象推导成“XX 题材场景全景”或“XX 氛围插画”。必须先取得 resolved `style_brief_ref`，再消费该条目的 `specific_differentiators`、`signature_semantics`、`background_identity_anchors` 和 `anti_generic_guardrails`。prompt 中出现的识别元素、需要弱化的误区、中心安全区允许内容、边缘/角落/远景锚点，都必须能追溯到该 `style_brief` 或 Style Discovery 输出。
+
 ### 必须读取的信息
 
 ```yaml
@@ -237,7 +265,8 @@ visual_hierarchy_brief_consumption:
 3. `route_to == page_color_rule_only` 只能在 `target_style_rules` 或 `allowed_outputs` 已授权 `page_color_rule` 时输出非图片 `page_color_rule`，不得触发背景、程序化面板或面板饰品生成。
 4. `style_application_scope.mode == global_page_style` 或 `global_style_generation_enabled == enabled` 时，输出背景、程序化面板、1 个固定角部面板饰品和 `page_color_rule`；状态规则按用户是否提出状态需求输出。
 5. `style_application_scope.mode == element_style_patch` 且 `global_style_generation_enabled == disabled` 时，必须只输出 `element_patch.allowed_outputs`、`target_image_assets`、`target_implementations` 和 `target_style_rules` 中明确允许的内容。不得因为 route 名是 `background_generation`、`panel_programmatic_draw`、`state_guidance` 或 `full_ui_skin` 就自动补齐背景、面板或角饰。
-6. `route_to` 只表示处理入口和执行分支，不是生成授权；如果 01 把显式局部请求路由到 `background_generation`、`panel_programmatic_draw`、`panel_demo`、`state_guidance` 或 `page_color_rule_only`，必须同时在 `allowed_outputs`、`target_image_assets`、`target_implementations` 或 `target_style_rules` 中写入对应授权产物。
+6. `style_application_scope.preserve_surfaces` 是硬边界。凡是写入 `preserve_surfaces` 的表面，05 不得生成、修改或通过配色规则间接改变；如果视觉协调性存在风险，只能写入 `scope_conflict_note` 或 `open_questions`，不得自行扩展执行范围。
+7. `route_to` 只表示处理入口和执行分支，不是生成授权；如果 01 把显式局部请求路由到 `background_generation`、`panel_programmatic_draw`、`panel_demo`、`state_guidance` 或 `page_color_rule_only`，必须同时在 `allowed_outputs`、`target_image_assets`、`target_implementations` 或 `target_style_rules` 中写入对应授权产物。
 
 ```yaml
 material_package:
@@ -303,6 +332,11 @@ material_package:
         - do_not_generate_panel_unless_allowed
         - do_not_generate_panel_accent_unless_allowed
         - do_not_generate_state_guidance_unless_allowed
+        - do_not_modify_preserved_surfaces_for_visual_harmony
+        - do_not_change_root_or_preview_background_when_background_is_preserved
+      scope_conflict_note:
+        required_when: visual_harmony_conflict_detected_with_preserved_surfaces
+        action: record_or_ask_user_instead_of_modifying_preserved_surfaces
     qa_only:
       generation: false
       background: not_generated
@@ -332,14 +366,109 @@ material_package:
 2. 用关键词或游戏名从 `02-style-knowledge.md` 取 `style_brief`。
 3. 用 `03-production-constraints.md` 检查 Maker 能力、预算、尺寸、资源白名单和 fallback 边界。
 4. 当 `visual_hierarchy_scope: required` 时，从 `04-visual-hierarchy-brief.md` 取得 `visual_hierarchy_brief_ref` 和 `visual_hierarchy_brief`；迭代模式必须同时取得 `current_visual_audit_ref`。当 `visual_hierarchy_scope: not_required` 时，只记录 `visual_hierarchy_skip_reason`，不阻塞等待 04 `brief_id`。
-5. 如果本次会生成 `background_tool.png`，必须先读取 `workflow_request.target_background_dimensions`，并按当前目标界面或背景容器的实际宽高输出；缺少具体宽高时不得用通用手机 / 电脑预设尺寸继续生成。
+5. 如果本次会生成 `background_tool.png`，必须先读取 `workflow_request.target_background_dimensions`，并按当前目标界面或背景容器的实际宽高输出；缺少具体宽高或缺少可审计 evidence 时，不得用通用手机 / 电脑预设尺寸继续生成。
 6. 当 `style_application_scope.mode == global_page_style` 或 `global_style_generation_enabled == enabled` 时，输出 background、programmatic panel、1 个固定角部面板饰品和 `page_color_rule`。state guidance 仅在用户提出状态需求或颜色语义冲突时输出。
 7. 当 `style_application_scope.mode == element_style_patch` 且 `global_style_generation_enabled == disabled` 时，只输出 `element_patch.allowed_outputs`、`target_image_assets`、`target_implementations` 和 `target_style_rules` 中明确允许的内容；不得由 route 自动补齐全局资产。
-8. `page_color_rule_only` 只输出已授权的非图片 `page_color_rule`，不生成背景、面板或角饰。
-9. `panel_demo` 必须保留多尺寸 QA，并记录 `business_replacement: false`；如果是显式局部 demo，不得额外生成未允许的背景或页面配色。
-10. `qa_gate` 只执行 QA，不生成新素材。
-11. 输出 Maker 配置和物料元数据；当 `visual_hierarchy_scope: required` 时记录 `visual_hierarchy_trace`，当 `visual_hierarchy_scope: not_required` 时记录 `visual_hierarchy_scope` 和 `visual_hierarchy_skip_reason`。
-12. QA 失败时按 02 / 03 / 04 / 05 分工归因回修；如果失败来自 05 没落实 scope、程序化面板策略、页面配色规则或生成执行，归因到 05。
+8. 如果 `preserve_surfaces` 包含 `background`，不得改根背景、页面底色、预览页背景、背景图片、背景 scrim 或 `background_tool.png`；如果 `preserve_surfaces` 包含 `page_color_system`，不得为了适配面板调整页面级配色规则。
+9. `page_color_rule_only` 只输出已授权的非图片 `page_color_rule`，不生成背景、面板或角饰。
+10. `panel_demo` 必须保留多尺寸 QA，并记录 `business_replacement: false`；如果是显式局部 demo，不得额外生成未允许的背景或页面配色。
+11. `qa_gate` 只执行 QA，不生成新素材。
+12. 输出 Maker 配置和物料元数据；当 `visual_hierarchy_scope: required` 时记录 `visual_hierarchy_trace`，当 `visual_hierarchy_scope: not_required` 时记录 `visual_hierarchy_scope` 和 `visual_hierarchy_skip_reason`。
+13. QA 失败时按 02 / 03 / 04 / 05 分工归因回修；如果失败来自 05 没落实 scope、程序化面板策略、页面配色规则或生成执行，归因到 05。
+
+## 背景生成 Preflight Gate
+
+任何会生成、替换或重新引用 `background_tool.png` 的流程，都必须先输出 `background_generation_preflight`。没有通过 preflight，不允许调用图片生成，也不允许把已有生成图写入代码、配置或物料 metadata。
+
+```yaml
+background_generation_preflight:
+  required_when_any:
+    - style_application_scope.mode == global_page_style
+    - global_style_generation_enabled == enabled
+    - workflow_request.target_image_assets contains background_tool.png
+    - workflow_request.style_application_scope.element_patch.allowed_outputs contains background_tool.png
+  required_docs_read:
+    - docs/01-workflow-dispatch.md#页面上下文采集
+    - docs/02-style-knowledge.md#resolved-style-brief-entry
+    - docs/03-production-constraints.md#图片导出硬约束
+    - docs/04-visual-hierarchy-brief.md#背景强度规则 when visual_hierarchy_scope == required
+    - docs/05-material-generation.md#背景图规则
+  style_source_contract:
+    requested_game_name:
+    style_brief_resolution:
+    style_brief_ref:
+    authoritative_source:
+      allowed:
+        - docs/02-style-knowledge.md exact_match entry
+        - docs/02-style-knowledge.md alias_match entry
+        - 02 Style Discovery decision output when no exact entry exists
+      forbidden:
+        - model_memory
+        - user_prompt_keyword_only
+        - generic_archetype_only
+        - similar_game_or_ip_assumption
+        - unsourced_visual_impression
+    prompt_must_include_from_style_brief:
+      - specific_differentiators
+      - signature_semantics.must_include
+      - signature_semantics.should_reduce
+      - signature_semantics.must_avoid
+      - background_identity_anchors.edge_or_corner_allowed
+      - background_identity_anchors.far_background_allowed
+      - background_identity_anchors.center_safe_area_allowed
+      - anti_generic_guardrails
+    pass_condition:
+      - style_brief_ref is present
+      - style_brief_resolution is not blocked
+      - prompt terms are traceable to style_brief fields
+      - prompt does not replace style_brief with model memory or generic scene imagination
+  target_background_dimensions:
+    width_px:
+    height_px:
+    source:
+    evidence:
+    pass_condition:
+      - width_px and height_px are present
+      - source is not unknown
+      - evidence is auditable
+  prompt_contract:
+    must_include:
+      - low-density tool UI background
+      - service UI, not full illustration, poster, key art, screenshot, or character main visual
+      - central 45%-60% clean safe area
+      - center low texture, low contrast, low information density
+      - decorations and identity anchors placed at edges, corners, or far background
+      - no clear text, fake UI, buttons, logo, avatar, or strong visual center
+      - exact output dimensions from target_background_dimensions
+    must_not_be_only:
+      - game style name
+      - scene description
+      - atmosphere description
+      - color/material keywords
+  visual_hierarchy_contract:
+    required_when: visual_hierarchy_scope == required
+    must_include:
+      - primary_focus
+      - background.strength
+      - center_detail_level
+      - center_contrast_level
+      - edge_decoration_level
+      - readability_policy
+  post_generation_qa_required: true
+  blockers:
+    - missing_target_background_dimensions
+    - style_brief_ref_missing
+    - style_source_from_model_memory
+    - prompt_missing_specific_differentiators
+    - prompt_collapsed_to_generic_archetype
+    - missing_docs_03_background_constraints
+    - prompt_missing_center_safe_area_45_60
+    - prompt_only_describes_style_or_scene
+    - visual_hierarchy_required_but_missing
+    - no_post_generation_constraint_check
+```
+
+如果 preflight 发现 prompt 类似“XX 风格场景全景”“XX 风格完整背景插画”“XX 题材氛围图”，但没有明确写入 resolved `style_brief` 的差异锚点、中央安全区、低密度 UI 背景和边缘装饰约束，必须归因为 `prompt_only_describes_style_or_scene` 或 `style_source_from_model_memory` 并阻断生成。
 
 ## 背景图规则
 
@@ -371,9 +500,11 @@ background_rule:
     height_px: workflow_request.target_background_dimensions.height_px
     device_class: workflow_request.target_background_dimensions.device_class
     orientation: workflow_request.target_background_dimensions.orientation
+    evidence: workflow_request.target_background_dimensions.evidence
     must_match_current_interface_size: true
     forbid_generic_preset_when_exact_size_missing: true
     forbid_post_generation_stretch_or_crop_as_primary_fit: true
+    forbid_cover_or_runtime_fit_as_size_source: true
   visual_hierarchy_policy:
     page_goal: from visual_hierarchy_brief.page_goal
     primary_focus_must_remain_clear: true
@@ -420,9 +551,10 @@ Readability policy: {{visual_hierarchy_brief.readability_policy}}
 Output size:
 Generate at exactly {{workflow_request.target_background_dimensions.width_px}} x {{workflow_request.target_background_dimensions.height_px}} px.
 Match the current target interface or background container size and aspect ratio.
+Size source evidence: {{workflow_request.target_background_dimensions.evidence}}
 Device class: {{workflow_request.target_background_dimensions.device_class}}
 Orientation: {{workflow_request.target_background_dimensions.orientation}}
-Do not use a generic mobile or desktop preset, and do not rely on later stretching or cropping to fit the interface.
+Do not use a generic mobile or desktop preset. Do not infer 1080x1920, 720x1280, 1440x2560, or any 9:16 size from "mobile portrait" or "mobile game tool" alone. Do not rely on later stretching, cropping, `cover`, `contain`, or runtime fit to make an unverified size acceptable.
 
 Must include, in a subtle and UI-safe way:
 {{signature_semantics.must_include}}
@@ -456,7 +588,8 @@ This is a support background for an existing tool interface, not a poster, key a
 
 - 中央区域放置正文、表单、列表或卡片后仍可读。
 - 输出宽高必须等于 `workflow_request.target_background_dimensions.width_px` 和 `height_px`，并匹配当前目标背景界面的宽高比。
-- 不能用通用手机 / 电脑预设尺寸替代未知目标尺寸，不能依赖后续拉伸或裁切作为主要适配方式。
+- 必须能从 `workflow_request.target_background_dimensions.evidence` 追溯尺寸来源。
+- 不能用通用手机 / 电脑预设尺寸替代未知目标尺寸，不能依赖后续拉伸、裁切、`cover`、`contain` 或运行时适配作为主要适配方式。
 - 边缘装饰不抢按钮、输入框、导航和状态提示。
 - 没有清晰文字、假 UI、角色主视觉和截图感。
 - prompt 中能看到 `specific_differentiators` 和 `signature_semantics.must_include`。
@@ -820,7 +953,9 @@ output_dimensions:
   height_px:
   device_class:
   orientation:
+  evidence:
   matches_current_interface_size: true
+  cover_or_runtime_fit_used_as_size_source: false
 visual_hierarchy_scope: required | not_required
 visual_hierarchy_brief_ref:
   required_when: visual_hierarchy_scope == required
@@ -1048,6 +1183,74 @@ last_updated:
 
 ## QA 检查
 
+### Background Preflight Gate
+
+每次生成或引用 `background_tool.png` 前，必须先检查 `background_generation_preflight`。如果缺失 preflight，或 preflight 没有证明已读取 03 的背景图硬约束，QA 直接失败，不进入图片质量评价。
+
+必须确认：
+
+- `style_brief_ref` 和 `style_brief_resolution` 存在，且没有被模型自身知识、用户关键词或通用题材联想替代。
+- prompt 中的识别元素、弱化项、禁止项、边缘/远景锚点和中心安全区允许内容，都能追溯到 resolved `style_brief` 或 Style Discovery 输出。
+- prompt 不是把具名游戏压缩成通用 archetype、相似 IP 印象或题材场景全景。
+- prompt 不是只写游戏名、场景、氛围、颜色或材质，而是明确写入低密度工具 UI 背景约束。
+- prompt 明确包含中央 45%-60% 干净安全区、低纹理、低对比、低信息密度。
+- prompt 明确要求装饰和具名游戏识别锚点优先放在边缘、角落或远景。
+- prompt 明确禁止完整插画主视觉、清晰文字、假 UI、按钮、logo、头像、角色主视觉和强视觉中心。
+- `target_background_dimensions` 有具体宽高和可追溯 evidence。
+- 生成后仍会执行背景验收、Genericness Check 和 Traceability Check。
+
+失败归因：
+
+```yaml
+background_preflight_failure_attribution:
+  style_brief_ref_missing:
+    responsible: docs/01-workflow-dispatch.md | docs/05-material-generation.md
+    fix: complete style_brief_resolution before background generation
+  style_source_from_model_memory:
+    responsible: docs/05-material-generation.md
+    fix: rewrite prompt using resolved style_brief fields instead of model memory, generic archetype, or user keyword only
+  prompt_missing_specific_differentiators:
+    responsible: docs/05-material-generation.md
+    fix: include specific_differentiators, signature_semantics, background_identity_anchors, and anti_generic_guardrails from resolved style_brief
+  prompt_collapsed_to_generic_archetype:
+    responsible: docs/05-material-generation.md
+    fix: restore named-game differentiators and visual_identity_test before generation
+  missing_docs_03_background_constraints:
+    responsible: docs/05-material-generation.md
+    fix: read docs/03-production-constraints.md before image generation and include constraints in prompt
+  prompt_missing_center_safe_area_45_60:
+    responsible: docs/05-material-generation.md
+    fix: rewrite prompt with central 45%-60% clean safe area, low texture, low contrast, low information density
+  prompt_only_describes_style_or_scene:
+    responsible: docs/05-material-generation.md
+    fix: convert style/scene prompt into low-density UI support background prompt before generation
+  no_post_generation_constraint_check:
+    responsible: docs/05-material-generation.md
+    fix: run 03/04/05 QA before referencing asset in code or material metadata
+```
+
+### Scope Compliance Gate
+
+每次执行 `element_style_patch` 都必须先过范围合规检查。用户说“只 / 仅 / 单独 / 其他不变”时，QA 的第一判断不是“是否更好看”，而是“是否只改了被授权表面”。
+
+```yaml
+scope_compliance_qa_rule:
+  enabled_when: style_application_scope.mode == element_style_patch
+  source: workflow_request.style_application_scope
+  checks:
+    - explicit_scope_markers_respected
+    - only_allowed_outputs_changed
+    - preserved_surfaces_unchanged
+    - no_visual_harmony_auto_expansion
+```
+
+必须确认：
+
+- `allowed_outputs`、`target_image_assets`、`target_implementations` 和 `target_style_rules` 之外没有新增产物。
+- `preserve_surfaces` 中的表面没有被改动，包括根背景、页面底色、预览页背景、背景图片、页面级配色、非目标组件和未授权状态。
+- 如果执行者认为新面板与旧背景不协调，是否只记录了 `scope_conflict_note` 或向用户提问，而不是自行修改背景或页面配色。
+- 对“仅把面板换成 XX 风格”这类请求，背景相关 diff 必须为 0；任何 `bgDark`、root background、preview background、`background_tool.png` 或页面底色变化都判定为 scope violation。
+
 ### Visual Hierarchy Gate
 
 当 `visual_hierarchy_scope: required` 时，每次生成背景、`panel_render_recipe` 或角部贴片后，必须先通过 04 视觉层级检查。当 `visual_hierarchy_scope: not_required` 时，不启用 `visual_hierarchy_qa_rule`，也不自行补推页面视觉层级。
@@ -1192,6 +1395,18 @@ procedural_panel_qa_rule:
 
 ```yaml
 workflow_dispatch_failure_attribution:
+  background_size_inferred_from_device_class:
+    condition: target_background_dimensions.source == unknown && generated_size in common_mobile_or_desktop_presets
+    responsible: docs/01-workflow-dispatch.md
+    fix: block_generation_until_current_interface_or_background_container_size_is_collected
+  cover_used_to_justify_wrong_background_size:
+    condition: generated_background_size_not_from_target_background_dimensions && runtime_fit_mode in [cover, contain, stretch, crop]
+    responsible: docs/05-material-generation.md
+    fix: regenerate_at_verified_target_background_dimensions_or_block_if_missing
+  explicit_panel_only_changed_background:
+    condition: explicit_scope_markers contains only_or_just && preserve_surfaces contains background && background_diff_detected
+    responsible: docs/05-material-generation.md
+    fix: revert_background_changes_and_record_scope_conflict_note_or_ask_user
   panel_route_contains_background_asset:
     condition: route_to == panel_programmatic_draw && workflow_request.target_image_assets contains background_tool.png
     action: allow_when_style_application_scope_is_global_page_style_or_global_style_generation_enabled

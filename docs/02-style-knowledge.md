@@ -7,6 +7,7 @@
 当输入游戏不在现有风格知识库中，或 Excel 表中没有明确风格字段时，不要直接使用“通用游戏风格”。
 必须先执行 Style Discovery，再决定是匹配已有风格原型、创建新风格原型，还是使用 Generic Fallback。
 不要因为同系列、续作、IP 相近或名称相似，就直接继承已有游戏条目的风格。
+即使执行者或模型自认为熟悉某个游戏，也不得用模型内置印象、用户关键词或泛题材联想替代现有 `style_brief` 或 Style Discovery 结果；`model_memory` 不能作为 `source_basis`。
 
 其中 `maker_safe_assets` 只作为风格可迁移素材线索，不定义资源预算、尺寸边界或 Maker 实现参数。
 
