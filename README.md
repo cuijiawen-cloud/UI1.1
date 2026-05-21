@@ -6,6 +6,15 @@
 
 当前默认策略：01 分诊台使用可扩展的 `style_application_scope` 判断范围。只要用户提出“做成 / 生成 / 套用 XX 风格”，默认按 `global_page_style` 处理，输出背景、程序化面板、1 个固定角部面板饰品和页面配色规则；只有用户明确说“只 / 仅 / 单独 / 其他不变”时，才进入局部元素修改。
 
+核心术语：
+
+- 页面背景 / background：页面最底层的环境氛围图或底色。整体换肤时必须生成或引用 `background_tool.png`。
+- 功能面板 / business panel / functional panel：承载按钮、表单、列表、配置项、预览区等业务内容的矩形容器区域。
+- 面板皮肤 / panel skin / `programmatic_panel`：功能面板的视觉底板，只包含底色、边框、圆角、阴影、弱纹理、固定角部装饰；不包含按钮、文字、业务功能和交互逻辑。
+- 控件 / controls：按钮、输入框、标签、开关、tab、状态标记等，不能被当成面板皮肤。
+
+整体换肤完成标准：没有显式“只 / 仅 / 其他不变”时，最终必须同时覆盖 `background_tool.png`、`programmatic_panel`、最多 1 个固定角部饰品和 `page_color_rule`。代码绘制的纯色、渐变、NanoVG 纹理线条或局部光晕不能替代 `background_tool.png`。
+
 ## 文档目录
 
 | 编号 | 文档 | 用途 |

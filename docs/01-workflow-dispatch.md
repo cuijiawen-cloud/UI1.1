@@ -37,6 +37,81 @@ global_page_style_default:
 
 用户只说“面板换成 XX 风格”“背景做成 XX 风格”“按钮状态像 XX 游戏”，仍然默认是“以该元素为重点的全局页面风格更新”。这些表达不等于局部修改。
 
+### 术语定义
+
+为避免把“面板”“背景”和“控件”混用，01 必须按以下业务语义解释用户需求：
+
+```yaml
+ui_terms:
+  background:
+    aliases:
+      - 页面背景
+      - background
+      - 环境氛围图
+    meaning: 页面最底层的环境氛围图或底色
+    global_page_style_requirement: 必须生成或引用 background_tool.png
+  business_panel:
+    aliases:
+      - 功能面板
+      - 业务面板
+      - functional panel
+      - business panel
+      - 用户口语中的面板
+    meaning: 承载按钮、表单、列表、配置项、预览区等业务内容的矩形容器区域
+  panel_skin:
+    aliases:
+      - 面板皮肤
+      - panel skin
+      - programmatic_panel
+    meaning: 功能面板的视觉底板，只包含底色、边框、圆角、阴影、弱纹理和固定角部装饰
+    excludes:
+      - button
+      - text
+      - business_logic
+      - interaction_flow
+      - embedded_functional_controls
+  controls:
+    aliases:
+      - 控件
+      - buttons
+      - inputs
+      - tabs
+      - tags
+      - switches
+      - state_markers
+    meaning: 按钮、输入框、标签、开关、tab、状态标记等交互或状态元素
+    panel_skin_allowed: false
+```
+
+规则中的 `programmatic_panel` 指“面板皮肤”，不是把整个功能面板、按钮、文字和业务功能烘焙成一张图。用户口语中的“面板”通常指“功能面板”；只有用户明确说“只改面板底板 / 只改容器皮肤 / 背景不动”时，才把它收窄为局部 `panel_skin` 修改。
+
+### 整体换肤完成标准
+
+当用户说“改成 / 换成 / 做成 / 套用 XX 风格”，且没有“只 / 仅 / 单独 / 其他不变 / 背景不动 / 不要改配色”等显式限定时，01 必须输出 `global_page_style`。
+
+```yaml
+global_page_style_completion_standard:
+  required_outputs:
+    - background_tool.png
+    - programmatic_panel
+    - panel_corner_accent.png | panel_accent.png
+    - page_color_rule
+  invalid_substitutes_for_background_tool:
+    - root_background_color_only
+    - page_background_color_only
+    - linear_gradient_only
+    - radial_gradient_only
+    - NanoVG_lines_or_stripes_only
+    - procedural_glow_only
+    - panel_texture_or_panel_fill_only
+  fail_when:
+    - background_tool.png_not_generated_or_referenced
+    - global_page_style_finished_with_code_only_visual_changes
+    - panel_skin_changes_used_as_substitute_for_page_background
+```
+
+功能面板和页面背景是两个不同层级：修改功能面板不等于修改页面背景，生成页面背景也不等于完成面板皮肤。整体换肤必须同时覆盖背景、功能面板皮肤、页面配色和固定角部饰品。
+
 ### 显式限定才局部
 
 只有当用户明确表达“只改某个元素 / 保持其他不变 / 不要动背景或配色 / 单独给某个组件出规则”时，01 才把请求解释为 `element_style_patch`。
@@ -282,7 +357,7 @@ surface_registry:
     owner: docs/05-material-generation.md#背景图规则
     default_in_global_page_style: true
     required_inputs:
-      - target_background_dimensions
+      - background_output_spec
       - target_page_or_screen
       - style_brief_resolution
   panel_system:
@@ -374,6 +449,28 @@ global_style_intents:
     examples:
       - 生成一个 XX 风格面板 demo
     interpretation: full_ui_skin_demo_context
+```
+
+示例：
+
+```yaml
+global_example:
+  user_says: "改成怪物猎人风格"
+  mode: global_page_style
+  required_outputs:
+    - background_tool.png
+    - programmatic_panel
+    - panel_corner_accent.png | panel_accent.png
+    - page_color_rule
+local_example:
+  user_says: "只把功能面板改成怪物猎人风格，背景不动"
+  mode: element_style_patch
+  route_to: panel_programmatic_draw
+  preserve_surfaces:
+    - background
+    - page_color_system
+  forbidden_outputs:
+    - background_tool.png
 ```
 
 默认全局风格必须输出：
@@ -554,15 +651,15 @@ required_context_for_global_page_style:
     secondary_focus:
     known_content_regions:
       - string
-  target_background_dimensions:
-    source: user_specified | design_artboard | current_background_node | project_viewport | runtime_measured_viewport | screenshot_region | unknown
-    width_px:
-    height_px:
-    device_class: mobile | desktop | tablet | unknown
-    orientation: portrait | landscape | square | unknown
-    evidence:
-      - source_file_or_artboard_or_runtime_probe_or_screenshot_ref
-    reason:
+  background_output_spec:
+    source: production_default
+    width_px: 1920
+    height_px: 1080
+    aspect_ratio: "16:9"
+    fit_policy: cover_crop_allowed_no_stretch
+    applies_to:
+      - application_ui_background
+    note: fixed_business_baseline_not_current_viewport_measurement
   minimal_visual_context:
     required_for_04: true
     screenshot_ref:
@@ -571,9 +668,9 @@ required_context_for_global_page_style:
     user_feedback:
 ```
 
-当请求会生成 `background_tool.png` 时，必须已有 `target_background_dimensions.width_px` 和 `target_background_dimensions.height_px`。只知道是手机、电脑或平板但没有具体宽高时，不得编造默认尺寸，必须把 `missing_target_background_dimensions` 写入 `blocked_by` 或 `open_questions`。
+当请求会生成 `background_tool.png` 时，01 不再识别当前背景节点、工程 viewport、运行时容器或截图区域尺寸，也不根据当前视觉自动匹配背景图宽高。背景尺寸统一按生产默认 `background_output_spec: 1920x1080` 传递给 05。
 
-`target_background_dimensions.source` 必须可追溯到具体证据：用户明确给出的尺寸、设计稿 / artboard、当前背景节点、工程 viewport、运行时测得的 viewport / 容器尺寸，或当前截图可确认的背景区域。`mobile + portrait`、`手游工具`、`9:16`、`1080x1920` 这类设备类型或常见比例推断不算有效来源；如果只能得到这些信息，`source` 必须为 `unknown`，并阻断背景生成。
+`1920x1080` 是业务固定基准，不是从设备类型、当前页面截图或 `cover` 显示结果推导出来的尺寸。01 可以记录目标页面和主要内容焦点，供 04 / 05 控制背景强度和安全区；但不因缺少当前界面具体宽高而阻断背景生成。
 
 进入 `element_style_patch` 时，01 只采集该元素需要的上下文；但如果局部修改会影响页面主次、背景强度、文字可读性或状态颜色冲突，仍必须采集足够上下文并进入 04。
 
@@ -758,16 +855,16 @@ workflow_request:
   global_style_generation_enabled: enabled | disabled
   route_to: background_generation | panel_programmatic_draw | full_ui_skin | panel_demo | state_guidance | qa_gate | page_color_rule_only | style_brief_resolution_only | production_constraints_only | metadata_only
   target_page_or_screen:
-  target_background_dimensions:
+  background_output_spec:
     required_when_background_generated: true
-    source: user_specified | design_artboard | current_background_node | project_viewport | runtime_measured_viewport | screenshot_region | unknown
-    width_px:
-    height_px:
-    device_class: mobile | desktop | tablet | unknown
-    orientation: portrait | landscape | square | unknown
-    evidence:
-      - source_file_or_artboard_or_runtime_probe_or_screenshot_ref
-    reason:
+    source: production_default
+    width_px: 1920
+    height_px: 1080
+    aspect_ratio: "16:9"
+    fit_policy: cover_crop_allowed_no_stretch
+    applies_to:
+      - application_ui_background
+    reason: fixed_business_baseline_not_current_viewport_measurement
   primary_focus_context:
     page_goal:
     primary_focus:
@@ -835,7 +932,6 @@ workflow_request:
     - missing_specificity_fields
     - missing_current_visual_audit
     - missing_target_page_or_screen
-    - missing_target_background_dimensions
     - missing_primary_focus_context
     - missing_minimal_visual_context
     - missing_component_inventory
@@ -850,7 +946,7 @@ workflow_request:
 - `visual_hierarchy_mode` 仅在 `visual_hierarchy_scope == required` 时必填；`visual_hierarchy_scope == not_required` 时应为 `null`。
 - 01 设置 `current_visual_audit_required`。
 - 01 采集 `target_page_or_screen`、`primary_focus_context` 和必要的 `minimal_visual_context`，供 04 判断页面视觉层级。
-- 当请求会生成 `background_tool.png` 时，01 必须采集 `target_background_dimensions`。尺寸必须来自当前目标界面或背景容器，并记录 evidence；如果只能判断是手机或电脑但没有具体宽高，不能编造默认尺寸，必须把 `missing_target_background_dimensions` 写入 `blocked_by` 或 `open_questions`。
+- 当请求会生成 `background_tool.png` 时，01 必须写入固定 `background_output_spec: 1920x1080`。不再采集当前目标界面、背景容器、工程 viewport、运行时测量或截图区域宽高，也不再把缺少当前尺寸作为 blocker。
 - 当 `visual_hierarchy_scope == required` 时，01 不生成 `visual_hierarchy_brief_ref`，也不消费它；01 初始输出时该字段应为空、`null` 或标记为待 04 补全。
 - 04 在完成 `current_visual_audit`（如需要）和 `visual_hierarchy_brief` 后生成 `visual_hierarchy_brief_ref`。
 - 当 `visual_hierarchy_scope == not_required` 时，01 直接输出 `visual_hierarchy_scope: not_required`、`visual_hierarchy_brief_ref: null`、`visual_hierarchy_skip_reason` 给 05。
@@ -868,13 +964,13 @@ workflow_request:
 - 如果 `style_application_scope.mode == global_page_style`：`route_to` 必须为 `full_ui_skin`，`global_style_generation_enabled` 必须为 `enabled`，并且 `target_image_assets` 必须包含 `background_tool.png` 和 1 个 `panel_corner_accent.png | panel_accent.png`，`target_implementations` 必须包含 `programmatic_panel`。
 - 如果 `style_application_scope.mode == global_page_style`：`target_style_rules` 必须包含 `page_color_rule`。
 - 如果 `style_application_scope.mode == element_style_patch`：必须写明 `explicit_scope_markers`、`target_elements`、`allowed_outputs` 和 `preserve_surfaces`。
-- 如果 `style_application_scope.mode == element_style_patch` 且 `preserve_surfaces` 包含 `background`：`target_image_assets` 和 `allowed_outputs` 不得包含 `background_tool.png`，也不得要求采集或生成新的背景尺寸。
+- 如果 `style_application_scope.mode == element_style_patch` 且 `preserve_surfaces` 包含 `background`：`target_image_assets` 和 `allowed_outputs` 不得包含 `background_tool.png`，也不得要求生成新的背景图。
 - 如果 `style_application_scope.mode == element_style_patch` 且 `preserve_surfaces` 包含 `page_color_system`：`target_style_rules` 和 `allowed_outputs` 不得包含 `page_color_rule`；如存在视觉冲突，只能写入 `open_questions` 或 `assumptions`，不得自动改页面配色。
 - 如果 `visual_hierarchy_scope == required`：`visual_hierarchy_mode` 已确定；若为 `iterative_style_refinement`，必须设置 `current_visual_audit_required: true`。
 - 如果 `visual_hierarchy_scope == required`：进入 04 的请求已提供 `target_page_or_screen` 或 `primary_focus_context`；背景、状态、QA 这类依赖当前视觉关系的请求还必须提供 `minimal_visual_context`。
 - 如果 `visual_hierarchy_scope == required`：04 已生成 `visual_hierarchy_brief_ref`；该字段不是 01 的产物。
 - 如果 `visual_hierarchy_scope == not_required`：01 已输出 `visual_hierarchy_scope: not_required`、`visual_hierarchy_brief_ref: null`、`visual_hierarchy_skip_reason`。
-- 如果会生成 `background_tool.png`：必须已有 `target_background_dimensions.width_px`、`height_px` 和可审计 `evidence`；只知道 mobile / desktop / tablet、9:16 或常见预设尺寸而没有当前界面证据时，不得进入 05 生成背景。
+- 如果会生成 `background_tool.png`：必须已有固定 `background_output_spec.width_px: 1920`、`height_px: 1080`、`source: production_default`。不得在进入 05 前重新识别当前背景尺寸或把固定尺寸替换成运行时测量值。
 - 面板相关需求已输出 `panel_candidate_inventory`。
 - 需要实际替换组件时已输出 `target_components`。
 - demo 面板已带上 03 要求的程序化面板 QA 尺寸。

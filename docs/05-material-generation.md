@@ -31,13 +31,13 @@ inputs:
       required: true | false
       role_slots: []
       preserve_existing_color_roles: true | false
-    target_background_dimensions:
+    background_output_spec:
       required_when_background_generated: true
-      source: user_specified | design_artboard | current_background_node | project_viewport | screenshot_region | unknown
-      width_px:
-      height_px:
-      device_class: mobile | desktop | tablet | unknown
-      orientation: portrait | landscape | square | unknown
+      source: production_default
+      width_px: 1920
+      height_px: 1080
+      aspect_ratio: "16:9"
+      fit_policy: cover_crop_allowed_no_stretch
     relevant_rules:
       required_when: route_to == qa_gate
       value:
@@ -158,7 +158,7 @@ style_brief_consumption:
   background_prompt_required:
     enabled_when_any:
       - global_style_generation_enabled == enabled
-    - style_application_scope.mode == global_page_style
+      - style_application_scope.mode == global_page_style
       - workflow_request.target_image_assets contains background_tool.png
       - workflow_request.style_application_scope.element_patch.allowed_outputs contains background_tool.png
     required_items:
@@ -366,7 +366,7 @@ material_package:
 2. 用关键词或游戏名从 `02-style-knowledge.md` 取 `style_brief`。
 3. 用 `03-production-constraints.md` 检查 Maker 能力、预算、尺寸、资源白名单和 fallback 边界。
 4. 当 `visual_hierarchy_scope: required` 时，从 `04-visual-hierarchy-brief.md` 取得 `visual_hierarchy_brief_ref` 和 `visual_hierarchy_brief`；迭代模式必须同时取得 `current_visual_audit_ref`。当 `visual_hierarchy_scope: not_required` 时，只记录 `visual_hierarchy_skip_reason`，不阻塞等待 04 `brief_id`。
-5. 如果本次会生成 `background_tool.png`，必须先读取 `workflow_request.target_background_dimensions`，并按当前目标界面或背景容器的实际宽高输出；缺少具体宽高或缺少可审计 evidence 时，不得用通用手机 / 电脑预设尺寸继续生成。
+5. 如果本次会生成 `background_tool.png`，必须先读取 `workflow_request.background_output_spec`，并按固定 `1920x1080` 输出；不得重新识别当前界面、背景容器、运行时 viewport 或截图区域尺寸来自动改写输出宽高。
 6. 当 `style_application_scope.mode == global_page_style` 或 `global_style_generation_enabled == enabled` 时，输出 background、programmatic panel、1 个固定角部面板饰品和 `page_color_rule`。state guidance 仅在用户提出状态需求或颜色语义冲突时输出。
 7. 当 `style_application_scope.mode == element_style_patch` 且 `global_style_generation_enabled == disabled` 时，只输出 `element_patch.allowed_outputs`、`target_image_assets`、`target_implementations` 和 `target_style_rules` 中明确允许的内容；不得由 route 自动补齐全局资产。
 8. 如果 `preserve_surfaces` 包含 `background`，不得改根背景、页面底色、预览页背景、背景图片、背景 scrim 或 `background_tool.png`；如果 `preserve_surfaces` 包含 `page_color_system`，不得为了适配面板调整页面级配色规则。
@@ -375,6 +375,8 @@ material_package:
 11. `qa_gate` 只执行 QA，不生成新素材。
 12. 输出 Maker 配置和物料元数据；当 `visual_hierarchy_scope: required` 时记录 `visual_hierarchy_trace`，当 `visual_hierarchy_scope: not_required` 时记录 `visual_hierarchy_scope` 和 `visual_hierarchy_skip_reason`。
 13. QA 失败时按 02 / 03 / 04 / 05 分工归因回修；如果失败来自 05 没落实 scope、程序化面板策略、页面配色规则或生成执行，归因到 05。
+
+整体换肤不得用代码层面的纯色、渐变、NanoVG 纹理线条、局部光晕或程序化面板填充替代 `background_tool.png`。这些实现可以作为页面底色、scrim、面板皮肤或局部氛围补充，但不能算完成页面背景资产。
 
 ## 背景生成 Preflight Gate
 
@@ -422,15 +424,17 @@ background_generation_preflight:
       - style_brief_resolution is not blocked
       - prompt terms are traceable to style_brief fields
       - prompt does not replace style_brief with model memory or generic scene imagination
-  target_background_dimensions:
-    width_px:
-    height_px:
-    source:
-    evidence:
+  background_output_spec:
+    width_px: 1920
+    height_px: 1080
+    source: production_default
+    aspect_ratio: "16:9"
+    fit_policy: cover_crop_allowed_no_stretch
     pass_condition:
-      - width_px and height_px are present
-      - source is not unknown
-      - evidence is auditable
+      - width_px == 1920
+      - height_px == 1080
+      - source == production_default
+      - no_current_viewport_or_screenshot_size_matching_required
   prompt_contract:
     must_include:
       - low-density tool UI background
@@ -439,7 +443,7 @@ background_generation_preflight:
       - center low texture, low contrast, low information density
       - decorations and identity anchors placed at edges, corners, or far background
       - no clear text, fake UI, buttons, logo, avatar, or strong visual center
-      - exact output dimensions from target_background_dimensions
+      - exact output dimensions 1920x1080
     must_not_be_only:
       - game style name
       - scene description
@@ -456,7 +460,7 @@ background_generation_preflight:
       - readability_policy
   post_generation_qa_required: true
   blockers:
-    - missing_target_background_dimensions
+    - background_output_spec_not_1920x1080
     - style_brief_ref_missing
     - style_source_from_model_memory
     - prompt_missing_specific_differentiators
@@ -495,16 +499,15 @@ background_rule:
   role: low_density_ui_support_background
   style_anchor_policy: preserve_specificity_contract
   output_dimensions:
-    source: workflow_request.target_background_dimensions
-    width_px: workflow_request.target_background_dimensions.width_px
-    height_px: workflow_request.target_background_dimensions.height_px
-    device_class: workflow_request.target_background_dimensions.device_class
-    orientation: workflow_request.target_background_dimensions.orientation
-    evidence: workflow_request.target_background_dimensions.evidence
-    must_match_current_interface_size: true
-    forbid_generic_preset_when_exact_size_missing: true
-    forbid_post_generation_stretch_or_crop_as_primary_fit: true
-    forbid_cover_or_runtime_fit_as_size_source: true
+    source: workflow_request.background_output_spec
+    width_px: 1920
+    height_px: 1080
+    aspect_ratio: "16:9"
+    fixed_business_baseline: true
+    must_match_current_interface_size: false
+    current_viewport_measurement_required: false
+    cover_crop_allowed: true
+    stretch_forbidden: true
   visual_hierarchy_policy:
     page_goal: from visual_hierarchy_brief.page_goal
     primary_focus_must_remain_clear: true
@@ -549,12 +552,10 @@ Edge decoration level: {{visual_hierarchy_brief.background.edge_decoration_level
 Readability policy: {{visual_hierarchy_brief.readability_policy}}
 
 Output size:
-Generate at exactly {{workflow_request.target_background_dimensions.width_px}} x {{workflow_request.target_background_dimensions.height_px}} px.
-Match the current target interface or background container size and aspect ratio.
-Size source evidence: {{workflow_request.target_background_dimensions.evidence}}
-Device class: {{workflow_request.target_background_dimensions.device_class}}
-Orientation: {{workflow_request.target_background_dimensions.orientation}}
-Do not use a generic mobile or desktop preset. Do not infer 1080x1920, 720x1280, 1440x2560, or any 9:16 size from "mobile portrait" or "mobile game tool" alone. Do not rely on later stretching, cropping, `cover`, `contain`, or runtime fit to make an unverified size acceptable.
+Generate at exactly 1920 x 1080 px.
+This is the fixed production baseline for application UI backgrounds.
+Do not inspect or infer the current target interface size, background container size, runtime viewport, screenshot region, device class, or DPR to change this output size.
+Runtime may use `cover` or centered crop to fit different containers, but the generated bitmap itself must not be stretched or distorted.
 
 Must include, in a subtle and UI-safe way:
 {{signature_semantics.must_include}}
@@ -587,9 +588,9 @@ This is a support background for an existing tool interface, not a poster, key a
 ### 验收
 
 - 中央区域放置正文、表单、列表或卡片后仍可读。
-- 输出宽高必须等于 `workflow_request.target_background_dimensions.width_px` 和 `height_px`，并匹配当前目标背景界面的宽高比。
-- 必须能从 `workflow_request.target_background_dimensions.evidence` 追溯尺寸来源。
-- 不能用通用手机 / 电脑预设尺寸替代未知目标尺寸，不能依赖后续拉伸、裁切、`cover`、`contain` 或运行时适配作为主要适配方式。
+- 输出宽高必须固定为 `1920x1080`。
+- 不要求从当前界面、背景容器、viewport、DPR 或截图区域追溯尺寸来源；尺寸来源为 `production_default`。
+- 运行时可以用 `cover` 或居中裁切适配不同容器，但不得拉伸变形；裁切后仍应保持中心安全区可读。
 - 边缘装饰不抢按钮、输入框、导航和状态提示。
 - 没有清晰文字、假 UI、角色主视觉和截图感。
 - prompt 中能看到 `specific_differentiators` 和 `signature_semantics.must_include`。
@@ -948,14 +949,14 @@ asset_type: ui_background
 style_brief_ref: docs/02-style-knowledge.md#entry-id
 constraints_ref: docs/03-production-constraints.md
 output_dimensions:
-  source:
-  width_px:
-  height_px:
-  device_class:
-  orientation:
-  evidence:
-  matches_current_interface_size: true
-  cover_or_runtime_fit_used_as_size_source: false
+  source: production_default
+  width_px: 1920
+  height_px: 1080
+  aspect_ratio: "16:9"
+  matches_current_interface_size: false
+  current_viewport_measurement_required: false
+  cover_crop_allowed: true
+  stretch_forbidden: true
 visual_hierarchy_scope: required | not_required
 visual_hierarchy_brief_ref:
   required_when: visual_hierarchy_scope == required
@@ -1183,6 +1184,46 @@ last_updated:
 
 ## QA 检查
 
+### Global Page Style Completion Gate
+
+每次执行 `global_page_style` 或 `global_style_generation_enabled == enabled` 的任务，必须先通过整体换肤完成门禁。该门禁先于单项视觉质量评价；如果全局必需产物缺失，不能因为面板、按钮或配色已经改过就判定完成。
+
+```yaml
+global_page_style_completion_gate:
+  enabled_when_any:
+    - style_application_scope.mode == global_page_style
+    - global_style_generation_enabled == enabled
+  required_final_outputs:
+    - generated_or_referenced_asset: background_tool.png
+    - implementation: programmatic_panel
+    - generated_or_referenced_asset: panel_corner_accent.png | panel_accent.png
+    - rule: page_color_rule
+  invalid_substitutes_for_background_tool:
+    - root_background_color_only
+    - page_background_color_only
+    - linear_gradient_only
+    - radial_gradient_only
+    - NanoVG_lines_or_stripes_only
+    - procedural_glow_only
+    - panel_texture_or_panel_fill_only
+  fail_if:
+    - no_background_tool_png_generated_or_referenced
+    - no_background_generation_preflight_and_no_explicit_blocker
+    - code_only_visual_changes_marked_as_global_page_style_complete
+    - panel_skin_changes_used_as_substitute_for_page_background
+    - no_page_color_rule_output
+    - no_programmatic_panel_output
+  note: "Code-only visual changes do not satisfy global_page_style. Panel skin does not replace page background."
+```
+
+必须确认：
+
+- `background_tool.png` 已生成或被明确引用；若无法生成，必须有显式 blocker，不能静默跳过。
+- 根背景色、页面底色、径向渐变、NanoVG 横纹 / 斜纹、羊皮纸线条、营火光晕或危险光晕都不能替代背景图。
+- `programmatic_panel` 只完成面板皮肤，不等于完成页面背景。
+- `panel_corner_accent.png | panel_accent.png` 只完成固定角部装饰，不等于完成背景或面板主体。
+- `page_color_rule` 是非图片规则，必须单独输出或记录。
+
 ### Background Preflight Gate
 
 每次生成或引用 `background_tool.png` 前，必须先检查 `background_generation_preflight`。如果缺失 preflight，或 preflight 没有证明已读取 03 的背景图硬约束，QA 直接失败，不进入图片质量评价。
@@ -1196,7 +1237,7 @@ last_updated:
 - prompt 明确包含中央 45%-60% 干净安全区、低纹理、低对比、低信息密度。
 - prompt 明确要求装饰和具名游戏识别锚点优先放在边缘、角落或远景。
 - prompt 明确禁止完整插画主视觉、清晰文字、假 UI、按钮、logo、头像、角色主视觉和强视觉中心。
-- `target_background_dimensions` 有具体宽高和可追溯 evidence。
+- `background_output_spec` 为固定 `1920x1080`，且没有被当前 viewport、截图区域、设备类型或 DPR 自动改写。
 - 生成后仍会执行背景验收、Genericness Check 和 Traceability Check。
 
 失败归因：
@@ -1395,14 +1436,14 @@ procedural_panel_qa_rule:
 
 ```yaml
 workflow_dispatch_failure_attribution:
-  background_size_inferred_from_device_class:
-    condition: target_background_dimensions.source == unknown && generated_size in common_mobile_or_desktop_presets
+  background_size_auto_matched_to_current_view:
+    condition: generated_size derived from current viewport, screenshot region, device class, or runtime measurement
     responsible: docs/01-workflow-dispatch.md
-    fix: block_generation_until_current_interface_or_background_container_size_is_collected
-  cover_used_to_justify_wrong_background_size:
-    condition: generated_background_size_not_from_target_background_dimensions && runtime_fit_mode in [cover, contain, stretch, crop]
+    fix: use fixed background_output_spec 1920x1080 and remove current-size matching logic
+  background_output_not_fixed_1920x1080:
+    condition: generated_background_size != 1920x1080 && no explicit override request exists
     responsible: docs/05-material-generation.md
-    fix: regenerate_at_verified_target_background_dimensions_or_block_if_missing
+    fix: regenerate at fixed 1920x1080 production default
   explicit_panel_only_changed_background:
     condition: explicit_scope_markers contains only_or_just && preserve_surfaces contains background && background_diff_detected
     responsible: docs/05-material-generation.md
