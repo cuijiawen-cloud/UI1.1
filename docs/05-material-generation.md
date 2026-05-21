@@ -10,10 +10,34 @@
 inputs:
   workflow_request_ref: docs/01-workflow-dispatch.md output
   workflow_request:
-    style_generation_bypass: enabled | disabled
-    route_to: background_generation | panel_programmatic_draw | full_ui_skin | panel_demo | state_guidance | qa_gate
-    target_assets:
-      - string
+    style_application_scope:
+      mode: global_page_style | element_style_patch | qa_only | style_brief_only | production_constraints_only | metadata_only
+      requested_focus_elements: []
+      preserve_surfaces: []
+      element_patch:
+        target_elements: []
+        allowed_outputs: []
+        preserve_other_surfaces: true | false
+    global_style_generation_enabled: enabled | disabled
+    route_to: background_generation | panel_programmatic_draw | full_ui_skin | panel_demo | state_guidance | qa_gate | page_color_rule_only
+    target_image_assets:
+      - background_tool.png
+      - panel_corner_accent.png | panel_accent.png
+    target_implementations:
+      - programmatic_panel
+    target_style_rules:
+      - page_color_rule
+    page_color_requirements:
+      required: true | false
+      role_slots: []
+      preserve_existing_color_roles: true | false
+    target_background_dimensions:
+      required_when_background_generated: true
+      source: user_specified | design_artboard | current_background_node | project_viewport | screenshot_region | unknown
+      width_px:
+      height_px:
+      device_class: mobile | desktop | tablet | unknown
+      orientation: portrait | landscape | square | unknown
     relevant_rules:
       required_when: route_to == qa_gate
       value:
@@ -36,7 +60,7 @@ inputs:
   target_page_or_screen:
     rule: required_when 优先于 optional_when；例如 qa_gate / state_guidance 通常可选，但当 visual_hierarchy_scope == required 时仍必须提供页面或焦点上下文
     required_when:
-      - style_generation_bypass == enabled
+      - global_style_generation_enabled == enabled
       - visual_hierarchy_scope == required
       - route_to == background_generation
       - route_to == full_ui_skin
@@ -47,11 +71,11 @@ inputs:
       - route_to == qa_gate
   target_components:
     required_when:
-      - route_to == panel_programmatic_draw && style_generation_bypass != enabled
-      - route_to == full_ui_skin && style_generation_bypass != enabled
-      - route_to == panel_demo && style_generation_bypass != enabled
+      - route_to == panel_programmatic_draw && global_style_generation_enabled != enabled
+      - route_to == full_ui_skin && global_style_generation_enabled != enabled
+      - route_to == panel_demo && global_style_generation_enabled != enabled
     optional_when:
-      - style_generation_bypass == enabled
+      - global_style_generation_enabled == enabled
       - route_to == background_generation
       - route_to == state_guidance
       - route_to == qa_gate
@@ -90,6 +114,7 @@ style_brief_consumption:
     - visual_identity_test
     - visual_identity
     - genre_presentation
+    - mood
     - game_features.core_gameplay
     - world_elements
     - colors
@@ -98,16 +123,16 @@ style_brief_consumption:
     - background_visual_language
     - ui_translation.panel
     - ui_translation.panel_base_style_hint
+    - ui_translation.state
+    - ui_translation.text
     - ui_translation.accent
     - forbidden_mistakes
   background_prompt_required:
-    enabled_when:
-      - style_generation_bypass == enabled
-      - route_to == background_generation
-      - route_to == panel_programmatic_draw
-      - route_to == full_ui_skin
-      - route_to == panel_demo
-      - route_to == state_guidance
+    enabled_when_any:
+      - global_style_generation_enabled == enabled
+    - style_application_scope.mode == global_page_style
+      - workflow_request.target_image_assets contains background_tool.png
+      - workflow_request.style_application_scope.element_patch.allowed_outputs contains background_tool.png
     required_items:
       - use style_archetype only as base direction
       - include specific_differentiators
@@ -122,11 +147,22 @@ style_brief_consumption:
     - translate style into fill, radius, border layers, glow layers, edge lights, fixed geometry, and optional accent semantics
     - output panel_render_recipe before implementation
     - do not generate a full panel PNG or require 9-slice metadata
+  page_color_rule_required:
+    enabled_when_any:
+      - workflow_request.target_style_rules contains page_color_rule
+      - style_application_scope.mode == global_page_style
+    required_inputs:
+      - style_brief.colors
+      - style_brief.mood
+      - style_brief.ui_translation.state
+      - style_brief.ui_translation.text
+      - visual_hierarchy_brief.color_roles when visual_hierarchy_scope == required
+      - workflow_request.page_color_requirements
 ```
 
 `style_archetype` 只能帮助选择方向，不能替代差异锚点。背景 prompt 如果只包含 archetype、通用氛围、通用颜色和安全区要求，视为失败。
 
-如果现有 `style_brief` 条目尚未显式包含 Style Specificity Contract，必须先按 `02-style-knowledge.md` 的旧条目补全规则生成临时 specificity 字段，再进入背景 prompt 组装。
+如果现有 `style_brief` 条目尚未显式包含 Style Specificity Contract，或缺少 `panel_base_style_hint`、`ui_translation.state`、`ui_translation.text` 等本次必需字段，05 必须阻断并要求回到 02 执行旧条目补全。05 不得在生成执行阶段临时补写这些字段。
 
 ### 压缩失败归因
 
@@ -192,15 +228,23 @@ visual_hierarchy_brief_consumption:
 
 ## 输出包
 
-05 必须先读取 `workflow_request.style_generation_bypass`。当该字段为 `enabled` 时，风格化生成请求不再按细分 route 裁剪输出范围，必须输出背景、程序化面板和 1 个固定角部面板饰品；状态规则按用户是否提出状态需求输出。
+05 必须先读取 `workflow_request.style_application_scope`，再读取 `workflow_request.global_style_generation_enabled` 和 `workflow_request.route_to`。范围优先级高于历史 route 名称。
 
-如果 `workflow_request.style_generation_bypass == disabled`，05 才按 `workflow_request.route_to` 的历史细分语义裁剪输出。旁路启用时，即使旧字段仍显示 `panel_programmatic_draw`、`background_generation`、`panel_demo` 或 `state_guidance`，也不得把 `background_tool.png` 或面板饰品视为分诊冲突。
+执行优先级：
+
+1. `qa_only` 只执行 QA，不生成新物料。
+2. `style_brief_only`、`production_constraints_only`、`metadata_only` 是 01 内部终止类型，不进入 05。
+3. `route_to == page_color_rule_only` 只能在 `target_style_rules` 或 `allowed_outputs` 已授权 `page_color_rule` 时输出非图片 `page_color_rule`，不得触发背景、程序化面板或面板饰品生成。
+4. `style_application_scope.mode == global_page_style` 或 `global_style_generation_enabled == enabled` 时，输出背景、程序化面板、1 个固定角部面板饰品和 `page_color_rule`；状态规则按用户是否提出状态需求输出。
+5. `style_application_scope.mode == element_style_patch` 且 `global_style_generation_enabled == disabled` 时，必须只输出 `element_patch.allowed_outputs`、`target_image_assets`、`target_implementations` 和 `target_style_rules` 中明确允许的内容。不得因为 route 名是 `background_generation`、`panel_programmatic_draw`、`state_guidance` 或 `full_ui_skin` 就自动补齐背景、面板或角饰。
+6. `route_to` 只表示处理入口和执行分支，不是生成授权；如果 01 把显式局部请求路由到 `background_generation`、`panel_programmatic_draw`、`panel_demo`、`state_guidance` 或 `page_color_rule_only`，必须同时在 `allowed_outputs`、`target_image_assets`、`target_implementations` 或 `target_style_rules` 中写入对应授权产物。
 
 ```yaml
 material_package:
   route_to: workflow_request.route_to
-  style_generation_bypass:
-    enabled:
+  style_application_scope: workflow_request.style_application_scope
+  output_by_scope:
+    global_page_style:
       background:
         asset: background_tool.png
         rule: background_rule
@@ -211,107 +255,64 @@ material_package:
           asset: panel_corner_accent.png | panel_accent.png
           required: true
           max_count: 1
+      page_color_rule:
+        rule: page_color_rule
+        asset: none
+        output_kind: non_image_style_rule
       state_guidance:
         rule: state_visual_rule
         required_when: target_components.state_requirements not empty
-  output_by_route:
-    background_generation:
-      background:
-        asset: background_tool.png
-        rule: background_rule
-      panel:
-        implementation: programmatic_draw
-        renderer_recipe: panel_render_recipe
-        required_accent:
-          asset: panel_corner_accent.png | panel_accent.png
-          required: true
+    element_style_patch:
+      route_to_usage: routing_only_not_generation_permission
+      outputs:
+        source: workflow_request.style_application_scope.element_patch.allowed_outputs + workflow_request.target_image_assets + workflow_request.target_implementations + workflow_request.target_style_rules
+        background:
+          generated_when_any:
+            - allowed_outputs contains background_tool.png
+            - target_image_assets contains background_tool.png
+          asset: background_tool.png
+          rule: background_rule
+        panel:
+          generated_when_any:
+            - allowed_outputs contains programmatic_panel
+            - target_implementations contains programmatic_panel
+          implementation: programmatic_draw
+          renderer_recipe: panel_render_recipe
+          business_replacement: false when route_to == panel_demo
+        panel_accent:
+          generated_when_any:
+            - allowed_outputs contains panel_corner_accent.png
+            - allowed_outputs contains panel_accent.png
+            - target_image_assets contains panel_corner_accent.png
+            - target_image_assets contains panel_accent.png
+          required: false
           max_count: 1
-      state_guidance: not_generated_by_default
-      qa:
-        rules:
-          - background_rule
-          - visual_hierarchy_qa_rule:
-              enabled_when: visual_hierarchy_scope == required
-    panel_programmatic_draw:
-      background:
-        asset: background_tool.png
-        rule: background_rule
-      panel:
-        implementation: programmatic_draw
-        renderer_recipe: panel_render_recipe
-        required_accent:
-          asset: panel_corner_accent.png | panel_accent.png
-          required: true
-          max_count: 1
-      state_guidance: not_generated_by_default
-      qa:
-        rules:
-          - procedural_panel_qa_rule
-          - visual_hierarchy_qa_rule:
-              enabled_when: visual_hierarchy_scope == required
-    panel_demo:
-      background:
-        asset: background_tool.png
-        rule: background_rule
-      panel:
-        implementation: programmatic_draw
-        renderer_recipe: panel_render_recipe
-        required_accent:
-          asset: panel_corner_accent.png | panel_accent.png
-          required: true
-          max_count: 1
-      qa:
-        rules:
-          - procedural_panel_qa_rule
-          - visual_hierarchy_qa_rule:
-              enabled_when: visual_hierarchy_scope == required
-      business_replacement: false
-    full_ui_skin:
-      background:
-        asset: background_tool.png
-        rule: background_rule
-      panel:
-        implementation: programmatic_draw
-        renderer_recipe: panel_render_recipe
-        required_accent:
-          asset: panel_corner_accent.png | panel_accent.png
-          required: true
-          max_count: 1
-      state_guidance:
-        rule: state_visual_rule
-      qa:
-        rules:
-          - background_rule
-          - procedural_panel_qa_rule
-          - state_visual_rule
-          - visual_hierarchy_qa_rule:
-              enabled_when: visual_hierarchy_scope == required
-    state_guidance:
-      background:
-        asset: background_tool.png
-        rule: background_rule
-      panel:
-        implementation: programmatic_draw
-        renderer_recipe: panel_render_recipe
-        required_accent:
-          asset: panel_corner_accent.png | panel_accent.png
-          required: true
-          max_count: 1
-      state_guidance:
-        rule: state_visual_rule
-      qa:
-        rules:
-          - state_visual_rule
-          - visual_hierarchy_qa_rule:
-              enabled_when: visual_hierarchy_scope == required
-    qa_gate:
+        page_color_rule:
+          generated_when_any:
+            - allowed_outputs contains page_color_rule
+            - target_style_rules contains page_color_rule
+          asset: none
+          output_kind: non_image_style_rule
+        state_guidance:
+          generated_when_any:
+            - allowed_outputs contains state_guidance
+          rule: state_visual_rule
+      preserve_surfaces: workflow_request.style_application_scope.preserve_surfaces
+      forbidden_auto_expansion:
+        - do_not_generate_background_unless_allowed
+        - do_not_generate_panel_unless_allowed
+        - do_not_generate_panel_accent_unless_allowed
+        - do_not_generate_state_guidance_unless_allowed
+    qa_only:
       generation: false
       background: not_generated
       panel: not_generated
+      page_color_rule: not_generated
       state_guidance: not_generated
       qa:
         rules: from workflow_request.relevant_rules
   metadata:
+    style_application_scope: workflow_request.style_application_scope
     visual_hierarchy_scope: visual_hierarchy_scope
     visual_hierarchy_skip_reason:
       required_when: visual_hierarchy_scope == not_required
@@ -327,26 +328,25 @@ material_package:
 01-workflow-dispatch -> 02-style-knowledge -> 03-production-constraints -> 04-visual-hierarchy-brief -> 05-material-generation
 ```
 
-1. 从 `01-workflow-dispatch.md` 取得 `workflow_request_ref` 和 `workflow_request.route_to`；只有当前 route 需要页面或组件上下文时，才要求 `target_page_or_screen` 或 `target_components`。
+1. 从 `01-workflow-dispatch.md` 取得 `workflow_request_ref`、`workflow_request.style_application_scope`、`workflow_request.route_to`、`target_image_assets`、`target_implementations` 和 `target_style_rules`；先按 scope 判断全局还是局部，再按 route 执行。
 2. 用关键词或游戏名从 `02-style-knowledge.md` 取 `style_brief`。
 3. 用 `03-production-constraints.md` 检查 Maker 能力、预算、尺寸、资源白名单和 fallback 边界。
 4. 当 `visual_hierarchy_scope: required` 时，从 `04-visual-hierarchy-brief.md` 取得 `visual_hierarchy_brief_ref` 和 `visual_hierarchy_brief`；迭代模式必须同时取得 `current_visual_audit_ref`。当 `visual_hierarchy_scope: not_required` 时，只记录 `visual_hierarchy_skip_reason`，不阻塞等待 04 `brief_id`。
-5. 先读取 `workflow_request.style_generation_bypass`；当其为 `enabled` 时，所有风格化生成请求统一输出 background、programmatic panel 和 1 个固定角部面板饰品。只有当 bypass 为 `disabled` 时，才按 `workflow_request.route_to` 裁剪输出范围。
-6. `background_generation` 在旁路启用时不再只输出背景，也必须输出 `panel_render_recipe` 和 1 个固定角部面板饰品。
-7. `panel_programmatic_draw` 在旁路启用时不再阻止背景，也必须输出 `background_tool.png`。
-8. `panel_demo` 在旁路启用时也输出背景和面板饰品，并保留多尺寸 QA；不作为业务替换。
-9. `full_ui_skin` 输出 background、panel、required accent；state guidance 仅在用户提出状态需求时必须输出。
-10. `state_guidance` 在旁路启用时不再只输出状态视觉规则，也必须输出背景和面板饰品。
-11. `qa_gate` 只执行 QA，不生成新素材。
-12. 输出 Maker 配置和物料元数据；当 `visual_hierarchy_scope: required` 时记录 `visual_hierarchy_trace`，当 `visual_hierarchy_scope: not_required` 时记录 `visual_hierarchy_scope` 和 `visual_hierarchy_skip_reason`。
-13. QA 失败时按 02 / 03 / 04 / 05 分工归因回修；如果失败来自 05 没落实程序化面板策略或生成执行，归因到 05。
+5. 如果本次会生成 `background_tool.png`，必须先读取 `workflow_request.target_background_dimensions`，并按当前目标界面或背景容器的实际宽高输出；缺少具体宽高时不得用通用手机 / 电脑预设尺寸继续生成。
+6. 当 `style_application_scope.mode == global_page_style` 或 `global_style_generation_enabled == enabled` 时，输出 background、programmatic panel、1 个固定角部面板饰品和 `page_color_rule`。state guidance 仅在用户提出状态需求或颜色语义冲突时输出。
+7. 当 `style_application_scope.mode == element_style_patch` 且 `global_style_generation_enabled == disabled` 时，只输出 `element_patch.allowed_outputs`、`target_image_assets`、`target_implementations` 和 `target_style_rules` 中明确允许的内容；不得由 route 自动补齐全局资产。
+8. `page_color_rule_only` 只输出已授权的非图片 `page_color_rule`，不生成背景、面板或角饰。
+9. `panel_demo` 必须保留多尺寸 QA，并记录 `business_replacement: false`；如果是显式局部 demo，不得额外生成未允许的背景或页面配色。
+10. `qa_gate` 只执行 QA，不生成新素材。
+11. 输出 Maker 配置和物料元数据；当 `visual_hierarchy_scope: required` 时记录 `visual_hierarchy_trace`，当 `visual_hierarchy_scope: not_required` 时记录 `visual_hierarchy_scope` 和 `visual_hierarchy_skip_reason`。
+12. QA 失败时按 02 / 03 / 04 / 05 分工归因回修；如果失败来自 05 没落实 scope、程序化面板策略、页面配色规则或生成执行，归因到 05。
 
 ## 背景图规则
 
 ### 目标
 
 背景图负责建立环境气质和页面深度，但必须弱于工具 UI。它不是海报、插画、角色主视觉或游戏截图。
-当 `workflow_request.style_generation_bypass == enabled`，或 `workflow_request.route_to` 为任一风格化生成路由时，必须包含 1 张背景图；只有 QA-only、规则查询、metadata-only 或明确禁用旁路的非风格生成请求才不默认生成背景图。
+当 `workflow_request.style_application_scope.mode == global_page_style`、`workflow_request.global_style_generation_enabled == enabled`、`workflow_request.target_image_assets` 包含 `background_tool.png`，或 `workflow_request.style_application_scope.element_patch.allowed_outputs` 包含 `background_tool.png` 时，必须包含 1 张背景图。显式局部请求不得因为 route 名称自动生成背景图。
 背景图必须保留具名游戏的可识别锚点，不能只生成通用题材背景。
 
 ### 生成要求
@@ -354,17 +354,26 @@ material_package:
 ```yaml
 background_rule:
   asset_name: background_tool.png
-  required_when:
-    style_generation_bypass:
+  required_when_any:
+    style_application_scope:
+      - global_page_style
+    global_style_generation_enabled:
       - enabled
-    route_to:
-      - background_generation
-      - panel_programmatic_draw
-      - full_ui_skin
-      - panel_demo
-      - state_guidance
+    target_image_assets:
+      - background_tool.png
+    allowed_outputs:
+      - background_tool.png
   role: low_density_ui_support_background
   style_anchor_policy: preserve_specificity_contract
+  output_dimensions:
+    source: workflow_request.target_background_dimensions
+    width_px: workflow_request.target_background_dimensions.width_px
+    height_px: workflow_request.target_background_dimensions.height_px
+    device_class: workflow_request.target_background_dimensions.device_class
+    orientation: workflow_request.target_background_dimensions.orientation
+    must_match_current_interface_size: true
+    forbid_generic_preset_when_exact_size_missing: true
+    forbid_post_generation_stretch_or_crop_as_primary_fit: true
   visual_hierarchy_policy:
     page_goal: from visual_hierarchy_brief.page_goal
     primary_focus_must_remain_clear: true
@@ -408,6 +417,13 @@ Center contrast level: {{visual_hierarchy_brief.background.center_contrast_level
 Edge decoration level: {{visual_hierarchy_brief.background.edge_decoration_level}}
 Readability policy: {{visual_hierarchy_brief.readability_policy}}
 
+Output size:
+Generate at exactly {{workflow_request.target_background_dimensions.width_px}} x {{workflow_request.target_background_dimensions.height_px}} px.
+Match the current target interface or background container size and aspect ratio.
+Device class: {{workflow_request.target_background_dimensions.device_class}}
+Orientation: {{workflow_request.target_background_dimensions.orientation}}
+Do not use a generic mobile or desktop preset, and do not rely on later stretching or cropping to fit the interface.
+
 Must include, in a subtle and UI-safe way:
 {{signature_semantics.must_include}}
 
@@ -439,6 +455,8 @@ This is a support background for an existing tool interface, not a poster, key a
 ### 验收
 
 - 中央区域放置正文、表单、列表或卡片后仍可读。
+- 输出宽高必须等于 `workflow_request.target_background_dimensions.width_px` 和 `height_px`，并匹配当前目标背景界面的宽高比。
+- 不能用通用手机 / 电脑预设尺寸替代未知目标尺寸，不能依赖后续拉伸或裁切作为主要适配方式。
 - 边缘装饰不抢按钮、输入框、导航和状态提示。
 - 没有清晰文字、假 UI、角色主视觉和截图感。
 - prompt 中能看到 `specific_differentiators` 和 `signature_semantics.must_include`。
@@ -466,7 +484,7 @@ This is a support background for an existing tool interface, not a poster, key a
 - 固定几何细节。
 - 状态 overlay 的承载底板。
 
-AI 图片生成只允许用于固定位置局部装饰 PNG。临时旁路启用时默认生成 1 个；旁路禁用的历史细分流程中仍可按 0-1 控制。该装饰不参与拉伸，不承担按钮、状态、徽章、图标或完整面板语义。
+AI 图片生成只允许用于固定位置局部装饰 PNG。`global_page_style` 或 `global_style_generation_enabled: enabled` 时默认生成 1 个；显式局部流程中只有 `allowed_outputs` 或 `target_image_assets` 明确包含角饰时才可生成。该装饰不参与拉伸，不承担按钮、状态、徽章、图标或完整面板语义。
 
 ### 输入来源
 
@@ -567,7 +585,7 @@ panel_render_recipe:
   optional_accent:
     enabled: false
     asset: panel_corner_accent.png | panel_accent.png
-    required_when_bypass_enabled: true
+    required_when_global_generation_enabled: true
     max_count: 1
     placement_type: corner
     preferred_anchor: bottom_right
@@ -647,7 +665,7 @@ panel_render_recipe:
 
 ### 固定局部装饰 PNG
 
-`panel_corner_accent.png` 或 `panel_accent.png` 是最多 1 个角部贴片，只能表达固定位置、不参与拉伸的局部风格点缀。临时旁路启用时默认生成 1 个；如果 QA 判定会遮挡内容、破坏层级或违反 03 生产约束，必须记录原因后关闭。默认优先使用右下角角饰；除非 03 或目标组件明确指定其他角，否则其他角保持干净。不得作为侧边挂件、边中装饰或边框式装饰。
+`panel_corner_accent.png` 或 `panel_accent.png` 是最多 1 个角部贴片，只能表达固定位置、不参与拉伸的局部风格点缀。`global_page_style` 或 `global_style_generation_enabled: enabled` 时默认生成 1 个；显式局部流程中只有 `allowed_outputs` 或 `target_image_assets` 明确包含角饰时才可生成。如果 QA 判定会遮挡内容、破坏层级或违反 03 生产约束，必须记录原因后关闭。默认优先使用右下角角饰；除非 03 或目标组件明确指定其他角，否则其他角保持干净。不得作为侧边挂件、边中装饰或边框式装饰。
 
 允许：
 
@@ -732,6 +750,63 @@ selected 不等于 warning。除非 `style_brief` 明确要求，否则 selected
 
 ## 物料元数据模板
 
+### 页面配色规则
+
+```yaml
+rule_name: page_color_rule
+rule_type: non_image_style_rule
+style_brief_ref: docs/02-style-knowledge.md#entry-id
+constraints_ref: docs/03-production-constraints.md
+visual_hierarchy_scope: required | not_required
+visual_hierarchy_brief_ref:
+  required_when: visual_hierarchy_scope == required
+  value: docs/04-visual-hierarchy-brief.md#brief_id
+visual_hierarchy_skip_reason:
+  required_when: visual_hierarchy_scope == not_required
+source_inputs:
+  style_colors: style_brief.colors
+  style_mood: style_brief.mood
+  state_language: style_brief.ui_translation.state
+  text_language: style_brief.ui_translation.text
+  color_roles:
+    source: visual_hierarchy_brief.color_roles when visual_hierarchy_scope == required
+role_assignments:
+  page_background_base:
+  background_scrim_or_overlay:
+  primary_container:
+  secondary_container:
+  primary_action:
+  secondary_action:
+  text_primary:
+  text_secondary:
+  text_disabled:
+  selected:
+  warning:
+  error:
+  success:
+preserve_policy:
+  preserve_existing_color_roles: workflow_request.page_color_requirements.preserve_existing_color_roles
+  preserve_surfaces: workflow_request.style_application_scope.preserve_surfaces
+forbidden:
+  - decorative_accent_as_body_text_surface
+  - selected_confused_with_warning_or_error
+  - background_color_competes_with_primary_action
+  - low_contrast_text
+qa_status:
+  role_coverage_complete:
+  text_contrast_checked:
+  selected_warning_error_distinct:
+  no_image_asset_generated:
+visual_hierarchy_trace:
+  required_when: visual_hierarchy_scope == required
+  color_roles_used:
+  readability_policy_used:
+  forbidden_visual_outcomes_checked:
+    decorative_color_used_as_main_text_surface:
+    action_buttons_look_same_as_containers:
+last_updated:
+```
+
 ### 背景
 
 ```yaml
@@ -739,6 +814,13 @@ asset_name: background_tool.png
 asset_type: ui_background
 style_brief_ref: docs/02-style-knowledge.md#entry-id
 constraints_ref: docs/03-production-constraints.md
+output_dimensions:
+  source:
+  width_px:
+  height_px:
+  device_class:
+  orientation:
+  matches_current_interface_size: true
 visual_hierarchy_scope: required | not_required
 visual_hierarchy_brief_ref:
   required_when: visual_hierarchy_scope == required
@@ -859,7 +941,7 @@ panel_render_recipe:
   optional_accent:
     enabled:
     asset: panel_corner_accent.png | panel_accent.png
-    required: true when style_generation_bypass == enabled
+    required: true when global_style_generation_enabled == enabled
     max_count: 1
     placement_type: corner
     fixed_pixel_size: true
@@ -911,7 +993,7 @@ last_updated:
 ```yaml
 asset_name: panel_corner_accent.png | panel_accent.png
 asset_type: fixed_corner_accent_patch
-required: true when style_generation_bypass == enabled
+required: true when global_style_generation_enabled == enabled
 max_count: 1
 style_brief_ref: docs/02-style-knowledge.md#entry-id
 visual_hierarchy_scope: required | not_required
@@ -1097,14 +1179,23 @@ procedural_panel_qa_rule:
 - 是否没有文字、logo、角色、图标、徽章、状态标记、按钮、全边框、完整卡片或整张面板。
 - 是否不干扰正文、数值、按钮文案和输入区域。
 
+### 页面配色规则
+
+- `page_color_rule` 是否覆盖 `page_background_base`、容器、行动、文字和状态色角色。
+- 是否消费了 `style_brief.colors`、`style_brief.mood`、`ui_translation.state` 和 `ui_translation.text`。
+- 当 `visual_hierarchy_scope: required` 时，是否消费了 `visual_hierarchy_brief.color_roles` 和 `readability_policy`。
+- 最强色是否保留给 `primary_action` 或关键状态，而不是背景或普通容器。
+- selected、warning、error、success 是否语义清楚且彼此可区分。
+- 是否没有生成任何图片资产。
+
 ### 失败归因
 
 ```yaml
 workflow_dispatch_failure_attribution:
   panel_route_contains_background_asset:
-    condition: route_to == panel_programmatic_draw && workflow_request.target_assets contains background_tool.png
-    action: allow_when_style_generation_bypass_enabled
-    responsible_when_bypass_disabled: docs/01-workflow-dispatch.md
+    condition: route_to == panel_programmatic_draw && workflow_request.target_image_assets contains background_tool.png
+    action: allow_when_style_application_scope_is_global_page_style_or_global_style_generation_enabled
+    responsible_when_global_generation_disabled: docs/01-workflow-dispatch.md
 visual_hierarchy_failure_attribution:
   background_competes_with_content:
     responsible_when_brief_allowed_too_much_strength: docs/04-visual-hierarchy-brief.md
@@ -1127,6 +1218,13 @@ procedural_panel_failure_attribution:
     responsible: docs/05-material-generation.md
   production_constraints_forbid_old_default_but_05_still_uses_it:
     responsible: docs/05-material-generation.md
+page_color_rule_failure_attribution:
+  route_to_page_color_rule_only_generated_images:
+    responsible: docs/05-material-generation.md
+  color_roles_not_consumed:
+    responsible: docs/05-material-generation.md
+  selected_warning_error_confused:
+    responsible: docs/05-material-generation.md | docs/04-visual-hierarchy-brief.md
 ```
 
 以下情况反馈给 04：

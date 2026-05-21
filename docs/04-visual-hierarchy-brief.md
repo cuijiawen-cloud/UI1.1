@@ -37,7 +37,11 @@
 ```yaml
 visual_hierarchy_inputs:
   workflow_request_ref: docs/01-workflow-dispatch.md output
-  style_generation_bypass: enabled | disabled
+  style_application_scope:
+    mode: global_page_style | element_style_patch | qa_only | style_brief_only | production_constraints_only | metadata_only
+  global_style_generation_enabled: enabled | disabled
+  target_style_rules:
+    - page_color_rule
   style_brief_ref: docs/02-style-knowledge.md#entry-id
   style_brief: provided_by_02_or_reused
   production_constraints_ref: docs/03-production-constraints.md
@@ -77,7 +81,7 @@ visual_hierarchy_inputs:
 
 ```yaml
 incomplete_target_components_policy:
-  style_generation_bypass_enabled_full_ui_skin:
+  global_page_style_or_global_generation_enabled_full_ui_skin:
     allowed_with:
       - target_page_or_screen
       - primary_focus_context
@@ -86,6 +90,7 @@ incomplete_target_components_policy:
       - page_level_programmatic_panel_guidance
       - fixed_corner_accent_policy
       - color_roles
+      - page_color_rule_source_roles
       - readability_policy
       - forbidden_visual_outcomes
     component_treatment:
@@ -114,6 +119,16 @@ incomplete_target_components_policy:
       - control_vs_container_distinction
       - forbidden_visual_outcomes
     component_treatment: affected_types_only
+  page_color_rule_only:
+    allowed_with:
+      - target_page_or_screen
+      - primary_focus_context
+    output_scope:
+      - color_roles
+      - readability_policy
+      - forbidden_visual_outcomes
+    component_treatment: color_roles_only
+    image_generation_allowed: false
   qa_gate:
     allowed_with:
       - current_visual_state
@@ -124,16 +139,18 @@ incomplete_target_components_policy:
       - keep_reduce_remove_adjust
     generation_allowed: false
   full_ui_skin:
-    requires_complete_target_components: true when style_generation_bypass != enabled
+    requires_complete_target_components: true when global_style_generation_enabled != enabled
   panel_programmatic_draw:
     requires_complete_target_components: true
   panel_demo:
     requires_complete_target_components: true
 ```
 
-如果是 `background_generation`、`state_guidance` 或 `qa_gate`，且 `target_page_or_screen + primary_focus_context` 足以判断内容焦点和受保护区域，04 可以输出受限 `visual_hierarchy_brief`。该 brief 不得为未知组件生成完整 `component_treatment`，也不得允许未知矩形使用完整 `programmatic_panel`。
+如果是 `global_page_style` 或 `global_style_generation_enabled: enabled` 的 `full_ui_skin`，且 `target_page_or_screen + primary_focus_context` 足以判断内容焦点和受保护区域，04 可以在 `target_components` 不完整时输出页面级 `visual_hierarchy_brief`。该 brief 可以给出背景、页面配色、面板系统和角饰的页面级规则，但未知组件必须标为 `unknown` 或 `limited`，不得允许未知矩形使用完整 `programmatic_panel`。
 
-如果是 `full_ui_skin`、`panel_programmatic_draw` 或 `panel_demo`，缺少完整 `target_components` 时必须阻断，并要求 01 补充组件上下文、尺寸、角色或 `panel_candidate_inventory`。
+如果是 `global_style_generation_enabled: disabled` 的 `full_ui_skin`、`panel_programmatic_draw` 或 `panel_demo`，缺少完整 `target_components` 时必须阻断，并要求 01 补充组件上下文、尺寸、角色或 `panel_candidate_inventory`。
+
+如果是 `page_color_rule_only`，04 可以只输出 `color_roles`、`readability_policy` 和 `forbidden_visual_outcomes`；不要求输出背景图、程序化面板或角饰相关 treatment。
 
 ## 三、运行模式
 
@@ -273,6 +290,11 @@ visual_hierarchy_brief:
     text_primary:
     text_secondary:
     state_colors:
+  page_color_rule_policy:
+    required_when: workflow_request.target_style_rules contains page_color_rule
+    source: color_roles
+    output_owner: docs/05-material-generation.md
+    no_image_generation: true
   readability_policy:
     min_body_text_contrast:
     min_large_text_contrast:
@@ -307,6 +329,7 @@ visual_hierarchy_brief:
 - `use_programmatic_panel: true` 表示允许使用完整程序化面板主体；`limited` 表示只允许轻量程序化表面、细描边、弱 tint 或状态 overlay；`false` 表示不得套用程序化面板主体。
 - `use_accent` 只表示允许使用 02 / 03 约束下的 0-1 个固定角部局部装饰，不表示可新增通用装饰图。
 - `color_roles` 必须区分背景、容器、行动、装饰、文字和状态，避免所有元素抢同一个主色。
+- `page_color_rule_policy` 只说明 05 应把 `color_roles` 落成非图片 `page_color_rule`；04 不生成物料文件、不写具体渲染配置。
 - `readability_policy` 必须给出对比底线和失败兜底，通常优先降低背景强度或增加内容 scrim，再调整文字色。
 - `style_strength` 用于把风格强度分配到背景、主面板、次面板、控件和装饰，不允许每层都满强度。
 - `forbidden_visual_outcomes` 记录页面级禁忌结果，05 和 QA 必须按这些结果检查，而不是只检查单个资产是否合规。
@@ -317,7 +340,7 @@ visual_hierarchy_brief:
 
 ### 可以使用完整 programmatic_panel 的组件
 
-以下组件可以使用完整程序化面板，但仍需遵守 02 的尺寸、图层和 QA 约束：
+以下组件可以使用完整程序化面板，但仍需遵守 03 的尺寸与图层硬约束，以及 05 的 QA 规则：
 
 - 主内容容器。
 - 弹窗主体。
@@ -556,6 +579,7 @@ visual_hierarchy_skip_reason:
 - 必须按 `component_treatment` 决定每个组件的处理方式。
 - 背景 prompt / 背景参数必须遵守 `background.strength`、`center_detail_level`、`center_contrast_level` 和 `edge_decoration_level`。
 - `panel_render_recipe` 必须遵守 `hierarchy_level` 和 `color_roles`，主容器、次级容器、按钮、标签、输入框不能同强度处理。
+- 当 01 的 `target_style_rules` 包含 `page_color_rule`，或显式局部请求的 `allowed_outputs` 已授权 `page_color_rule` 时，05 必须把 04 的 `color_roles` 和 `readability_policy` 落成非图片 `page_color_rule`，不得生成背景、面板或角饰来替代配色规则。
 - QA 必须检查 `every_rectangle_gets_panel_skin` 是否发生。
 - QA 必须检查 `background_competes_with_content` 是否发生。
 - 迭代模式下，05 必须保护 `current_visual_audit.keep`，优先执行 `reduce / remove / adjust`，不能无理由清空当前可用风格方向。
@@ -681,6 +705,11 @@ visual_hierarchy_brief:
     text_primary:
     text_secondary:
     state_colors:
+  page_color_rule_policy:
+    required_when: workflow_request.target_style_rules contains page_color_rule
+    source: color_roles
+    output_owner: docs/05-material-generation.md
+    no_image_generation: true
   readability_policy:
     min_body_text_contrast: "WCAG AA target or project equivalent"
     min_large_text_contrast: "WCAG AA target or project equivalent"
@@ -775,6 +804,11 @@ visual_hierarchy_brief:
     text_primary:
     text_secondary:
     state_colors:
+  page_color_rule_policy:
+    required_when: workflow_request.target_style_rules contains page_color_rule
+    source: color_roles
+    output_owner: docs/05-material-generation.md
+    no_image_generation: true
   readability_policy:
     min_body_text_contrast:
     min_large_text_contrast:

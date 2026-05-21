@@ -232,6 +232,8 @@ programmatic_panel_context_only_fields:
 
 如果旧条目没有 `ui_translation.panel_base_style_hint`，不能直接把 `ui_translation.panel` 当成程序化面板规格。必须先从 `materials`、`shape_language`、`colors` 和 `ui_translation.panel` 中抽取主体材质、中心底色倾向、边框轮廓、线条气质、发光/阴影气质和可选局部装饰候选，并过滤掉头像、状态、徽章、标签、文字、图标、logo、角色、具体世界观物件和布局组合。
 
+旧条目补全是 02 的职责。补全后必须把完整 `style_brief` 作为 04 / 05 的输入；05 只能消费补全结果，不能在生成执行阶段临时补写 Style Specificity Contract、`panel_base_style_hint`、`ui_translation.state` 或 `ui_translation.text`。
+
 ### 传递失败判定
 
 如果 05 生成的 prompt 只剩下大类题材、通用颜色、通用材质和中心留白规则，即使产物满足 UI 可读性，也判定为 `style_specificity_loss`。
@@ -324,6 +326,41 @@ style_brief:
     text: "标题可用圆润手写感，正文使用清晰黑棕色；小字禁止强描边"
     accent: "树叶、邮票、手写标签、木牌、花瓣、小房子、猫爪。装饰应具有功能或世界观语义，避免每张卡都堆强装饰。"
   forbidden_mistakes: "被误判成真实田园、儿童绘本或高饱和农场经营"
+  style_archetype: "低多边形治愈系慢生活小镇模拟"
+  archetype_shared_traits:
+    - "明亮自然光、柔和色彩、圆润建筑、轻松生活感"
+    - "钓鱼、烹饪、园艺、养猫、社交等低压力活动语义"
+    - "画面节奏慢，强调空气感、留白和日常幸福感"
+  specific_differentiators:
+    - "不是纯田园农场，而是带社交广场、海边、家园装扮的小镇生活"
+    - "低多边形 3D 感明显，建筑和自然物体有玩具模型般的简化体块"
+    - "氛围更像夏日小镇度假，而不是牧场物语式农耕村落"
+  signature_semantics:
+    must_include:
+      - "海边小镇、木质小屋、草坡、阳光、生活活动道具"
+      - "低多边形圆润体块和清新柔色"
+    should_include:
+      - "钓竿、猫、野餐、邮箱、小摊、花园、木栅栏"
+    should_reduce:
+      - "过度梦幻光效、过多花海、过饱和童话糖果色"
+    must_avoid:
+      - "写实欧美农场、像素牧场、赛博都市、强竞技 HUD"
+  background_identity_anchors:
+    foreground_forbidden:
+      - "巨大的角色立绘"
+      - "复杂战斗武器或怪物"
+    edge_or_corner_allowed:
+      - "钓竿、猫窝、花盆、邮箱、木牌、小镇路标"
+    far_background_allowed:
+      - "海岸线、灯塔、坡地小屋、云朵、远处小镇建筑"
+    center_safe_area_allowed:
+      - "柔和草地、浅色木地板、低对比云影"
+  anti_generic_guardrails:
+    - "不能只做成普通治愈小镇，必须有低多边形体块感和海边慢生活语义"
+    - "生活道具要偏轻社交和休闲，不要变成农场经营工具堆叠"
+  visual_identity_test:
+    question: "如果去掉游戏名，这张背景是否仍能区别于同原型下的其他游戏？"
+    pass_condition: "看到低多边形海边小镇、慢生活道具和柔和度假感，能判断是心动小镇，而不是普通农场或动物森友会仿风。"
 ```
 
 ## 02. 乱涂彩世界
@@ -354,6 +391,42 @@ style_brief:
     text: "标题可用漫画粗体，正文用黑色无衬线；副文字放在纯色底上"
     accent: "喷漆滴落、胶带、手绘箭头、漫画感叹号、颜料块、神格小徽章。装饰应具有功能或世界观语义，避免每张卡都堆强装饰。"
   forbidden_mistakes: "误判成普通赛博霓虹或儿童绘画；不要把所有区域都喷满颜料"
+  style_archetype: "高饱和涂鸦射击 + 神明娘恶搞幻想"
+  archetype_shared_traits:
+    - "大面积彩色颜料、喷涂轨迹、夸张 Q 弹特效"
+    - "轻度射击/涂色玩法，强调解压、混乱、爽感"
+    - "角色和世界观偏二次元搞怪"
+  specific_differentiators:
+    - "核心不是普通涂鸦街头潮流，而是神明娘/恶魔打工队式荒诞幻想"
+    - "色彩应像世界从失色到被爆涂恢复，而不是单纯彩虹背景"
+    - "画面可以很吵，但必须有涂色武器和失色世界被染色的对比"
+  signature_semantics:
+    must_include:
+      - "颜料飞溅、喷涂武器、彩色恢复区域、神魔/打工恶魔的搞怪语义"
+    should_include:
+      - "涂鸦箭头、颜料桶、彩色弹痕、失色建筑局部被染色"
+    should_reduce:
+      - "全屏无序彩虹、过多荧光贴纸、纯街舞涂鸦感"
+    must_avoid:
+      - "Splatoon 式鱿鱼海洋语义"
+      - "赛博霓虹街头帮派"
+      - "儿童填色书低龄感"
+  background_identity_anchors:
+    foreground_forbidden:
+      - "巨大颜料爆炸遮住主体"
+      - "高度相似的章鱼/鱿鱼元素"
+    edge_or_corner_allowed:
+      - "颜料桶、喷枪、神魔小徽章、彩色脚印"
+    far_background_allowed:
+      - "半失色城市、被染色的街区、异世界传送门"
+    center_safe_area_allowed:
+      - "低透明颜料渐变、轻微喷溅纹理"
+  anti_generic_guardrails:
+    - "必须有失色世界被神明娘乱涂拯救的语义，不要只做成彩色涂鸦背景"
+    - "色彩可以多，但要有冷灰失色底与彩色覆盖的关系"
+  visual_identity_test:
+    question: "如果去掉游戏名，这张背景是否仍能区别于同原型下的其他游戏？"
+    pass_condition: "画面同时出现涂色武器、神魔恶搞符号和失色/彩色对比，而不是普通彩虹涂鸦。"
 ```
 
 ## 03. 潜水员戴夫
@@ -384,6 +457,42 @@ style_brief:
     text: "标题可用复古像素字，正文保持常规清晰字体"
     accent: "气泡、鱼影、寿司、氧气表、像素箭头、木牌价格签。装饰应具有功能或世界观语义，避免每张卡都堆强装饰。"
   forbidden_mistakes: "误判成纯海洋治愈或纯餐厅经营，忽略像素幽默与双场景"
+  style_archetype: "像素海洋冒险 + 夜间寿司店经营"
+  archetype_shared_traits:
+    - "像素艺术、海底探索、鱼类资源收集、轻经营循环"
+    - "白天冒险、夜晚经营的双场景结构"
+    - "幽默角色和轻松但有神秘感的剧情氛围"
+  specific_differentiators:
+    - "蓝洞海域与寿司店必须同时构成识别，不只是潜水游戏"
+    - "像素不是复古低清，而是高细节像素光影与丰富海洋生态"
+    - "荒诞喜剧感强，海洋探索中带一点危险和贪心"
+  signature_semantics:
+    must_include:
+      - "深蓝蓝洞、潜水装备、鱼群、寿司店灯笼/吧台语义"
+    should_include:
+      - "氧气瓶、鱼叉、金枪鱼、海草、珊瑚、霓虹寿司招牌"
+    should_reduce:
+      - "过度写实海底、纯治愈水族馆感、日式料理元素堆满全屏"
+    must_avoid:
+      - "恐怖深海"
+      - "儿童海洋乐园"
+      - "现代写实潜水模拟器"
+  background_identity_anchors:
+    foreground_forbidden:
+      - "巨大写实鲨鱼压迫主视觉"
+      - "纯寿司摆盘大特写"
+    edge_or_corner_allowed:
+      - "氧气表、鱼叉、寿司菜单牌、小灯笼"
+    far_background_allowed:
+      - "蓝洞层级、鱼群剪影、珊瑚、沉船遗迹"
+    center_safe_area_allowed:
+      - "深蓝水体渐变、少量气泡、低对比鱼影"
+  anti_generic_guardrails:
+    - "不能只画海底，必须暗示白天潜水、晚上寿司店的双循环"
+    - "像素颗粒与海底光束要同时存在，避免变成普通海洋插画"
+  visual_identity_test:
+    question: "如果去掉游戏名，这张背景是否仍能区别于同原型下的其他游戏？"
+    pass_condition: "蓝洞像素海底与寿司店经营符号同时成立，用户能联想到戴夫式海洋冒险经营。"
 ```
 
 ## 04. 鹅鸭杀
@@ -414,6 +523,43 @@ style_brief:
     text: "标题可圆润粗体，正文黑灰；状态词用高对比标签"
     accent: "羽毛、脚印、问号、投票贴纸、警报灯、身份徽章。装饰应具有功能或世界观语义，避免每张卡都堆强装饰。"
   forbidden_mistakes: "误判成儿童低龄卡通；需要保留“可疑/投票/推理”语义"
+  style_archetype: "卡通鸟类社交推理派对"
+  archetype_shared_traits:
+    - "多人社交推理、阵营对抗、任务房间、会议投票"
+    - "卡通化动物角色，表情夸张，死亡与伪装以轻喜剧方式呈现"
+    - "地图有空间站、沙漠、节庆主城等主题变化"
+  specific_differentiators:
+    - "主角必须是鹅/鸭/鸟类阵营，而不是无名太空小人"
+    - "喜剧、吵闹、互坑感比悬疑恐怖更重要"
+    - "角色职业和阵营身份是识别核心"
+  signature_semantics:
+    must_include:
+      - "鹅鸭鸟类剪影、会议按钮、任务终端、阵营对抗暗示"
+    should_include:
+      - "脚印、羽毛、投票牌、紧急会议桌、管道/机关"
+    should_reduce:
+      - "太空站金属占比过高"
+      - "阴暗狼人杀悬疑感"
+    must_avoid:
+      - "Among Us 小人造型误读"
+      - "真实农场家禽"
+      - "恐怖血腥凶案现场"
+  background_identity_anchors:
+    foreground_forbidden:
+      - "无脸太空人主视觉"
+      - "血腥尸体"
+    edge_or_corner_allowed:
+      - "羽毛、鸭脚印、投票卡、职业小图标"
+    far_background_allowed:
+      - "飞船走廊、任务房、沙漠地图、节庆主城"
+    center_safe_area_allowed:
+      - "圆桌阴影、地板网格、低对比任务面板"
+  anti_generic_guardrails:
+    - "不能只做成太空狼人杀，必须保留鹅鸭鸟类身份和荒诞社交感"
+    - "鸟类语义要可爱但带互坑，不要做成农场萌宠"
+  visual_identity_test:
+    question: "如果去掉游戏名，这张背景是否仍能区别于同原型下的其他游戏？"
+    pass_condition: "一眼能看到鹅鸭阵营、会议投票和任务机关，而不是泛太空狼人杀。"
 ```
 
 ## 05. 以闪亮之名
@@ -444,6 +590,42 @@ style_brief:
     text: "标题可高对比优雅字重，正文现代无衬线，字间距略松"
     accent: "钻石、缎带、衣架、镜框、星光、香水瓶、杂志页角。装饰应具有功能或世界观语义，避免每张卡都堆强装饰。"
   forbidden_mistakes: "误判成普通粉色少女或婚礼风，忽略现代时装杂志感"
+  style_archetype: "高精度时尚生活换装 + 虚拟秀场"
+  archetype_shared_traits:
+    - "高精度角色、服饰材质、妆容、拍照、家园建造"
+    - "强调女性向审美、精致生活方式和高光时刻"
+    - "场景常用秀场、衣帽间、豪宅、花园、镜面材质"
+  specific_differentiators:
+    - "不是普通换装卡牌，而是超自由捏脸、染色、DIY 服饰和生活家园"
+    - "视觉重点在材质高级感：丝绸、珠光、玻璃、金属、皮革"
+    - "氛围更像个人高光大片，不是甜美纸娃娃"
+  signature_semantics:
+    must_include:
+      - "高级秀场灯光、服装材质、镜面/玻璃、妆容与衣帽间语义"
+    should_include:
+      - "化妆镜、香水、服装架、珠宝、相机闪光、豪宅窗景"
+    should_reduce:
+      - "廉价粉色、过度少女贴纸、低龄公主房"
+    must_avoid:
+      - "二次元战斗少女"
+      - "古风宫廷换装"
+      - "纯家装模拟"
+  background_identity_anchors:
+    foreground_forbidden:
+      - "巨大人物半身像抢占背景"
+      - "婚纱大面积铺满导致单一主题化"
+    edge_or_corner_allowed:
+      - "珠宝盒、化妆刷、衣架、香水瓶、聚光灯"
+    far_background_allowed:
+      - "秀场 T 台、落地窗豪宅、衣帽间、摄影棚"
+    center_safe_area_allowed:
+      - "柔和灯光渐变、浅色高级地面、低对比布料纹理"
+  anti_generic_guardrails:
+    - "必须体现可定制时尚生活，不要只做成普通奢华粉色背景"
+    - "材质表现比花纹堆叠更重要"
+  visual_identity_test:
+    question: "如果去掉游戏名，这张背景是否仍能区别于同原型下的其他游戏？"
+    pass_condition: "画面能同时传达高精度时尚、自由定制和生活秀场，而不是泛换装或公主风。"
 ```
 
 ## 06. 植物大战僵尸2
@@ -474,6 +656,44 @@ style_brief:
     text: "标题可漫画粗体，正文深棕/黑色"
     accent: "阳光、叶子、种子包、墓碑、路障桶、泥土裂纹。装饰应具有功能或世界观语义，避免每张卡都堆强装饰。"
   forbidden_mistakes: "误判成普通农场或儿童园艺，必须保留塔防棋盘和僵尸喜剧"
+  style_archetype: "夸张卡通植物塔防 + 多时空冒险"
+  archetype_shared_traits:
+    - "植物与僵尸对抗、横向草坪格子、卡通夸张表情"
+    - "塔防阵列、阳光资源、植物技能和僵尸进攻路线"
+    - "轻幽默、怪诞但不恐怖"
+  specific_differentiators:
+    - "2 代核心是多时空主题，不只是后院草坪"
+    - "埃及、海盗、西部、未来等时代场景可以成为强识别锚点"
+    - "植物角色比僵尸更适合做正向识别"
+  signature_semantics:
+    must_include:
+      - "豌豆射手/向日葵语义、草坪格、僵尸剪影、多时空道具"
+    should_include:
+      - "戴夫、潘妮、阳光、墓碑、时代传送元素"
+    should_reduce:
+      - "写实恐怖僵尸"
+      - "普通农场蔬菜"
+      - "过密植物角色堆叠"
+    must_avoid:
+      - "末日丧尸写实风"
+      - "植物精灵奇幻 RPG"
+      - "低龄水果乐园"
+  background_identity_anchors:
+    foreground_forbidden:
+      - "僵尸大脸恐怖特写"
+      - "整屏植物角色遮挡 UI"
+    edge_or_corner_allowed:
+      - "阳光币、豌豆弹、墓碑、时空门碎片、植物卡牌"
+    far_background_allowed:
+      - "古埃及金字塔、海盗船、西部小镇、未来城市"
+    center_safe_area_allowed:
+      - "草坪格、泥土地、低对比时代纹理"
+  anti_generic_guardrails:
+    - "必须有塔防格子和植物/僵尸对抗关系，不能只做成卡通花园"
+    - "多时空元素要服务 PVZ2，不要变成大杂烩主题公园"
+  visual_identity_test:
+    question: "如果去掉游戏名，这张背景是否仍能区别于同原型下的其他游戏？"
+    pass_condition: "看到草坪格、阳光、植物炮台和时空僵尸语义，能识别为 PVZ2，而不是普通卡通塔防。"
 ```
 
 ## 07. 崩坏：星穹铁道
@@ -504,6 +724,44 @@ style_brief:
     text: "标题可细致高对比，正文用浅灰白，避免小字发光"
     accent: "车票、星轨、星星节点、命途徽记、列车窗、档案夹。装饰应具有功能或世界观语义，避免每张卡都堆强装饰。"
   forbidden_mistakes: "误判成通用蓝紫科幻手游；要保留列车旅行与档案质感"
+  style_archetype: "银河列车科幻奇幻 JRPG"
+  archetype_shared_traits:
+    - "高精度二次元角色、星际旅行、命运/神性/文明主题"
+    - "科幻空间站、异星城市、华丽技能光效"
+    - "章节世界差异强，视觉奇观化"
+  specific_differentiators:
+    - "核心识别是星穹列车与开拓旅途，不是普通太空歌剧"
+    - "每个世界有强主题文明，但都被银河旅行框架统一"
+    - "科幻与神话命途并存，既有列车、星轨，也有宗教/戏剧/城市文明符号"
+  signature_semantics:
+    must_include:
+      - "星穹列车、星轨、宇宙窗景、命途/星神式抽象符号"
+    should_include:
+      - "车厢金属、跃迁光带、星图、票据、空间站几何结构"
+    should_reduce:
+      - "泛银河星空"
+      - "过度机甲战斗"
+      - "单一赛博霓虹"
+    must_avoid:
+      - "硬核宇航写实"
+      - "星际战争 RTS"
+      - "普通校园二游"
+  background_identity_anchors:
+    foreground_forbidden:
+      - "巨大角色立绘"
+      - "写实宇航员"
+    edge_or_corner_allowed:
+      - "车票、星轨线、命途徽记、列车窗框、数据屏"
+    far_background_allowed:
+      - "星穹列车剪影、空间站、异星城市、星云"
+    center_safe_area_allowed:
+      - "深色星空渐变、车厢地面、低亮度星轨"
+  anti_generic_guardrails:
+    - "不能只做成二次元太空，必须有列车旅行和命途神话感"
+    - "星空背景要有文明叙事，不要只是漂亮宇宙壁纸"
+  visual_identity_test:
+    question: "如果去掉游戏名，这张背景是否仍能区别于同原型下的其他游戏？"
+    pass_condition: "画面通过星穹列车、星轨、命途符号和异星文明共同指向星铁式银河开拓。"
 ```
 
 ## 08. 我的休闲时光
@@ -534,6 +792,44 @@ style_brief:
     text: "标题圆润可爱，正文深灰，副文浅棕"
     accent: "猫爪、花朵、纸箱、咖啡杯、沙发、窗帘、小鱼。装饰应具有功能或世界观语义，避免每张卡都堆强装饰。"
   forbidden_mistakes: "误判成高饱和儿童装修或真实家装软件"
+  style_archetype: "手绘竖屏佛系家装生活模拟"
+  archetype_shared_traits:
+    - "温馨小屋、装修 DIY、养猫、种花、做饭、钓鱼"
+    - "柔和手绘感、轻社交、低压力日常"
+    - "以室内生活和宅家经济为核心"
+  specific_differentiators:
+    - "比心动小镇更室内蜗居/装修/网购，不是开放小镇度假"
+    - "竖屏手游感强，构图更适合房间剖面和家具陈列"
+    - "有真实宅家生活语义：快递、网购、猫、咖啡、房间布置"
+  signature_semantics:
+    must_include:
+      - "温馨房间、家具 DIY、猫、快递/网购、手绘软萌质感"
+    should_include:
+      - "小沙发、地毯、绿植、咖啡杯、窗帘、料理台"
+    should_reduce:
+      - "户外大世界"
+      - "过度童话城堡"
+      - "复杂多人社交广场"
+    must_avoid:
+      - "高精度时尚豪宅"
+      - "低多边形小镇"
+      - "农场经营主视觉"
+  background_identity_anchors:
+    foreground_forbidden:
+      - "巨大人物换装展示"
+      - "广阔海边小镇"
+    edge_or_corner_allowed:
+      - "猫爪、快递箱、盆栽、小台灯、抱枕"
+    far_background_allowed:
+      - "窗外街景、阳台、厨房、咖啡店角落"
+    center_safe_area_allowed:
+      - "浅色墙面、木地板、地毯纹理、柔和窗光"
+  anti_generic_guardrails:
+    - "必须体现宅家装修 + 佛系生活，不要变成泛治愈小屋"
+    - "道具要有现代生活感，尤其快递、网购、猫和家具搭配"
+  visual_identity_test:
+    question: "如果去掉游戏名，这张背景是否仍能区别于同原型下的其他游戏？"
+    pass_condition: "能看出是竖屏手绘宅家装修生活，而不是开放小镇或普通家居插画。"
 ```
 
 ## 09. 三角洲行动
@@ -564,6 +860,44 @@ style_brief:
     text: "标题窄体硬朗，正文浅灰；小字不要依赖发光"
     accent: "螺丝、军用编号、坐标线、弹孔、警戒三角、装备插槽。装饰应具有功能或世界观语义，避免每张卡都堆强装饰。"
   forbidden_mistakes: "误判成赛博霓虹或泛科幻蓝 UI；不要过多发光"
+  style_archetype: "现代战术军事射击 HUD"
+  archetype_shared_traits:
+    - "现代枪械、战术装备、载具、军事基地、烟尘爆破"
+    - "冷色工业环境、硬边 UI、数据化战术 HUD"
+    - "强调小队协作、中远距离交火、战场压迫感"
+  specific_differentiators:
+    - "不是纯写实军事海报，而是移动/PC 双端战术射击产品化 HUD"
+    - "同时包含搜打撤、载具大战场、剧情战役三类战斗语义"
+    - "识别点在三角洲特战小队、现代装备和清晰战术信息层"
+  signature_semantics:
+    must_include:
+      - "现代战术 HUD、枪械配件、战术地图、烟尘、军事载具"
+    should_include:
+      - "无人机、头盔夜视仪、货箱、撤离点标记、坐标网格"
+    should_reduce:
+      - "过度血腥"
+      - "科幻机甲"
+      - "英雄角色大特写"
+    must_avoid:
+      - "卡通吃鸡"
+      - "二战复古军事"
+      - "赛博朋克枪战"
+  background_identity_anchors:
+    foreground_forbidden:
+      - "角色持枪正面大特写"
+      - "血迹和尸体"
+    edge_or_corner_allowed:
+      - "坐标、雷达、小队编号、弹匣、战术箱"
+    far_background_allowed:
+      - "港口、沙漠基地、废墟楼体、直升机、装甲车"
+    center_safe_area_allowed:
+      - "低对比烟雾、战术地图纹理、暗色金属面"
+  anti_generic_guardrails:
+    - "必须有战术信息层和现代联合作战感，不能只是枪械军事背景"
+    - "画面要克制、硬朗、功能化，避免娱乐化卡通吃鸡语义"
+  visual_identity_test:
+    question: "如果去掉游戏名，这张背景是否仍能区别于同原型下的其他游戏？"
+    pass_condition: "能通过现代战术 HUD、撤离/大战场/载具语义判断为三角洲行动，而不是普通 FPS。"
 ```
 
 ## 10. 明日方舟：终末地
@@ -594,6 +928,44 @@ style_brief:
     text: "标题冷静工业字，正文高可读无衬线"
     accent: "管线、矿石、工业编号、警示条、物流箭头、基地图标。装饰应具有功能或世界观语义，避免每张卡都堆强装饰。"
   forbidden_mistakes: "误判成传统明日方舟医疗黑白 UI 或通用未来蓝"
+  style_archetype: "冷峻工业科幻开拓 RPG"
+  archetype_shared_traits:
+    - "二次元角色、异星开拓、科技设施、基地建设"
+    - "低饱和高级灰、工业模块、几何标识、冷光点缀"
+    - "世界观强调组织、矿物/源石、危险生态和开拓任务"
+  specific_differentiators:
+    - "比普通二游更冷、更硬、更工业化，少甜美和高饱和"
+    - "核心是塔卫二开拓、终末地工业、协议源石、基地/生产设施"
+    - "自然山水与工业设施并置，而不是纯空间站或纯废土"
+  signature_semantics:
+    must_include:
+      - "工业基地、模块化设备、冷灰色调、协议源石/几何能源核心"
+    should_include:
+      - "轨道设施、运输管线、警示标识、山地科考站、低饱和植被"
+    should_reduce:
+      - "艳丽魔法特效"
+      - "软萌二游装饰"
+      - "赛博霓虹商业街"
+    must_avoid:
+      - "原神式明快幻想大陆"
+      - "末日废土脏乱"
+      - "太空歌剧列车感"
+  background_identity_anchors:
+    foreground_forbidden:
+      - "角色立绘主导"
+      - "过大魔法阵"
+    edge_or_corner_allowed:
+      - "工业编号、警示条、能量接口、几何徽记、管线"
+    far_background_allowed:
+      - "塔卫二山地、基地设施、轨道飞行器、开拓据点"
+    center_safe_area_allowed:
+      - "高级灰金属地面、淡雾、低对比设施阴影"
+  anti_generic_guardrails:
+    - "必须是冷灰工业开拓，不是泛二次元科幻"
+    - "自然景观要被工业建设组织起来，不能只画漂亮异星风景"
+  visual_identity_test:
+    question: "如果去掉游戏名，这张背景是否仍能区别于同原型下的其他游戏？"
+    pass_condition: "看到低饱和工业设施、异星开拓基地和明日方舟式几何标识，能区别于星铁、原神或普通科幻二游。"
 ```
 
 ## 11. 香肠派对
@@ -624,6 +996,44 @@ style_brief:
     text: "标题可用圆润粗体或游戏感粗黑体；正文保持黑灰高可读；奖励数字可用亮黄描边"
     accent: "香肠贴纸、空投箱、子弹、派对旗、降落伞、能量饮料、赛博小图标。装饰应偏轻松搞怪，不要压过射击竞技信息。"
   forbidden_mistakes: "误判成低龄儿童糖果风；需要保留射击、吃鸡、竞技、道具战的核心语义，不能只做成普通卡通派对"
+  style_archetype: "魔性香肠人卡通射击派对"
+  archetype_shared_traits:
+    - "卡通吃鸡、派对竞技、搞怪武器、轻松社交"
+    - "色彩明快，角色造型夸张，战斗语义不血腥"
+    - "多模式、多道具、多娱乐玩法"
+  specific_differentiators:
+    - "核心识别必须是香肠人身体结构，不是普通卡通人"
+    - "射击要有搞事和整活感，而不是严肃竞技"
+    - "战场可以很丰富，但表情包式魔性是第一优先级"
+  signature_semantics:
+    must_include:
+      - "香肠人、搞怪枪械、派对吃鸡、夸张表情/动作"
+    should_include:
+      - "飞行巴士、彩色补给箱、滑稽头盔、夸张弹道"
+    should_reduce:
+      - "真实军事装备"
+      - "严肃枪战烟尘"
+      - "普通卡通动物"
+    must_avoid:
+      - "三角洲式战术军事"
+      - "PUBG 写实吃鸡"
+      - "儿童食品广告感"
+  background_identity_anchors:
+    foreground_forbidden:
+      - "写实士兵"
+      - "真实枪械大特写"
+    edge_or_corner_allowed:
+      - "香肠脚印、搞怪头盔、补给箱、派对彩带"
+    far_background_allowed:
+      - "彩色战场、卡通建筑、跳伞航线、派对地图"
+    center_safe_area_allowed:
+      - "明快草地、卡通地面、淡色云影"
+  anti_generic_guardrails:
+    - "不能只做成卡通吃鸡，香肠人轮廓和魔性整活必须强"
+    - "枪战信息要轻松搞笑，不要军事化"
+  visual_identity_test:
+    question: "如果去掉游戏名，这张背景是否仍能区别于同原型下的其他游戏？"
+    pass_condition: "即使没有角色正脸，也能通过香肠轮廓、搞怪装备和派对吃鸡氛围识别。"
 ```
 
 ## 12. 解压泡泡（创意工坊）
@@ -654,6 +1064,63 @@ style_brief:
     text: "标题用圆润轻粗体，正文以深灰为主；数字反馈可短暂放大或弹跳"
     accent: "小气泡、涟漪、闪光、软胶滴、轻量星星。装饰要少而轻，避免做成复杂养成或重度消除游戏。"
   forbidden_mistakes: "误判成三消、泡泡龙或儿童教育游戏；重点是“解压点击反馈”和轻量休闲，不是复杂关卡策略"
+  style_archetype: "深色竖屏点击泡泡消除解压小游戏"
+  archetype_shared_traits:
+    - "低门槛休闲解压，核心反馈来自点击、爆破、连击和分数增长"
+    - "竖屏单局界面，信息结构简单，按钮大而直接"
+    - "彩色圆形泡泡、柔和发光、高对比数字反馈构成主要视觉语言"
+  specific_differentiators:
+    - "不是 Pop-it 硅胶按压玩具，也不是泡泡龙弹射，而是自由生成泡泡后的点击爆破"
+    - "背景是深蓝/深紫夜色感，泡泡像发光半透明小球，而不是软糖色玩具面板"
+    - "识别点在得分、连击、爆破计数和全部清除这种清屏爽感"
+  signature_semantics:
+    must_include:
+      - "深蓝竖屏背景"
+      - "彩色半透明发光泡泡"
+      - "得分、连击、爆破计数"
+      - "点击爆破后的加分数字或连击提示"
+    should_include:
+      - "泡泡高光"
+      - "浅色散景大泡泡背景"
+      - "清除/暂停/设置等简单功能按钮"
+      - "黄色大号连击反馈"
+    should_reduce:
+      - "硅胶 Pop-it 玩具质感"
+      - "粉彩糖果色占满全屏"
+      - "复杂角色、剧情或场景装饰"
+    must_avoid:
+      - "泡泡龙弹珠发射器"
+      - "水下气泡冒险"
+      - "儿童玩具按压板"
+      - "医学/皮肤疙瘩误读"
+  background_identity_anchors:
+    foreground_forbidden:
+      - "人物角色"
+      - "发射炮台或弹珠轨道"
+      - "整块硅胶按压板"
+      - "复杂三消棋盘"
+    edge_or_corner_allowed:
+      - "设置齿轮"
+      - "得分面板"
+      - "连击面板"
+      - "爆破计数面板"
+      - "暂停与全部清除按钮"
+    far_background_allowed:
+      - "深蓝渐变"
+      - "低透明大泡泡散景"
+      - "微弱光晕和粒子"
+    center_safe_area_allowed:
+      - "少量低透明泡泡"
+      - "深色干净留白"
+      - "点击爆破后的轻量加分数字"
+  anti_generic_guardrails:
+    - "不能做成 Pop-it 软胶按压玩具；这款的核心是点击泡泡爆破与连击得分"
+    - "不能做成泡泡龙；不要出现发射器、轨道、瞄准线或顶部堆叠泡泡墙"
+    - "背景必须保持深色、干净、低干扰，让彩色泡泡和数字反馈成为主视觉"
+    - "按钮要像轻量小游戏 UI，不要做成复杂商业休闲游戏大厅"
+  visual_identity_test:
+    question: "如果去掉游戏名，这张背景是否仍能区别于同原型下的其他游戏？"
+    pass_condition: "看到深蓝竖屏界面、彩色发光泡泡、得分/连击/爆破计数和全部清除按钮，能判断是点击爆破解压泡泡，而不是 Pop-it、泡泡龙或水下气泡背景。"
 ```
 
 ## 13. 伊洛纳手游（像素风格）
@@ -684,6 +1151,44 @@ style_brief:
     text: "标题可用像素风粗体或复古 RPG 字体，正文需保持现代可读性；数值信息使用清楚的表格/格子"
     accent: "像素小剑、卷轴角标、背包格、木牌钉子、迷你怪物脚印。装饰可古怪但不要干扰复杂信息层级。"
   forbidden_mistakes: "误判成单纯可爱像素农场；必须保留高自由度、RPG、地下城、荒诞冒险和系统复杂度"
+  style_archetype: "自由到鬼畜的日式像素 Roguelike RPG"
+  archetype_shared_traits:
+    - "像素 RPG、地下城、自由探索、奇怪职业和随机事件"
+    - "复古界面、道具密度高、荒诞幽默"
+    - "生活、冒险、跑商、建造、战斗混合"
+  specific_differentiators:
+    - "识别核心是自由到鬼畜的混乱人生，而不是普通日式像素冒险"
+    - "以太风、荒诞 NPC、奇怪道具和随机事件是独特语义"
+    - "画面可以杂乱，但要有老派 RPG 菜单/地图感"
+  signature_semantics:
+    must_include:
+      - "像素地城、复古 RPG UI、奇怪道具、以太风/异变世界暗示"
+    should_include:
+      - "背包格子、酒馆、地下城入口、城镇小屋、跑商货物"
+    should_reduce:
+      - "精致二次元立绘"
+      - "干净现代 UI"
+      - "纯黑暗地牢"
+    must_avoid:
+      - "标准勇者斗恶龙童话"
+      - "暗黑哥特 ARPG"
+      - "单纯农场生活"
+  background_identity_anchors:
+    foreground_forbidden:
+      - "大体量写实怪物"
+      - "华丽二游角色"
+    edge_or_corner_allowed:
+      - "背包格、卷轴、奇怪食物、像素金币、任务牌"
+    far_background_allowed:
+      - "像素城镇、地下城、荒野、酒馆"
+    center_safe_area_allowed:
+      - "复古地砖、像素草地、低对比背包纹理"
+  anti_generic_guardrails:
+    - "必须有荒诞自由度和老派 Roguelike 感，不要做成普通像素 RPG"
+    - "可以怪，但不要恐怖；可以杂，但要像可探索世界"
+  visual_identity_test:
+    question: "如果去掉游戏名，这张背景是否仍能区别于同原型下的其他游戏？"
+    pass_condition: "能从像素 RPG、奇怪道具、以太异变和高自由生活冒险混合感识别伊洛纳。"
 ```
 
 ## 14. 王牌竞速
@@ -714,6 +1219,44 @@ style_brief:
     text: "标题可用窄体科技粗字，数据用仪表盘式数字；正文保持白灰高对比"
     accent: "氮气尾焰、速度线、仪表刻度、碳纤维纹理、车库灯条。装饰应强化速度，不要做成普通科幻面板。"
   forbidden_mistakes: "误判成纯写实车展或普通赛车模拟；需要保留“车辆大招”“潮流竞速”“高能技能”的差异化"
+  style_archetype: "写实潮流赛车 + 超现实技能竞速"
+  archetype_shared_traits:
+    - "高光车漆、城市赛道、速度线、赛车 HUD"
+    - "授权真车、概念车、改装、速度节竞技"
+    - "画面偏写实但带潮流活动包装"
+  specific_differentiators:
+    - "不是纯模拟赛车，核心是真实车 + 王牌技能/超现实概念车"
+    - "赛道和 UI 更像潮流赛车节，而不是严肃 F1 或街头非法飙车"
+    - "车辆质感要高级，技能能量要克制点缀"
+  signature_semantics:
+    must_include:
+      - "写实车身反光、速度节 HUD、能量技能轨迹、城市/赛道"
+    should_include:
+      - "霓虹速度线、车库灯光、弯道标识、赛车编号"
+    should_reduce:
+      - "过度卡通漂移"
+      - "非法街头帮派涂鸦"
+      - "纯 F1 赛事感"
+    must_avoid:
+      - "马里奥赛车道具喜剧"
+      - "低模卡通赛车"
+      - "重度赛博朋克飞车"
+  background_identity_anchors:
+    foreground_forbidden:
+      - "巨大车头遮挡所有信息"
+      - "车手人物主视觉"
+    edge_or_corner_allowed:
+      - "速度表、技能能量条、轮胎痕、车钥匙、赛事灯牌"
+    far_background_allowed:
+      - "城市赛道、海岸公路、车库、速度节舞台"
+    center_safe_area_allowed:
+      - "赛道沥青、速度光带、低对比碳纤维纹理"
+  anti_generic_guardrails:
+    - "必须同时有写实车质感和超现实技能竞速，不要只做成普通赛车海报"
+    - "潮流包装要高级克制，不能变成杂乱夜店霓虹"
+  visual_identity_test:
+    question: "如果去掉游戏名，这张背景是否仍能区别于同原型下的其他游戏？"
+    pass_condition: "能看到写实授权车质感、速度节包装和技能竞速能量，而不是普通漂移赛车。"
 ```
 
 ## 15. 绝尘漂移
@@ -744,6 +1287,44 @@ style_brief:
     text: "标题可用赛车海报感粗体，数据用电子计时数字；按钮文字必须高对比"
     accent: "胎痕、漂移烟、弯道箭头、计时器、零件螺丝、排位徽章。装饰要服务于漂移和调校语义。"
   forbidden_mistakes: "误判成重写实豪车竞速；更应突出移动端街机漂移、弯道技巧、排位和车辆调校"
+  style_archetype: "清新卡通漂移竞速小游戏"
+  archetype_shared_traits:
+    - "赛车、弯道、漂移烟、轻竞技"
+    - "卡通化车辆和赛道，节奏轻快"
+    - "强调漂移操作、关卡路线和冲线爽感"
+  specific_differentiators:
+    - "比王牌竞速更轻、更卡通、更小游戏化"
+    - "识别重点是漂移轨迹和清新赛道，不是高写实车体"
+    - "车辆可以简化，重点在弯道节奏与漂移烟雾"
+  signature_semantics:
+    must_include:
+      - "卡通赛车、夸张漂移轨迹、弯道箭头、清新赛道"
+    should_include:
+      - "轮胎烟、路锥、赛道护栏、冲线旗、小型联赛牌"
+    should_reduce:
+      - "写实车漆反射"
+      - "复杂赛车改装"
+      - "黑暗地下飙车"
+    must_avoid:
+      - "王牌竞速式写实豪车"
+      - "军事载具"
+      - "科幻反重力赛车"
+  background_identity_anchors:
+    foreground_forbidden:
+      - "真实豪车大特写"
+      - "复杂车手人物"
+    edge_or_corner_allowed:
+      - "漂移箭头、路锥、轮胎痕、旗帜、计时牌"
+    far_background_allowed:
+      - "卡通赛道、山路、城市小路、联赛终点门"
+    center_safe_area_allowed:
+      - "赛道弯道、浅色沥青、低对比速度线"
+  anti_generic_guardrails:
+    - "必须突出漂移，不能只画一辆卡通车"
+    - "整体要轻快清新，不要向写实竞速或重度改装靠"
+  visual_identity_test:
+    question: "如果去掉游戏名，这张背景是否仍能区别于同原型下的其他游戏？"
+    pass_condition: "通过卡通车、清新赛道和夸张漂移轨迹识别为绝尘漂移，而不是写实赛车。"
 ```
 
 ## 16. 无限大
@@ -774,6 +1355,44 @@ style_brief:
     text: "标题可用现代无衬线粗体或潮流海报字；正文像手机 UI 信息流，注意留白"
     accent: "霓虹灯条、社媒弹窗、城市导视箭头、二维码感纹理、贴纸、glitch 小块。装饰应体现都市开放世界，不要变成纯赛博朋克。"
   forbidden_mistakes: "误判成传统奇幻开放世界或重科幻赛博；关键是现代都市、社交媒体、日常烟火气与异常危机并存"
+  style_archetype: "现代都市开放世界二次元动作 RPG"
+  archetype_shared_traits:
+    - "现代城市、高楼、街道、交通、年轻角色、开放世界探索"
+    - "二次元角色与都市生活结合，包含动作、跑酷、载具或城市互动"
+    - "视觉偏明快都市，不是末日或纯赛博"
+  specific_differentiators:
+    - "重点是现实感都市里的无限行动可能，不是传统幻想大陆"
+    - "城市要有年轻潮流、日常街区和高机动探索感"
+    - "不能只做霓虹赛博，要更像当代亚洲大城市开放世界"
+  signature_semantics:
+    must_include:
+      - "现代都市天际线、街区交通、高机动动作路径、年轻潮流符号"
+    should_include:
+      - "天桥、地铁口、便利店招牌、滑行/钩索路径、城市电子屏"
+    should_reduce:
+      - "过度赛博朋克"
+      - "魔法幻想符号"
+      - "废土破败"
+    must_avoid:
+      - "GTA 写实犯罪都市"
+      - "赛博朋克夜城"
+      - "校园恋爱小镇"
+  background_identity_anchors:
+    foreground_forbidden:
+      - "真实暴力犯罪元素"
+      - "大面积枪械军火"
+    edge_or_corner_allowed:
+      - "城市路牌、地铁标识、便利店灯箱、手机 UI、滑行轨迹"
+    far_background_allowed:
+      - "现代高楼、天桥、商业街、城市天际线"
+    center_safe_area_allowed:
+      - "浅色街道路面、天空、玻璃幕墙反光"
+  anti_generic_guardrails:
+    - "必须是现代都市开放世界，不要做成普通二游城市背景"
+    - "城市要可行动、可探索，不只是漂亮商业街"
+  visual_identity_test:
+    question: "如果去掉游戏名，这张背景是否仍能区别于同原型下的其他游戏？"
+    pass_condition: "能通过现代亚洲都市、高机动路径和二次元开放世界感区别于赛博城市或写实 GTA。"
 ```
 
 ## 17. 代号：新生
@@ -804,6 +1423,44 @@ style_brief:
     text: "标题可用厚实但不凶硬的战术字体；正文保持深灰/白色高可读；资源数字可像补给标签"
     accent: "爪印、雪花、火种灯、列车票、补给封条、布贴、铆钉。装饰要平衡可爱和末世，不要变成纯萌宠养成。"
   forbidden_mistakes: "误判成动物森友会式温馨经营；必须保留搜打撤、风雪末世、俯视角战术和物资撤离压力"
+  style_archetype: "俯视角动物特工雪地搜打撤"
+  archetype_shared_traits:
+    - "搜打撤、物资、撤离点、多人合作、庇护所建设"
+    - "俯视角战术射击，资源风险与收益并存"
+    - "末世环境、危险区域、装备和背包管理"
+  specific_differentiators:
+    - "最强差异点是可爱小动物特工 + 风雪末世 + 末班车基地"
+    - "不是硬核真人军事搜打撤，而是萌系动物与寒冷末世的反差"
+    - "移动钢铁基地/末班车是背景识别核心"
+  signature_semantics:
+    must_include:
+      - "小动物特工、雪地末世、俯视角战术路线、物资撤离、末班车"
+    should_include:
+      - "背包物资、火种、列车车厢、雪地脚印、简化枪械"
+    should_reduce:
+      - "写实人类士兵"
+      - "血腥尸潮"
+      - "纯可爱动物乐园"
+    must_avoid:
+      - "三角洲式现代军事"
+      - "动物森友会治愈小镇"
+      - "冰雪童话"
+  background_identity_anchors:
+    foreground_forbidden:
+      - "写实士兵"
+      - "巨大怪物"
+    edge_or_corner_allowed:
+      - "动物爪印、物资箱、车票、火种灯、撤离箭头"
+    far_background_allowed:
+      - "风雪冰原、末班车、废弃设施、临时庇护所"
+    center_safe_area_allowed:
+      - "雪地、低对比冰面、轻雾、俯视角地形网格"
+  anti_generic_guardrails:
+    - "必须保留动物特工与末世搜打撤的反差，不要只做雪地射击"
+    - "末班车/火种/移动基地是关键，不能缺"
+  visual_identity_test:
+    question: "如果去掉游戏名，这张背景是否仍能区别于同原型下的其他游戏？"
+    pass_condition: "看到小动物特工、风雪末世、物资撤离和末班车，就能区别于硬核搜打撤或普通萌宠游戏。"
 ```
 
 ## 18. 铃兰之剑
@@ -834,6 +1491,44 @@ style_brief:
     text: "标题可用古典衬线或像素化标题字，正文保持清晰端正；剧情文字需留足行距"
     accent: "战棋格、卷轴角、火漆印、战旗布、铜钉、烛火、地图线。装饰要克制，避免变成轻浮二次元或普通像素冒险。"
   forbidden_mistakes: "误判成可爱像素 RPG 或纯日式二次元卡牌；必须保留严肃战争叙事、本格战棋、佣兵团与命运抉择"
+  style_archetype: "新世代本格像素 SRPG + 中世纪群像战争"
+  archetype_shared_traits:
+    - "像素角色、战棋格、佣兵团、王国战争、阵营选择"
+    - "中世纪幻想、政治冲突、信念抉择、剧情演出"
+    - "场景像舞台剧与战棋棋盘结合"
+  specific_differentiators:
+    - "不是普通复古像素，而是精致 NeoPixel 与严肃政治叙事"
+    - "核心是伊利亚、小国夹缝、圣晶石、佣兵团和艰难选择"
+    - "情绪有史诗感和悲悯感，不是轻松勇者冒险"
+  signature_semantics:
+    must_include:
+      - "像素战棋格、佣兵旗帜、中世纪城镇、圣晶石、战火"
+    should_include:
+      - "酒馆、地图卷轴、石墙、悬崖/高低差、火把、破损旗帜"
+    should_reduce:
+      - "可爱 Q 版冒险"
+      - "纯 JRPG 魔法光效"
+      - "过度黑暗血腥"
+    must_avoid:
+      - "梦幻西游式 Q 版国风"
+      - "暗黑地牢恐怖"
+      - "现代军事战棋"
+  background_identity_anchors:
+    foreground_forbidden:
+      - "大比例角色立绘"
+      - "写实战争尸体"
+    edge_or_corner_allowed:
+      - "棋盘格、圣晶石、佣兵徽章、卷轴、长剑"
+    far_background_allowed:
+      - "伊利亚城镇、山地战场、港口、城堡、战火远景"
+    center_safe_area_allowed:
+      - "石砖地、木质舞台、低对比棋盘格"
+  anti_generic_guardrails:
+    - "必须有战棋高低差和像素舞台感，不能只是中世纪像素背景"
+    - "情绪要有信念与牺牲，不要过度萌化"
+  visual_identity_test:
+    question: "如果去掉游戏名，这张背景是否仍能区别于同原型下的其他游戏？"
+    pass_condition: "能通过精致像素战棋、佣兵团、圣晶石和伊利亚战争叙事识别铃兰之剑。"
 ```
 
 ## 19. 梦幻西游
@@ -864,6 +1559,44 @@ style_brief:
     text: "标题可用圆润国风粗体或古典牌匾字，正文保持现代清晰；奖励、战力、等级数字可用金色或红金标签突出"
     accent: "祥云、灯笼、铜钱、卷轴角、玉佩、木牌钉、阵法纹、宠物脚印。装饰要喜庆亲和，但不要堆满导致像春节活动页。"
   forbidden_mistakes: "误判成写实仙侠、硬核武侠或普通二次元卡牌；必须保留 Q版西游、经典回合、门派宠物、长安社交和国民级热闹感"
+  style_archetype: "Q版国风西游回合制 MMORPG"
+  archetype_shared_traits:
+    - "Q 版角色、国风建筑、门派、回合制战斗、社交组队"
+    - "明亮喜庆色彩、祥云纹样、古典装饰、仙妖人三界"
+    - "强调长期养成、帮派、师门、抓鬼、副本等社交循环"
+  specific_differentiators:
+    - "不是普通国风仙侠，而是西游题材 + Q 版圆润 + 门派社交"
+    - "视觉应有三界烟火气，不是冷峻修仙或写实古风"
+    - "门派、法宝、祥云、长安街市和萌化妖怪是强识别"
+  signature_semantics:
+    must_include:
+      - "Q版国风、祥云、长安/门派建筑、西游妖怪/法宝语义"
+    should_include:
+      - "灯笼、铜钱、葫芦、桃花、石桥、门派旗、回合制阵法"
+    should_reduce:
+      - "写实仙侠"
+      - "水墨空灵"
+      - "暗黑妖魔"
+    must_avoid:
+      - "武侠江湖写实"
+      - "二次元幻想大陆"
+      - "欧美魔幻"
+  background_identity_anchors:
+    foreground_forbidden:
+      - "写实人物大侠"
+      - "恐怖妖怪"
+    edge_or_corner_allowed:
+      - "祥云、灯笼、葫芦、铜钱、桃花、门派小旗"
+    far_background_allowed:
+      - "长安城、门派山门、仙山、石桥流水、庙会街景"
+    center_safe_area_allowed:
+      - "浅色云纹、青石地面、低对比国风纹样"
+  anti_generic_guardrails:
+    - "必须保留 Q 版西游和社交回合制气质，不能只做泛国风"
+    - "国风要热闹、圆润、烟火气，不要变成冷淡水墨"
+  visual_identity_test:
+    question: "如果去掉游戏名，这张背景是否仍能区别于同原型下的其他游戏？"
+    pass_condition: "看到 Q 版西游、祥云门派、长安烟火气和回合制阵法，就能判断是梦幻西游。"
 ```
 
 ## 20. 怪物猎人：旅人
@@ -894,4 +1627,42 @@ style_brief:
     text: "标题可用粗犷冒险字体或刻印感标题字，正文保持清晰；素材数量、任务等级、危险度可用铭牌式标签突出"
     accent: "爪痕、足迹、兽骨、绳结、营火、地图针、素材袋、调查印章。装饰要有狩猎/生态/营地语义，不要做成普通奇幻 RPG 或写实军事面板。"
   forbidden_mistakes: "误判成恐龙生存、普通开放世界或硬核写实狩猎模拟；必须保留怪猎 IP 的武器狩猎、怪物生态、素材制作、营地委托和多人共斗语义"
+  style_archetype: "写实奇幻生态狩猎动作手游"
+  archetype_shared_traits:
+    - "大型怪物、狩猎武器、生态环境、营地、素材采集"
+    - "强调怪物体型压迫、武器动作反馈和自然地貌"
+    - "奇幻生态比魔法特效更重要"
+  specific_differentiators:
+    - "核心是怪猎正版狩猎体验在移动端的适配，而不是普通开放世界打怪"
+    - "必须有怪物生态、猎人营地、武器职业和随从语义"
+    - "旅人可加入新岛屿、新冒险家、独占怪物等移动端新作特征"
+  signature_semantics:
+    must_include:
+      - "巨型生态怪物、猎人武器、营地、自然地貌、随从/冒险者语义"
+    should_include:
+      - "大剑、长枪、弓、篝火、补给箱、脚印、怪物鳞片、狩猎地图"
+    should_reduce:
+      - "魔法阵"
+      - "二次元技能光污染"
+      - "MMO 自动战斗 UI"
+    must_avoid:
+      - "恐龙公园"
+      - "暗黑屠龙魔幻"
+      - "原神式明亮幻想冒险"
+  background_identity_anchors:
+    foreground_forbidden:
+      - "怪物头部大特写压满画面"
+      - "角色抽卡立绘"
+    edge_or_corner_allowed:
+      - "武器架、脚印、鳞片、补给箱、篝火、猎人徽章"
+    far_background_allowed:
+      - "岛屿荒野、山林、沼泽、火山、怪物活动痕迹"
+    center_safe_area_allowed:
+      - "自然地面、雾气、低对比草地/岩壁、营地光影"
+  anti_generic_guardrails:
+    - "必须表现狩猎生态，不是单纯打 BOSS 或开放世界冒险"
+    - "怪物要像生态链中的生物，而不是恶魔或恐龙展品"
+  visual_identity_test:
+    question: "如果去掉游戏名，这张背景是否仍能区别于同原型下的其他游戏？"
+    pass_condition: "通过大型生态怪物痕迹、猎人武器、营地和自然狩猎场，能识别为怪猎旅人，而不是泛奇幻 ARPG。"
 ```
