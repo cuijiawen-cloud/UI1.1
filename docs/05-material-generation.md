@@ -241,8 +241,9 @@ visual_hierarchy_brief_consumption:
 
 - 背景 prompt 和背景参数必须遵守 `background_strength`、中心细节、中心对比和边缘装饰强度，不能让背景压过 `primary_focus`。
 - `panel_render_recipe` 必须按 `component_treatment` 和 `target_components.role` 决定是否使用完整程序化面板、轻量表面或禁止面板皮肤。
-- `color_roles` 必须进入背景、面板、按钮、文字和状态的颜色分配，最强色彩优先留给 `primary_action` 或关键状态。
-- `readability_policy` 必须约束背景安全区、面板底色、scrim 和文字对比兜底。
+- `color_roles` 必须进入背景、面板、按钮、文字和状态的颜色分配，最强色彩优先留给 `primary_action` 或关键状态；当 04 输出 `text_on_primary_surface`、`text_on_secondary_surface` 和 `text_on_action_surface` 时，05 必须按底色 / 文字色配对落地，不能只读取全局 `text_primary`。
+- `readability_policy` 必须约束背景安全区、面板底色、底色 / 文字色配对、scrim 和文字对比兜底。
+- 05 不得只按风格气质选择文案色。正文、标题、按钮文案等功能文字只能在黑字和白字中二选一，并且必须基于最终合成后的实际底色选择对比更高的一方；浅底白字、深底黑字、选了黑白中对比更低的一方，以及使用金色 / 棕色 / 红色 / 蓝色等第三种风格色作为功能文案色，都应判为失败。
 - `style_strength` 必须约束背景、主面板、次面板、控件和装饰的风格强度，不能每层都满强度。
 - 迭代模式必须保护 `current_visual_audit.keep`，优先执行 `reduce / remove / adjust`，不能无理由清空当前可用风格方向。
 
@@ -913,6 +914,9 @@ role_assignments:
   secondary_action:
   text_primary:
   text_secondary:
+  text_on_primary_surface:
+  text_on_secondary_surface:
+  text_on_action_surface:
   text_disabled:
   selected:
   warning:
@@ -926,9 +930,15 @@ forbidden:
   - selected_confused_with_warning_or_error
   - background_color_competes_with_primary_action
   - low_contrast_text
+  - surface_text_contrast_below_required
+  - non_binary_functional_text_color
+  - lower_contrast_binary_text_choice_selected
+  - pale_surface_with_white_or_near_white_text
+  - dark_surface_with_black_or_near_black_text
 qa_status:
   role_coverage_complete:
   text_contrast_checked:
+  surface_text_pairing_checked:
   selected_warning_error_distinct:
   no_image_asset_generated:
 visual_hierarchy_trace:
@@ -1427,7 +1437,8 @@ procedural_panel_qa_rule:
 
 - `page_color_rule` 是否覆盖 `page_background_base`、容器、行动、文字和状态色角色。
 - 是否消费了 `style_brief.colors`、`style_brief.mood`、`ui_translation.state` 和 `ui_translation.text`。
-- 当 `visual_hierarchy_scope: required` 时，是否消费了 `visual_hierarchy_brief.color_roles` 和 `readability_policy`。
+- 当 `visual_hierarchy_scope: required` 时，是否消费了 `visual_hierarchy_brief.color_roles`、`text_on_primary_surface` / `text_on_secondary_surface` / `text_on_action_surface` 和 `readability_policy`。
+- 容器 / 按钮底色与正文 / 标题 / 按钮文案是否通过底色 / 文字色配对校验；功能文案色必须只在黑 / 白中二选一，并选择对比更高的一方。浅底白字、深底黑字、中明度底色选错黑白、透明叠加后对比不足，或使用金色 / 棕色 / 红色 / 蓝色等第三种风格色作为功能文案色，都必须判为失败。
 - 最强色是否保留给 `primary_action` 或关键状态，而不是背景或普通容器。
 - selected、warning、error、success 是否语义清楚且彼此可区分。
 - 是否没有生成任何图片资产。
@@ -1479,6 +1490,10 @@ page_color_rule_failure_attribution:
     responsible: docs/05-material-generation.md
   color_roles_not_consumed:
     responsible: docs/05-material-generation.md
+  surface_text_low_contrast:
+    condition: surface_text_contrast_below_required || non_binary_functional_text_color || lower_contrast_binary_text_choice_selected || pale_surface_with_white_or_near_white_text || dark_surface_with_black_or_near_black_text
+    responsible: docs/04-visual-hierarchy-brief.md | docs/05-material-generation.md
+    fix: 04_should_assign_surface_text_pairing_or_05_should_apply_it_to_page_color_rule
   selected_warning_error_confused:
     responsible: docs/05-material-generation.md | docs/04-visual-hierarchy-brief.md
 ```
@@ -1489,6 +1504,7 @@ page_color_rule_failure_attribution:
 - 问题来自背景强度分配错误，例如 brief 允许的 `background_strength`、中心细节或中心对比本身过高。
 - 问题来自组件主次关系错误，例如 `component_treatment` 把按钮、标签、输入框、内部轻分组误判为完整面板候选。
 - 问题来自色彩角色分配错误，例如装饰色被指定为大面积文字底或普通容器底，导致层级冲突。
+- 问题来自底色 / 文字色配对缺失，例如没有在黑 / 白中选择对比更高的一方，或把风格色当成功能文案色，导致正文、标题或按钮文案低对比。
 
 以下情况必须归因 05 并回修本文件或本次生成配置：
 

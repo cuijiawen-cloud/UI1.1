@@ -291,6 +291,9 @@ visual_hierarchy_brief:
     decorative_accent:
     text_primary:
     text_secondary:
+    text_on_primary_surface:
+    text_on_secondary_surface:
+    text_on_action_surface:
     state_colors:
   page_color_rule_policy:
     required_when: workflow_request.target_style_rules contains page_color_rule
@@ -300,6 +303,17 @@ visual_hierarchy_brief:
   readability_policy:
     min_body_text_contrast:
     min_large_text_contrast:
+    surface_text_pairing_required: true
+    text_color_mode: binary_black_or_white
+    text_color_decision: choose_higher_contrast_black_or_white_against_final_composited_surface
+    forbidden_low_contrast_pairs:
+      - surface_text_contrast_below_required
+      - non_binary_functional_text_color
+      - lower_contrast_binary_text_choice_selected
+      - pale_surface_with_white_or_near_white_text
+      - dark_surface_with_black_or_near_black_text
+      - decorative_accent_as_large_text_color
+      - selected_color_as_body_text_when_contrast_is_low
     content_scrim_allowed:
     fallback_if_contrast_fails:
   style_strength:
@@ -330,9 +344,9 @@ visual_hierarchy_brief:
 - `component_treatment` 必须逐类说明组件层级和处理方式，05 不能只看组件是否是矩形。
 - `use_programmatic_panel: true` 表示允许使用完整程序化面板主体；`limited` 表示只允许轻量程序化表面、细描边、弱 tint 或状态 overlay；`false` 表示不得套用程序化面板主体。
 - `use_accent` 只表示允许使用 02 / 03 约束下的 0-1 个固定角部局部装饰，不表示可新增通用装饰图。
-- `color_roles` 必须区分背景、容器、行动、装饰、文字和状态，避免所有元素抢同一个主色。
+- `color_roles` 必须区分背景、容器、行动、装饰、文字和状态，避免所有元素抢同一个主色；同时必须输出 `text_on_primary_surface`、`text_on_secondary_surface` 和 `text_on_action_surface`，让 05 按“底色 / 文字色”成对执行。
 - `page_color_rule_policy` 只说明 05 应把 `color_roles` 落成非图片 `page_color_rule`；04 不生成物料文件、不写具体渲染配置。
-- `readability_policy` 必须给出对比底线和失败兜底，通常优先降低背景强度或增加内容 scrim，再调整文字色。
+- `readability_policy` 必须给出对比底线、底色 / 文字色配对和失败兜底；当面板或按钮已经有稳定底色时，优先调整文字色，再考虑降低背景强度或增加内容 scrim。
 - `style_strength` 用于把风格强度分配到背景、主面板、次面板、控件和装饰，不允许每层都满强度。
 - `forbidden_visual_outcomes` 记录页面级禁忌结果，05 和 QA 必须按这些结果检查，而不是只检查单个资产是否合规。
 
@@ -454,6 +468,18 @@ color_role_policy:
   text_secondary:
     purpose: metadata_or_supporting_text
     strength: readable_but_lower_emphasis
+  text_on_primary_surface:
+    purpose: body_and_title_text_on_main_container
+    allowed_values: black | white
+    contrast: must_pass_body_text_contrast
+  text_on_secondary_surface:
+    purpose: metadata_or_secondary_text_on_secondary_container
+    allowed_values: black | white
+    contrast: must_remain_readable_below_primary_text
+  text_on_action_surface:
+    purpose: button_or_clickable_control_text
+    allowed_values: black | white
+    contrast: must_pass_control_text_contrast
   state_colors:
     purpose: selected_disabled_warning_error_success_new_reward
     strength: semantic_not_decorative
@@ -465,6 +491,10 @@ color_role_policy:
 - `decorative_accent` 只能小面积使用，不能成为大面积文字底或普通面板底。
 - `primary_surface` 必须服务内容阅读，不能因为风格化而牺牲正文和表单。
 - `secondary_surface` 应比主内容容器更轻，避免所有层级都像主卡片。
+- `text_on_primary_surface`、`text_on_secondary_surface` 和 `text_on_action_surface` 是功能文案色，只允许 `black | white` 二选一。必须基于最终合成后的实际底色选择黑字或白字中对比更高的一个；中明度、高饱和、半透明或渐变底色也不得使用第三种文案色。
+- 典型失败包括浅底白字、深底黑字、选了黑白中对比更低的一方、透明叠加后对比不足，以及把金色、棕色、红色、蓝色等风格色用于正文 / 标题 / 按钮文案。
+- 风格识别优先通过背景语义、边框、祥云 / 卷轴 / 材质暗纹、小面积装饰色和行动色表达，不允许用非黑白文案色或低对比文案色来表达“仙气”“轻盈”“柔和”。
+- 如果文字色和面板底色明度接近，必须先把文字切到高对比角色；只有在文字角色已正确但仍不清晰时，才调整面板底、背景强度或增加内容 scrim。
 - warning / error 不能被装饰色或 selected 色混淆。
 - 如果背景颜色很有识别度，面板和按钮必须降低同色竞争，让页面留出焦点。
 
@@ -516,7 +546,7 @@ background_strength_defaults:
 - 背景抢眼时，优先降低背景中心细节、对比度、饱和度和装饰强度，不先重做面板或替换整体方向。
 - 面板全都填充时，优先减少 secondary / tertiary 组件的 `programmatic_panel` 使用，只保留主容器使用完整面板。
 - 按钮不突出时，优先把最强色彩留给 `primary_action`，不要让背景或普通面板抢走主色。
-- 文字不好读时，优先降低底层干扰、增加内容区稳定面或 scrim，再考虑调整文字色和字重。
+- 文字不好读时，先检查 `surface_text_pairing`：如果文字和面板 / 按钮底色明度接近，优先改文字色角色；如果文字角色已正确但仍受背景干扰，再降低底层干扰、增加内容区稳定面或 scrim，并调整字重。
 - 风格方向可用但过重时，保留材质、形状和小面积识别语义，削弱 glow、厚边框、强纹理和高饱和大色块。
 - 当前风格不像目标游戏时，先判断是 02 风格理解问题、05 prompt 消费问题、背景 identity anchor 位置问题，还是 04 页面强度分配问题，再决定反馈对象。
 
@@ -707,6 +737,9 @@ visual_hierarchy_brief:
     decorative_accent:
     text_primary:
     text_secondary:
+    text_on_primary_surface:
+    text_on_secondary_surface:
+    text_on_action_surface:
     state_colors:
   page_color_rule_policy:
     required_when: workflow_request.target_style_rules contains page_color_rule
@@ -716,6 +749,8 @@ visual_hierarchy_brief:
   readability_policy:
     min_body_text_contrast: "WCAG AA target or project equivalent"
     min_large_text_contrast: "WCAG AA target or project equivalent"
+    surface_text_pairing_required: true
+    text_color_mode: binary_black_or_white
     content_scrim_allowed: true
     fallback_if_contrast_fails:
   style_strength:
@@ -806,6 +841,9 @@ visual_hierarchy_brief:
     decorative_accent:
     text_primary:
     text_secondary:
+    text_on_primary_surface:
+    text_on_secondary_surface:
+    text_on_action_surface:
     state_colors:
   page_color_rule_policy:
     required_when: workflow_request.target_style_rules contains page_color_rule
@@ -815,6 +853,8 @@ visual_hierarchy_brief:
   readability_policy:
     min_body_text_contrast:
     min_large_text_contrast:
+    surface_text_pairing_required: true
+    text_color_mode: binary_black_or_white
     content_scrim_allowed:
     fallback_if_contrast_fails:
   style_strength:
